@@ -13,9 +13,6 @@ BaselineOfTypeInfoTools >> baseline: spec [
 		spec
 			baseline: 'RoelTyper'
 			with: [ spec repository: 'github://JanBliznicenko/RoelTyper' ];
-			
-			package: 'TypeInfoTools';
-			
-			group: 'default' with: #( TypeInfoTools ) 
-	]
+			package: 'TypeInfoTools' with: [ spec requires: #( 'RoelTyper' ) ];
+			group: 'default' with: #( 'TypeInfoTools' ) ]
 ]
