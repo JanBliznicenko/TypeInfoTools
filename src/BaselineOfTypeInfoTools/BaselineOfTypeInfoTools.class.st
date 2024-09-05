@@ -11,8 +11,10 @@ BaselineOfTypeInfoTools >> baseline: spec [
 	<baseline>
 	spec for: #common do: [
 		spec
-			baseline: 'RoelTyper'
-			with: [ spec repository: 'github://JanBliznicenko/RoelTyper' ];
+			baseline: 'RoelTyper' with: [
+				spec
+					repository: 'github://JanBliznicenko/RoelTyper';
+					loads: 'Tests' ];
 			package: 'TypeInfoTools' with: [ spec requires: #( 'RoelTyper' ) ];
 			group: 'default' with: #( 'TypeInfoTools' ) ]
 ]
