@@ -1,8 +1,8 @@
 Class {
 	#name : 'TITShowTypesClassCommand',
 	#superclass : 'SycClassCommand',
-	#traits : 'TTITShowTypesCommand',
-	#classTraits : 'TTITShowTypesCommand classTrait',
+	#traits : 'TITTShowTypesCommand',
+	#classTraits : 'TITTShowTypesCommand classTrait',
 	#category : 'TypeInfoTools-Commands',
 	#package : 'TypeInfoTools',
 	#tag : 'Commands'
@@ -33,15 +33,22 @@ TITShowTypesClassCommand class >> sourceCodeMenuActivation [
 { #category : 'execution' }
 TITShowTypesClassCommand >> execute [
 
-	classes size = 1 ifTrue: [
-		^ (self typesOf: classes anyOne) inspect ].
+	| types |
+	types := self types.
+	types size = 1 ifTrue: [
+		| pair |
+		pair := types anyOne.
+		^ self showClassFrom: pair value forClass: pair key ].
 
-	((classes sortedAs: #name) collect: [ :each |
-		 each -> (self typesOf: each) ]) asOrderedDictionary inspect
+	self showMultipleClassesFrom: types
 ]
 
 { #category : 'execution' }
-TITShowTypesClassCommand >> typesOf: aClass [
+TITShowTypesClassCommand >> types [
 
-	^ (TypeCollector typeInstvarsOfClass: aClass) collect: #types
+	^ classes collect: [ :each |
+		  each
+		  ->
+			  ((TypeCollector typeInstvarsOfClass: each) collect: [ :eachType |
+				   eachType types ]) ]
 ]

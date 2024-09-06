@@ -1,8 +1,8 @@
 Class {
 	#name : 'TITShowTypesInstanceVariableCommand',
 	#superclass : 'SycVariableCommand',
-	#traits : 'TTITShowTypesCommand',
-	#classTraits : 'TTITShowTypesCommand classTrait',
+	#traits : 'TITTShowTypesCommand',
+	#classTraits : 'TITTShowTypesCommand classTrait',
 	#category : 'TypeInfoTools-Commands',
 	#package : 'TypeInfoTools',
 	#tag : 'Commands'
@@ -32,22 +32,38 @@ TITShowTypesInstanceVariableCommand class >> sourceCodeMenuActivation [
 ]
 
 { #category : 'execution' }
-TITShowTypesInstanceVariableCommand >> execute [
+TITShowTypesInstanceVariableCommand >> definingClass [
 
-	| actualVariables |
-	actualVariables := variables collect: [ :each | each actualVariable ].
-
-	actualVariables size = 1 ifTrue: [
-		^ (self typesOf: actualVariables anyOne) inspect ].
-
-	((actualVariables sortedAs: #name) collect: [ :each |
-		 each -> (self typesOf: each) ]) asOrderedDictionary inspect
+	^ variables first definingClass
 ]
 
 { #category : 'execution' }
-TITShowTypesInstanceVariableCommand >> typesOf: aVariable [
+TITShowTypesInstanceVariableCommand >> execute [
 
-	^ (TypeCollector
-		   typeInstvar: aVariable name
-		   ofClass: aVariable owningClass) types
+	| types classes |
+	types := self types.
+	classes := variables collect: [ :each | each definingClass ] as: Set.
+	classes size > 1 ifTrue: [
+		self inform:
+			'Unable to infer variables from multiple classes, providing results for '
+			, (types size = 1
+					 ifTrue: [ 'variable ''' , types keys anyOne , '''' ]
+					 ifFalse: [ 'class ' , self definingClass name ]) ].
+
+	types size = 1 ifTrue: [
+		| pair |
+		pair := types associations anyOne.
+		^ self showSingleItem: pair value forVariableNamed: pair key ].
+
+	self showInstVarsFrom: types forClass: self definingClass
+]
+
+{ #category : 'execution' }
+TITShowTypesInstanceVariableCommand >> types [
+
+	| results |
+	results := TypeCollector typeInstvarsOfClass: self definingClass.
+	results keysAndValuesRemove: [ :key :value |
+		variables noneSatisfy: [ :each | each name = key ] ].
+	^ results collect: [ :each | each types ]
 ]

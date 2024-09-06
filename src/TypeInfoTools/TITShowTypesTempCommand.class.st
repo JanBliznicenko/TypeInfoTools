@@ -1,8 +1,8 @@
 Class {
 	#name : 'TITShowTypesTempCommand',
 	#superclass : 'SycSourceCodeCommand',
-	#traits : 'TTITShowTypesCommand',
-	#classTraits : 'TTITShowTypesCommand classTrait',
+	#traits : 'TITTShowTypesCommand',
+	#classTraits : 'TITTShowTypesCommand classTrait',
 	#category : 'TypeInfoTools-Commands',
 	#package : 'TypeInfoTools',
 	#tag : 'Commands'
@@ -26,11 +26,12 @@ TITShowTypesTempCommand class >> sourceCodeMenuActivation [
 { #category : 'execution' }
 TITShowTypesTempCommand >> execute [
 
-	(self typesOf: sourceNode in: method) inspect
+	self showSingleItem: self types forVariableNamed: sourceNode name
 ]
 
 { #category : 'execution' }
-TITShowTypesTempCommand >> typesOf: aTempVariable in: aMethod [
+TITShowTypesTempCommand >> types [
 
-	^ ((TypeCollector typeTmpsIn: aMethod) at: aTempVariable name) types
+	self flag: 'blocks'.
+	^ ((TypeCollector typeTmpsIn: method) at: sourceNode name) types
 ]
