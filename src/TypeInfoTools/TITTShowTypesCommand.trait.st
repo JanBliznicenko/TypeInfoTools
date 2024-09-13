@@ -124,7 +124,13 @@ TITTShowTypesCommand >> resultsOfMultipleMethodsFrom: aCollectionOfAssociationsB
 { #category : 'as yet unclassified' }
 TITTShowTypesCommand >> resultsOfSingleItemFrom: aCollection [
 
-	^ (aCollection reject: [ :any | any = Object ]) asArray
+	^ (aCollection reject: [ :any | any = Object ]) asArray sorted: [ :a :b |
+		  (a isCollectionClass and: [ b isCollectionClass not ]) or: [
+			  (a isCollectionClass or: [ b isCollectionClass not ]) and: [
+				  (a isMagnitudeClass and: [ b isMagnitudeClass not ]) or: [
+					  (a isMagnitudeClass or: [ b isMagnitudeClass not ]) and: [
+						  (b includesBehavior: a) or: [
+							  (a includesBehavior: b) not and: [ a name < b name ] ] ] ] ] ] ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -158,7 +164,9 @@ TITTShowTypesCommand >> showMethodFrom: aCollection forMethod: aMethod [
 	(self areEmptyResultsOfMethodOrInstVars: results) ifTrue: [
 		^ self informNoneFound ].
 
-	^ results inspectWithLabel: 'Type info for ' , aMethod asString
+	^ results inspectWithLabel: (String streamContents: [ :s |
+			   s << 'Type info for '.
+			   aMethod printOn: s ])
 ]
 
 { #category : 'as yet unclassified' }
@@ -190,6 +198,7 @@ TITTShowTypesCommand >> showSingleItem: aCollection forVariableNamed: aVarName [
 	results := self resultsOfSingleItemFrom: aCollection.
 	(self areEmptyResultsOfSingleItem: results) ifTrue: [
 		^ self informNoneFound ].
+
 
 	^ results inspectWithLabel:
 		  'Type info for variable ''' , aVarName , ''''

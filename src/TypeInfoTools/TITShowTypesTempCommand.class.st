@@ -32,6 +32,14 @@ TITShowTypesTempCommand >> execute [
 { #category : 'execution' }
 TITShowTypesTempCommand >> types [
 
-	self flag: 'blocks'.
-	^ ((TypeCollector typeTmpsIn: method) at: sourceNode name) types
+	| varParent key |
+	varParent := sourceNode parent.
+	key := varParent isBlock
+		       ifTrue: [
+			       | blockIndex |
+			       blockIndex := method ast blockNodes indexOf:
+				                     sourceNode parent.
+			       '_block' , blockIndex asString , '->' , sourceNode name ]
+		       ifFalse: [ sourceNode name ].
+	^ ((TypeCollector typeTmpsIn: method) at: key asSymbol) types
 ]
