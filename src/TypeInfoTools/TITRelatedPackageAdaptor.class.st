@@ -3,12 +3,34 @@ Class {
 	#superclass : 'TITInferenceToolAdaptor',
 	#instVars : [
 		'relatedClasses',
-		'relatedClassesByNameRoot'
+		'classesByPackageNameRoot'
 	],
 	#category : 'TypeInfoTools-Inference',
 	#package : 'TypeInfoTools',
 	#tag : 'Inference'
 }
+
+{ #category : 'accessing' }
+TITRelatedPackageAdaptor >> classesByPackageNameRoot: aNameRoot [
+
+	^ classesByPackageNameRoot
+		  at: aNameRoot asSymbol
+		  ifPresent: [ :foundClasses | foundClasses ]
+		  ifAbsentPut: [
+			  Array streamContents: [ :s |
+				  self packageOrganizer packagesDo: [ :eachPackage |
+					  (eachPackage name includesSubstring: aNameRoot) ifTrue: [
+						  s nextPutAll: eachPackage definedClasses ] ] ] ]
+]
+
+{ #category : 'accessing' }
+TITRelatedPackageAdaptor >> classesDependedBy: aPackage [
+
+	^ (DADependencyChecker new
+		   shouldComputeMessageSendDependencies: false;
+		   daPackageFor: aPackage name) dependencies collect: [ :each |
+		  each dependencyOnClass ]
+]
 
 { #category : 'initialization' }
 TITRelatedPackageAdaptor >> initialize [
@@ -24,31 +46,18 @@ TITRelatedPackageAdaptor >> name [
 ]
 
 { #category : 'accessing' }
-TITRelatedPackageAdaptor >> relatedClassesAt: aNameRoot [
-
-	^ relatedClassesByNameRoot
-		  at: aNameRoot asSymbol
-		  ifPresent: [ :foundClasses | foundClasses ]
-		  ifAbsentPut: [
-			  Array streamContents: [ :s |
-				  self packageOrganizer packagesDo: [ :eachPackage |
-					  (eachPackage name includesSubstring: aNameRoot) ifTrue: [
-						  s nextPutAll: eachPackage definedClasses ] ] ] ]
-]
-
-{ #category : 'accessing' }
 TITRelatedPackageAdaptor >> relatedClassesTo: aPackage [
 
 	^ relatedClasses at: aPackage ifAbsentPut: [
 		  | nameRoot |
 		  nameRoot := aPackage name copyUpTo: $-.
-		  (self relatedClassesAt: nameRoot)
-		  , (self relatedClassesAt: 'Kernel')
-		  , (self relatedClassesAt: 'Collections') ]
+		  (self classesByPackageNameRoot: nameRoot) asSet
+		  , (self classesDependedBy: aPackage) ]
 ]
 
 { #category : 'accessing' }
 TITRelatedPackageAdaptor >> visitTypedNode: aTypedNode [
 
-	^ self relatedClassesTo: aTypedNode package actualPackage
+	aTypedNode typeInfo prioritizedClasses:
+		(self relatedClassesTo: aTypedNode package actualPackage)
 ]

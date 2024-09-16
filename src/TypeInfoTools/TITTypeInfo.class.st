@@ -67,6 +67,13 @@ TITTypeInfo >> node: anObject [
 	node := anObject
 ]
 
+{ #category : 'adding' }
+TITTypeInfo >> prioritizedClasses: aCollection [
+
+	types prioritizedClasses: aCollection.
+	collectionElementTypes prioritizedClasses: aCollection
+]
+
 { #category : 'accessing' }
 TITTypeInfo >> types [
 

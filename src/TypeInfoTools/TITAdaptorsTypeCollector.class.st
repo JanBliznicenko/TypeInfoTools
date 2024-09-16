@@ -13,7 +13,7 @@ Class {
 { #category : 'adding' }
 TITAdaptorsTypeCollector >> adaptors [
 
-	^ adaptors
+	^ adaptors ifNil: [ self defaultAdaptors ]
 ]
 
 { #category : 'adding' }
@@ -34,9 +34,9 @@ TITAdaptorsTypeCollector >> addTypesTo: aStructureNode [
 TITAdaptorsTypeCollector >> defaultAdaptors [
 
 	^ {
-		  TITRoelTyperAdaptor.
-		  TITRBRefactoryTyperAdaptor.
-		  TITRelatedPackageAdaptor }
+		  TITRelatedPackageAdaptor new.
+		  TITRoelTyperAdaptor new.
+		  TITRBRefactoryTyperAdaptor new }
 ]
 
 { #category : 'initialization' }
