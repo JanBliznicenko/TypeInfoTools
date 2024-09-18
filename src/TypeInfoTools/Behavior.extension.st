@@ -11,3 +11,9 @@ Behavior >> isMagnitudeClass [
 
 	^ false
 ]
+
+{ #category : '*TypeInfoTools' }
+Behavior >> systemClass [
+
+	^ self
+]

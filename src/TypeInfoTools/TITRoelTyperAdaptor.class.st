@@ -2,7 +2,8 @@ Class {
 	#name : 'TITRoelTyperAdaptor',
 	#superclass : 'TITInferenceToolAdaptor',
 	#instVars : [
-		'resultsByClasses'
+		'resultsByClasses',
+		'resultsByMethods'
 	],
 	#category : 'TypeInfoTools-Inference',
 	#package : 'TypeInfoTools',
@@ -13,7 +14,8 @@ Class {
 TITRoelTyperAdaptor >> initialize [
 
 	super initialize.
-	resultsByClasses := Dictionary new
+	resultsByClasses := IdentityDictionary new.
+	resultsByMethods := IdentityDictionary new
 ]
 
 { #category : 'accessing' }
@@ -26,17 +28,27 @@ TITRoelTyperAdaptor >> name [
 TITRoelTyperAdaptor >> resultsForClass: aClass [
 
 	^ resultsByClasses
-		  at: aClass actualClass
-		  ifAbsentPut: [
-		  TypeCollector typeInstvarsOfClass: aClass actualClass ]
+		  at: aClass systemClass
+		  ifAbsentPut: [ TypeCollector typeInstvarsOfClass: aClass systemClass ]
+]
+
+{ #category : 'accessing' }
+TITRoelTyperAdaptor >> resultsForMethod: aMethod [
+
+	resultsByClasses
+		at: aMethod class systemClass
+		ifPresent: [ self halt ].
+	^ resultsByMethods
+		  at: aMethod compiledMethod
+		  ifAbsentPut: [ TypeCollector typeTmpsIn: aMethod compiledMethod ]
 ]
 
 { #category : 'accessing' }
 TITRoelTyperAdaptor >> visitBlockTemporaryVariable: aBlockTemp [
 
-	|  actualMethod results |
+	| actualMethod results |
 	actualMethod := aBlockTemp method compiledMethod.
-	results := TypeCollector typeTmpsIn: actualMethod.
+	results := self resultsForMethod: actualMethod.
 	aBlockTemp typeInfo addTypes: (results at:
 			 '_block' , aBlockTemp block methodLevelIndex asString , '->'
 			 , aBlockTemp name) types
@@ -61,7 +73,7 @@ TITRoelTyperAdaptor >> visitMethodLevelTemporaryVariable: aMethodTemp [
 
 	| actualMethod results |
 	actualMethod := aMethodTemp method compiledMethod.
-	results := TypeCollector typeTmpsIn: actualMethod.
+	results := self resultsForMethod: actualMethod.
 	aMethodTemp typeInfo addTypes: (results at: aMethodTemp name) types
 ]
 

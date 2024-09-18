@@ -35,10 +35,10 @@ TITInferenceToolAdaptor >> visitBlockTemporaryVariable: aBlockTemporaryVariable 
 { #category : 'accessing' }
 TITInferenceToolAdaptor >> visitClass: aClass [
 
-	aClass methods do: [ :each | self visitMethod: each ].
 	aClass instanceVariables do: [ :each |
 		self visitInstanceVariable: each ].
-	aClass sharedVariables do: [ :each | self visitSharedVariable: each ]
+	aClass sharedVariables do: [ :each | self visitSharedVariable: each ].
+	aClass methods do: [ :each | self visitMethod: each ]
 ]
 
 { #category : 'accessing' }

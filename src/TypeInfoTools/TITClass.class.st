@@ -3,10 +3,10 @@ Class {
 	#superclass : 'TITContainerNode',
 	#instVars : [
 		'#package => ToOneRelationSlot inverse: #classes inClass: #TITPackage',
-		'#actualClass',
 		'#methods => ToManyRelationSlot inverse: #ownerClass inClass: #TITMethod',
 		'#instanceVariables => ToManyRelationSlot inverse: #ownerClass inClass: #TITInstanceVariable',
-		'#sharedVariables => ToManyRelationSlot inverse: #ownerClass inClass: #TITSharedVariable'
+		'#sharedVariables => ToManyRelationSlot inverse: #ownerClass inClass: #TITSharedVariable',
+		'#systemClass'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',
@@ -17,18 +17,6 @@ Class {
 TITClass >> accept: anInferenceToolAdaptor [
 
 	^ anInferenceToolAdaptor visitClass: self
-]
-
-{ #category : 'accessing' }
-TITClass >> actualClass [
-
-	^ actualClass
-]
-
-{ #category : 'accessing' }
-TITClass >> actualClass: anObject [
-
-	actualClass := anObject
 ]
 
 { #category : 'initialization' }
@@ -90,4 +78,16 @@ TITClass >> sharedVariables [
 TITClass >> sharedVariables: anObject [
 
 	sharedVariables := anObject
+]
+
+{ #category : 'accessing' }
+TITClass >> systemClass [
+
+	^ systemClass
+]
+
+{ #category : 'accessing' }
+TITClass >> systemClass: anObject [
+
+	systemClass := anObject
 ]
