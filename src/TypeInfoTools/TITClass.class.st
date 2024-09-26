@@ -6,12 +6,20 @@ Class {
 		'#methods => ToManyRelationSlot inverse: #ownerClass inClass: #TITMethod',
 		'#instanceVariables => ToManyRelationSlot inverse: #ownerClass inClass: #TITInstanceVariable',
 		'#sharedVariables => ToManyRelationSlot inverse: #ownerClass inClass: #TITSharedVariable',
-		'#systemClass'
+		'#realClass'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',
 	#tag : 'Structure'
 }
+
+{ #category : 'as yet unclassified' }
+TITClass class >> forRealClass: aClass [
+
+	^ self new
+		  realClass: aClass;
+		  yourself
+]
 
 { #category : 'visiting' }
 TITClass >> accept: anInferenceToolAdaptor [
@@ -53,7 +61,8 @@ TITClass >> methods: anObject [
 { #category : 'accessing' }
 TITClass >> package [
 
-	^ package
+	^ package ifNil: [
+		  package := TITPackage forSystemPackage: self realClass package ]
 ]
 
 { #category : 'accessing' }
@@ -69,6 +78,18 @@ TITClass >> parent [
 ]
 
 { #category : 'accessing' }
+TITClass >> realClass [
+
+	^ realClass
+]
+
+{ #category : 'accessing' }
+TITClass >> realClass: anObject [
+
+	realClass := anObject
+]
+
+{ #category : 'accessing' }
 TITClass >> sharedVariables [
 
 	^ sharedVariables
@@ -78,16 +99,4 @@ TITClass >> sharedVariables [
 TITClass >> sharedVariables: anObject [
 
 	sharedVariables := anObject
-]
-
-{ #category : 'accessing' }
-TITClass >> systemClass [
-
-	^ systemClass
-]
-
-{ #category : 'accessing' }
-TITClass >> systemClass: anObject [
-
-	systemClass := anObject
 ]

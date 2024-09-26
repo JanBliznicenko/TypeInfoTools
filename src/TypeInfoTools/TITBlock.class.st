@@ -90,3 +90,9 @@ TITBlock >> parentLevelIndex: anObject [
 
 	parentLevelIndex := anObject
 ]
+
+{ #category : 'accessing' }
+TITBlock >> realClass [
+
+	^ self parent realClass
+]

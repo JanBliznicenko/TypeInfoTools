@@ -38,3 +38,9 @@ TITMethodReturnNode >> parent [
 
 	^ self method
 ]
+
+{ #category : 'accessing' }
+TITMethodReturnNode >> realClass [
+
+	^ self method realClass
+]

@@ -32,3 +32,9 @@ TITSharedVariable >> parent [
 
 	^ self ownerClass
 ]
+
+{ #category : 'accessing' }
+TITSharedVariable >> realClass [
+
+	^ self ownerClass realClass
+]

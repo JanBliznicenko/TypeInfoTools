@@ -1,15 +1,15 @@
 Class {
-	#name : 'TITShowTypesMethodCommand',
+	#name : 'TITShowTypesMethodCommandV1',
 	#superclass : 'SycMethodCommand',
-	#traits : 'TITTShowTypesCommand',
-	#classTraits : 'TITTShowTypesCommand classTrait',
+	#traits : 'TITTShowTypesCommandV1',
+	#classTraits : 'TITTShowTypesCommandV1 classTrait',
 	#category : 'TypeInfoTools-Commands',
 	#package : 'TypeInfoTools',
 	#tag : 'Commands'
 }
 
 { #category : 'activation' }
-TITShowTypesMethodCommand class >> fullBrowserMenuActivation [
+TITShowTypesMethodCommandV1 class >> fullBrowserMenuActivation [
 
 	<classAnnotation>
 	^ CmdContextMenuActivation byRootGroupItemFor:
@@ -17,7 +17,7 @@ TITShowTypesMethodCommand class >> fullBrowserMenuActivation [
 ]
 
 { #category : 'execution' }
-TITShowTypesMethodCommand >> execute [
+TITShowTypesMethodCommandV1 >> execute [
 
 	| classes class types |
 	classes := methods
@@ -42,7 +42,7 @@ TITShowTypesMethodCommand >> execute [
 ]
 
 { #category : 'execution' }
-TITShowTypesMethodCommand >> types [
+TITShowTypesMethodCommandV1 >> types [
 
 	| collector |
 	collector := TypeCollector new.

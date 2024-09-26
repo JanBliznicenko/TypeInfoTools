@@ -24,12 +24,13 @@ TITRoelTyperAdaptor >> name [
 	^ 'RoelTyper'
 ]
 
-{ #category : 'accessing' }
+{ #category : 'processing' }
 TITRoelTyperAdaptor >> resultsForClass: aClass [
 
 	^ resultsByClasses
-		  at: aClass systemClass
-		  ifAbsentPut: [ TypeCollector typeInstvarsOfClass: aClass systemClass ]
+		  at: aClass realClass
+		  ifAbsentPut: [
+		  TypeCollector typeInstvarsOfClass: aClass realClass ]
 ]
 
 { #category : 'accessing' }
@@ -43,7 +44,7 @@ TITRoelTyperAdaptor >> resultsForMethod: aMethod [
 		  ifAbsentPut: [ TypeCollector typeTmpsIn: aMethod compiledMethod ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'processing' }
 TITRoelTyperAdaptor >> visitBlockTemporaryVariable: aBlockTemp [
 
 	| actualMethod results |
@@ -54,21 +55,21 @@ TITRoelTyperAdaptor >> visitBlockTemporaryVariable: aBlockTemp [
 			 , aBlockTemp name) types
 ]
 
-{ #category : 'accessing' }
+{ #category : 'processing' }
 TITRoelTyperAdaptor >> visitInstanceVariable: aVariable [
 
 	| results |
-	results := self resultsForClass: aVariable class.
+	results := self resultsForClass: aVariable realClass.
 	aVariable typeInfo addTypes: (results at: aVariable name) types
 ]
 
-{ #category : 'accessing' }
+{ #category : 'processing' }
 TITRoelTyperAdaptor >> visitMethodInputParameter: aMethodTemp [
 
 	self visitMethodLevelTemporaryVariable: aMethodTemp
 ]
 
-{ #category : 'accessing' }
+{ #category : 'processing' }
 TITRoelTyperAdaptor >> visitMethodLevelTemporaryVariable: aMethodTemp [
 
 	| actualMethod results |
@@ -77,7 +78,7 @@ TITRoelTyperAdaptor >> visitMethodLevelTemporaryVariable: aMethodTemp [
 	aMethodTemp typeInfo addTypes: (results at: aMethodTemp name) types
 ]
 
-{ #category : 'accessing' }
+{ #category : 'processing' }
 TITRoelTyperAdaptor >> visitMethodTemporaryVariable: aMethodTemp [
 
 	self visitMethodLevelTemporaryVariable: aMethodTemp

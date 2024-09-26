@@ -1,22 +1,22 @@
 Class {
-	#name : 'TITShowTypesTempCommand',
+	#name : 'TITShowTypesTempCommandV1',
 	#superclass : 'SycSourceCodeCommand',
-	#traits : 'TITTShowTypesCommand',
-	#classTraits : 'TITTShowTypesCommand classTrait',
+	#traits : 'TITTShowTypesCommandV1',
+	#classTraits : 'TITTShowTypesCommandV1 classTrait',
 	#category : 'TypeInfoTools-Commands',
 	#package : 'TypeInfoTools',
 	#tag : 'Commands'
 }
 
 { #category : 'testing' }
-TITShowTypesTempCommand class >> canBeExecutedInContext: aSourceCodeContext [
+TITShowTypesTempCommandV1 class >> canBeExecutedInContext: aSourceCodeContext [
 
 	^ (super canBeExecutedInContext: aSourceCodeContext) and: [
 		  aSourceCodeContext isArgOrTempVariableSelected ]
 ]
 
 { #category : 'activation' }
-TITShowTypesTempCommand class >> sourceCodeMenuActivation [
+TITShowTypesTempCommandV1 class >> sourceCodeMenuActivation [
 
 	<classAnnotation>
 	^ SycSourceCodeMenuActivation byRootGroupItemFor:
@@ -24,13 +24,13 @@ TITShowTypesTempCommand class >> sourceCodeMenuActivation [
 ]
 
 { #category : 'execution' }
-TITShowTypesTempCommand >> execute [
+TITShowTypesTempCommandV1 >> execute [
 
 	self showSingleItem: self types forVariableNamed: sourceNode name
 ]
 
 { #category : 'execution' }
-TITShowTypesTempCommand >> types [
+TITShowTypesTempCommandV1 >> types [
 
 	| varParent key |
 	varParent := sourceNode parent.

@@ -2,7 +2,7 @@ Class {
 	#name : 'TITPackage',
 	#superclass : 'TITContainerNode',
 	#instVars : [
-		'#actualPackage',
+		'#systemPackage',
 		'#classes => ToManyRelationSlot inverse: #package inClass: #TITClass'
 	],
 	#category : 'TypeInfoTools-Structure',
@@ -14,7 +14,15 @@ Class {
 TITPackage class >> forActualPackage: aPackage [
 
 	^ self new
-		  actualPackage: aPackage;
+		  systemPackage: aPackage;
+		  yourself
+]
+
+{ #category : 'as yet unclassified' }
+TITPackage class >> forSystemPackage: aPackage [
+
+	^ self new
+		  systemPackage: aPackage;
 		  yourself
 ]
 
@@ -32,22 +40,10 @@ TITPackage >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
-TITPackage >> actualPackage [
-
-	^ actualPackage
-]
-
-{ #category : 'accessing' }
-TITPackage >> actualPackage: anObject [
-
-	actualPackage := anObject
-]
-
-{ #category : 'accessing' }
 TITPackage >> classes [
 
 	^ classes ifNil: [
-		  classes := self actualPackage definedClasses collect: [ :each |
+		  classes := self systemPackage definedClasses collect: [ :each |
 			             TITClass forActualClass: each ] ]
 ]
 
@@ -73,5 +69,17 @@ TITPackage >> package [
 { #category : 'accessing' }
 TITPackage >> parent [
 
-	^ actualPackage organizer
+	^ systemPackage organizer
+]
+
+{ #category : 'accessing' }
+TITPackage >> systemPackage [
+
+	^ systemPackage
+]
+
+{ #category : 'accessing' }
+TITPackage >> systemPackage: anObject [
+
+	systemPackage := anObject
 ]

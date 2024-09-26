@@ -38,3 +38,9 @@ TITMethodInputParameter >> parent [
 
 	^ self method
 ]
+
+{ #category : 'accessing' }
+TITMethodInputParameter >> realClass [
+
+	^ self method realClass
+]

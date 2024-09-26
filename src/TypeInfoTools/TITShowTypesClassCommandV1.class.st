@@ -1,21 +1,21 @@
 Class {
-	#name : 'TITShowTypesClassCommand',
+	#name : 'TITShowTypesClassCommandV1',
 	#superclass : 'SycClassCommand',
-	#traits : 'TITTShowTypesCommand',
-	#classTraits : 'TITTShowTypesCommand classTrait',
+	#traits : 'TITTShowTypesCommandV1',
+	#classTraits : 'TITTShowTypesCommandV1 classTrait',
 	#category : 'TypeInfoTools-Commands',
 	#package : 'TypeInfoTools',
 	#tag : 'Commands'
 }
 
 { #category : 'testing' }
-TITShowTypesClassCommand class >> canBeExecutedInContext: aToolContext [
+TITShowTypesClassCommandV1 class >> canBeExecutedInContext: aToolContext [
 
 	^ super canBeExecutedInContext: aToolContext
 ]
 
 { #category : 'activation' }
-TITShowTypesClassCommand class >> fullBrowserMenuActivation [
+TITShowTypesClassCommandV1 class >> fullBrowserMenuActivation [
 
 	<classAnnotation>
 	^ CmdContextMenuActivation byRootGroupItemFor:
@@ -23,7 +23,7 @@ TITShowTypesClassCommand class >> fullBrowserMenuActivation [
 ]
 
 { #category : 'activation' }
-TITShowTypesClassCommand class >> sourceCodeMenuActivation [
+TITShowTypesClassCommandV1 class >> sourceCodeMenuActivation [
 
 	<classAnnotation>
 	^ SycSourceCodeMenuActivation byRootGroupItemFor:
@@ -31,7 +31,7 @@ TITShowTypesClassCommand class >> sourceCodeMenuActivation [
 ]
 
 { #category : 'execution' }
-TITShowTypesClassCommand >> execute [
+TITShowTypesClassCommandV1 >> execute [
 
 	| types |
 	types := self types.
@@ -44,7 +44,7 @@ TITShowTypesClassCommand >> execute [
 ]
 
 { #category : 'execution' }
-TITShowTypesClassCommand >> types [
+TITShowTypesClassCommandV1 >> types [
 
 	^ classes collect: [ :each |
 		  each

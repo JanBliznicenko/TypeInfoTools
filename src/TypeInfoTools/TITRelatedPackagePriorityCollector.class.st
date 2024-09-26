@@ -1,6 +1,6 @@
 Class {
-	#name : 'TITRelatedPackageAdaptor',
-	#superclass : 'TITInferenceToolAdaptor',
+	#name : 'TITRelatedPackagePriorityCollector',
+	#superclass : 'TITStructureNodeVisitor',
 	#instVars : [
 		'relatedClasses',
 		'classesByPackageNameRoot'
@@ -10,8 +10,8 @@ Class {
 	#tag : 'Inference'
 }
 
-{ #category : 'accessing' }
-TITRelatedPackageAdaptor >> classesByPackageNameRoot: aNameRoot [
+{ #category : 'processing' }
+TITRelatedPackagePriorityCollector >> classesByPackageNameRoot: aNameRoot [
 
 	^ classesByPackageNameRoot
 		  at: aNameRoot asSymbol
@@ -23,30 +23,31 @@ TITRelatedPackageAdaptor >> classesByPackageNameRoot: aNameRoot [
 						  s nextPutAll: eachPackage definedClasses ] ] ] ]
 ]
 
-{ #category : 'accessing' }
-TITRelatedPackageAdaptor >> classesDependedBy: aPackage [
+{ #category : 'processing' }
+TITRelatedPackagePriorityCollector >> classesDependedBy: aPackage [
 
 	^ (DADependencyChecker new
 		   shouldComputeMessageSendDependencies: false;
-		   daPackageFor: aPackage name) dependencies collect: [ :each |
-		  each dependencyOnClass ]
+		   daPackageFor: aPackage name) dependencies flatCollect: [ :each |
+		  each dependencies collect: [ :each | each theClass ] ]
 ]
 
 { #category : 'initialization' }
-TITRelatedPackageAdaptor >> initialize [
+TITRelatedPackagePriorityCollector >> initialize [
 
 	super initialize.
-	relatedClasses := Dictionary new
+	relatedClasses := Dictionary new.
+	classesByPackageNameRoot := Dictionary new
 ]
 
 { #category : 'accessing' }
-TITRelatedPackageAdaptor >> name [
+TITRelatedPackagePriorityCollector >> name [
 
 	^ 'Related packages'
 ]
 
-{ #category : 'accessing' }
-TITRelatedPackageAdaptor >> relatedClassesTo: aPackage [
+{ #category : 'processing' }
+TITRelatedPackagePriorityCollector >> relatedClassesTo: aPackage [
 
 	^ relatedClasses at: aPackage ifAbsentPut: [
 		  | nameRoot |
@@ -55,9 +56,9 @@ TITRelatedPackageAdaptor >> relatedClassesTo: aPackage [
 		  , (self classesDependedBy: aPackage) ]
 ]
 
-{ #category : 'accessing' }
-TITRelatedPackageAdaptor >> visitTypedNode: aTypedNode [
+{ #category : 'processing' }
+TITRelatedPackagePriorityCollector >> visitTypedNode: aTypedNode [
 
-	aTypedNode typeInfo prioritizedClasses:
-		(self relatedClassesTo: aTypedNode package actualPackage)
+	aTypedNode typeInfo setOrIntersectWithPrioritizedClasses:
+		(self relatedClassesTo: aTypedNode package systemPackage)
 ]

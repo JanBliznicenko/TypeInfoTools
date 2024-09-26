@@ -1,6 +1,6 @@
 Class {
-	#name : 'TITAdaptorsTypeCollector',
-	#superclass : 'TITTypeCollector',
+	#name : 'TITSequentialAdaptorsTypeCollector',
+	#superclass : 'Object',
 	#instVars : [
 		'adaptors',
 		'reportingBlock'
@@ -11,43 +11,43 @@ Class {
 }
 
 { #category : 'adding' }
-TITAdaptorsTypeCollector >> adaptors [
+TITSequentialAdaptorsTypeCollector >> adaptors [
 
 	^ adaptors ifNil: [ self defaultAdaptors ]
 ]
 
 { #category : 'adding' }
-TITAdaptorsTypeCollector >> adaptors: aCollectionOfAdaptors [
+TITSequentialAdaptorsTypeCollector >> adaptors: aCollectionOfAdaptors [
 
 	adaptors := aCollectionOfAdaptors
 ]
 
 { #category : 'adding' }
-TITAdaptorsTypeCollector >> addTypesTo: aStructureNode [
+TITSequentialAdaptorsTypeCollector >> addTypesTo: aStructureNode [
 
-	adaptors do: [ :each |
+	self adaptors do: [ :each |
 		each addTypesTo: aStructureNode.
 		reportingBlock cull: each ]
 ]
 
 { #category : 'adding' }
-TITAdaptorsTypeCollector >> defaultAdaptors [
+TITSequentialAdaptorsTypeCollector >> defaultAdaptors [
 
 	^ {
-		  TITRelatedPackageAdaptor new.
+		  TITRelatedPackagePriorityCollector new.
 		  TITRoelTyperAdaptor new.
 		  TITRBRefactoryTyperAdaptor new }
 ]
 
 { #category : 'initialization' }
-TITAdaptorsTypeCollector >> initialize [
+TITSequentialAdaptorsTypeCollector >> initialize [
 
 	super initialize.
 	reportingBlock := [  ]
 ]
 
 { #category : 'adding' }
-TITAdaptorsTypeCollector >> reportingBlock: aBlock [
+TITSequentialAdaptorsTypeCollector >> reportingBlock: aBlock [
 
 	reportingBlock := aBlock
 ]

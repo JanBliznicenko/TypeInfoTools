@@ -38,3 +38,9 @@ TITMethodTemporaryVariable >> parent [
 
 	^ self method
 ]
+
+{ #category : 'accessing' }
+TITMethodTemporaryVariable >> realClass [
+
+	^ self method realClass
+]

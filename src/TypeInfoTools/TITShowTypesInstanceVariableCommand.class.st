@@ -15,7 +15,7 @@ TITShowTypesInstanceVariableCommand class >> canBeExecutedInContext: aToolContex
 		  aToolContext isGlobalVariableSelected not ]
 ]
 
-{ #category : 'testing' }
+{ #category : 'activation' }
 TITShowTypesInstanceVariableCommand class >> fullBrowserMenuActivation [
 
 	<classAnnotation>
@@ -23,7 +23,7 @@ TITShowTypesInstanceVariableCommand class >> fullBrowserMenuActivation [
 		  ClyFullBrowserVariableContext
 ]
 
-{ #category : 'testing' }
+{ #category : 'activation' }
 TITShowTypesInstanceVariableCommand class >> sourceCodeMenuActivation [
 
 	<classAnnotation>
@@ -31,39 +31,55 @@ TITShowTypesInstanceVariableCommand class >> sourceCodeMenuActivation [
 		  ClySourceCodeContext
 ]
 
-{ #category : 'execution' }
+{ #category : 'accessing' }
 TITShowTypesInstanceVariableCommand >> definingClass [
 
-	^ variables first definingClass
+	^ variables first actualVariable owningClass
 ]
 
 { #category : 'execution' }
 TITShowTypesInstanceVariableCommand >> execute [
 
-	| types classes |
-	types := self types.
-	classes := variables collect: [ :each | each definingClass ] as: Set.
+	| systemVariables variableNodes classes |
+	systemVariables := variables collect: [ :each | each actualVariable ].
+	classes := systemVariables collect: [ :each | each owningClass ] as: Set.
 	classes size > 1 ifTrue: [
 		self inform:
 			'Unable to infer variables from multiple classes, providing results for '
-			, (types size = 1
-					 ifTrue: [ 'variable ''' , types keys anyOne , '''' ]
+			, (systemVariables size = 1
+					 ifTrue: [ 'variable ''' , systemVariables anyOne name , '''' ]
 					 ifFalse: [ 'class ' , self definingClass name ]) ].
 
-	types size = 1 ifTrue: [
-		| pair |
-		pair := types associations anyOne.
-		^ self showSingleItem: pair value forVariableNamed: pair key ].
+	variableNodes := systemVariables
+		                 select: [ :each |
+		                 each owningClass = self definingClass ]
+		                 thenCollect: [ :each |
+		                 TITInstanceVariable forSystemInstanceVariable: each ].
+	variableNodes do: [:each | TITSequentialAdaptorsTypeCollector new addTypesTo: each].
 
-	self showInstVarsFrom: types forClass: self definingClass
+	(variableNodes allSatisfy: [ :each | each typeInfo isEmpty ])
+		ifTrue: [ ^ self informNoneFound ].
+
+	variableNodes size = 1 ifTrue: [
+		^ self showSingleItem: variableNodes anyOne ].
+
+	^ self showInstVarsFrom: variableNodes
 ]
 
-{ #category : 'execution' }
-TITShowTypesInstanceVariableCommand >> types [
+{ #category : 'as yet unclassified' }
+TITShowTypesInstanceVariableCommand >> showSingleItem: aVariableNode [
 
-	| results |
-	results := TypeCollector typeInstvarsOfClass: self definingClass.
-	results keysAndValuesRemove: [ :key :value |
-		variables noneSatisfy: [ :each | each name = key ] ].
-	^ results collect: [ :each | each types ]
+	| results collectionResults |
+	results := aVariableNode typeInfo types allByProbability.
+
+	results inspectWithLabel:
+		'Type info for variable ''' , aVariableNode name , ''''.
+
+
+	collectionResults := aVariableNode typeInfo collectionElementTypes
+		                     allByProbability.
+
+	collectionResults isEmpty ifTrue: [ ^ self ].
+	collectionResults inspectWithLabel:
+		'Collection element type info for variable ''' , aVariableNode name , ''''
 ]

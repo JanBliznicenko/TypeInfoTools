@@ -9,6 +9,14 @@ Class {
 	#tag : 'Structure'
 }
 
+{ #category : 'as yet unclassified' }
+TITInstanceVariable class >> forSystemInstanceVariable: aVariable [
+
+	^ self new
+		  name: aVariable name;
+		  ownerClass: (TITClass forRealClass: aVariable owningClass)
+]
+
 { #category : 'visiting' }
 TITInstanceVariable >> accept: anInferenceToolAdaptor [
 
@@ -31,4 +39,10 @@ TITInstanceVariable >> ownerClass: anObject [
 TITInstanceVariable >> parent [
 
 	^ self ownerClass
+]
+
+{ #category : 'accessing' }
+TITInstanceVariable >> realClass [
+
+	^ self ownerClass realClass
 ]

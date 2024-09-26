@@ -71,3 +71,9 @@ TITMethod >> parent [
 
 	^ self ownerClass
 ]
+
+{ #category : 'accessing' }
+TITMethod >> realClass [
+
+	^ self ownerClass realClass
+]

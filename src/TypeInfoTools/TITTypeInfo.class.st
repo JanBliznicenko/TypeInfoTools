@@ -20,7 +20,7 @@ TITTypeInfo >> addCollectionElementType: aClass [
 { #category : 'adding' }
 TITTypeInfo >> addCollectionElementTypes: aClassCollection [
 
-	collectionElementTypes addAll: aClassCollection
+	collectionElementTypes addClasses: aClassCollection
 ]
 
 { #category : 'adding' }
@@ -32,7 +32,7 @@ TITTypeInfo >> addType: aClass [
 { #category : 'adding' }
 TITTypeInfo >> addTypes: aClassCollection [
 
-	types addAll: aClassCollection
+	types addClasses: aClassCollection
 ]
 
 { #category : 'accessing' }
@@ -55,6 +55,12 @@ TITTypeInfo >> initialize [
 	collectionElementTypes := TITTypesCollection new
 ]
 
+{ #category : 'testing' }
+TITTypeInfo >> isEmpty [
+
+	^ self types isEmpty and: [ self collectionElementTypes isEmpty ]
+]
+
 { #category : 'accessing' }
 TITTypeInfo >> node [
 
@@ -72,6 +78,13 @@ TITTypeInfo >> prioritizedClasses: aCollection [
 
 	types prioritizedClasses: aCollection.
 	collectionElementTypes prioritizedClasses: aCollection
+]
+
+{ #category : 'adding' }
+TITTypeInfo >> setOrIntersectWithPrioritizedClasses: aCollection [ 
+
+	types setOrIntersectWithPrioritizedClasses: aCollection.
+	collectionElementTypes setOrIntersectWithPrioritizedClasses: aCollection
 ]
 
 { #category : 'accessing' }
