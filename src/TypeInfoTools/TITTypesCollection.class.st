@@ -2,88 +2,37 @@ Class {
 	#name : 'TITTypesCollection',
 	#superclass : 'Object',
 	#instVars : [
+		'typeInfo',
 		'classes',
-		'byCounts',
-		'prioritizedClasses',
-		'mostProbableClasses',
-		'lessProbableClasses'
+		'sortedClasses'
 	],
 	#category : 'TypeInfoTools-Inference',
 	#package : 'TypeInfoTools',
 	#tag : 'Inference'
 }
 
-{ #category : 'adding' }
-TITTypesCollection >> addClass: aClass [
+{ #category : 'as yet unclassified' }
+TITTypesCollection class >> forTypeInfo: aTypeInfo [
 
-	classes add: aClass.
-	self resetCaches.
+	^ self new
+		  typeInfo: aTypeInfo;
+		  yourself
 ]
 
 { #category : 'adding' }
-TITTypesCollection >> addClasses: aCollection [
+TITTypesCollection >> addClass: aClass by: aTypeCollector [
 
-	aCollection do: [ :each | self addClass: each ]
+	aClass = Object ifTrue: [ ^ self ].
+	(classes at: aClass ifAbsentPut: [ TITTypesCollectionSources new ])
+		add: aTypeCollector.
+	self resetCache
 ]
 
 { #category : 'adding' }
-TITTypesCollection >> allByProbability [
+TITTypesCollection >> addClasses: aCollection by: aTypeCollector [
 
-	^ self mostProbableClasses , self lessProbableClasses
-]
-
-{ #category : 'adding' }
-TITTypesCollection >> byCounts [
-
-	byCounts ifNil: [ self calculateByCounts ].
-	^ byCounts
-]
-
-{ #category : 'adding' }
-TITTypesCollection >> calculateByCounts [
-
-	| countsAndClasses |
-	countsAndClasses := Dictionary new.
-	classes associationsDo: [ :classAndCount |
-		countsAndClasses at: classAndCount value ifAbsentPut: [
-			(SortedCollection sortUsing: [ :a :b | a name < b name ])
-				add: classAndCount key;
-				yourself ] ].
-	^ byCounts := countsAndClasses associations sorted: [ :a :b |
-		              a key > b key ]
-]
-
-{ #category : 'adding' }
-TITTypesCollection >> calculateByProbability [
-
-	| topCountPrioritized topCountOthers |
-	self byCounts ifEmpty: [
-		mostProbableClasses := Array new.
-		lessProbableClasses := Array new.
-		^ self ].
-	topCountPrioritized := Array streamContents: [ :prioritizedStream |
-		                       topCountOthers := Array streamContents: [
-			                                         :othersStream |
-			                                         self byCounts first value
-				                                         do: [ :each |
-					                                         ((prioritizedClasses
-						                                           includes: each)
-						                                          ifTrue: [
-						                                          prioritizedStream ]
-						                                          ifFalse: [
-						                                          othersStream ])
-						                                         nextPut: each ] ] ].
-
-	topCountPrioritized
-		ifEmpty: [
-			mostProbableClasses := topCountOthers.
-			topCountOthers := Array new ]
-		ifNotEmpty: [ mostProbableClasses := topCountPrioritized ].
-
-	lessProbableClasses := Array streamContents: [ :lessProbableStream |
-		                       lessProbableStream nextPutAll: topCountOthers.
-		                       self byCounts allButFirstDo: [ :each |
-			                       lessProbableStream nextPutAll: each value ] ]
+	aCollection ifEmpty: [ ^ self ].
+	aCollection do: [ :each | self addClass: each by: aTypeCollector ]
 ]
 
 { #category : 'adding' }
@@ -108,8 +57,7 @@ TITTypesCollection >> do: aBlock [
 TITTypesCollection >> initialize [
 
 	super initialize.
-	classes := IdentityBag new.
-	prioritizedClasses := Set new
+	classes := Dictionary new
 ]
 
 { #category : 'testing' }
@@ -118,34 +66,16 @@ TITTypesCollection >> isEmpty [
 	^ classes isEmpty
 ]
 
-{ #category : 'adding' }
-TITTypesCollection >> lessProbableClasses [
+{ #category : 'testing' }
+TITTypesCollection >> isNotEmpty [
 
-	lessProbableClasses ifNil: [ self calculateByProbability ].
-	^ lessProbableClasses
+	^ classes isNotEmpty
 ]
 
 { #category : 'adding' }
-TITTypesCollection >> mostProbableClasses [
+TITTypesCollection >> resetCache [
 
-	mostProbableClasses ifNil: [ self calculateByProbability ].
-	^ mostProbableClasses
-]
-
-{ #category : 'adding' }
-TITTypesCollection >> prioritizedClasses: aCollection [
-
-	prioritizedClasses := aCollection asSet.
-	lessProbableClasses := nil.
-	mostProbableClasses := nil
-]
-
-{ #category : 'adding' }
-TITTypesCollection >> resetCaches [
-
-	byCounts := nil.
-	mostProbableClasses := nil.
-	lessProbableClasses := nil
+	sortedClasses := nil
 ]
 
 { #category : 'adding' }
@@ -155,9 +85,24 @@ TITTypesCollection >> select: aBlock [
 ]
 
 { #category : 'adding' }
-TITTypesCollection >> setOrIntersectWithPrioritizedClasses: aCollection [
+TITTypesCollection >> sortedClasses [
 
-	self prioritizedClasses:
-		((prioritizedClasses intersection: aCollection) ifEmpty: [
-			 prioritizedClasses , aCollection ])
+	sortedClasses ifNotNil: [ ^ sortedClasses ].
+	(typeInfo types == self and: [
+		 typeInfo collectionElementTypes sortedClasses isNotEmpty ])
+		ifTrue: [
+			classes associationsDo: [ :each |
+				(each key isCollectionClass and: [
+					 (each key includesBehavior: String) not ]) ifTrue: [
+					each value add: TITCollectionElementTypesFoundMarker new ] ] ].
+	^ sortedClasses := ((classes associations select: [ :eachPair |
+		                     eachPair value weight > 0.99 ]) sorted: [ :a :b |
+		                    a value weight > b value weight ])
+		                   asOrderedDictionary
+]
+
+{ #category : 'accessing' }
+TITTypesCollection >> typeInfo: aTypeInfo [
+
+	typeInfo := aTypeInfo
 ]

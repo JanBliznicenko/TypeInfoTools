@@ -1,6 +1,6 @@
 Class {
 	#name : 'TITRelatedPackagePriorityCollector',
-	#superclass : 'TITStructureNodeVisitor',
+	#superclass : 'TITStructureNodeTypeCollector',
 	#instVars : [
 		'relatedClasses',
 		'classesByPackageNameRoot'
@@ -28,8 +28,8 @@ TITRelatedPackagePriorityCollector >> classesDependedBy: aPackage [
 
 	^ (DADependencyChecker new
 		   shouldComputeMessageSendDependencies: false;
-		   daPackageFor: aPackage name) dependencies flatCollect: [ :each |
-		  each dependencies collect: [ :each | each theClass ] ]
+		   daPackageFor: aPackage name) dependencies flatCollectAsSet: [
+		  :each | each referencedClasses ]
 ]
 
 { #category : 'initialization' }
@@ -38,12 +38,6 @@ TITRelatedPackagePriorityCollector >> initialize [
 	super initialize.
 	relatedClasses := Dictionary new.
 	classesByPackageNameRoot := Dictionary new
-]
-
-{ #category : 'accessing' }
-TITRelatedPackagePriorityCollector >> name [
-
-	^ 'Related packages'
 ]
 
 { #category : 'processing' }
@@ -56,9 +50,25 @@ TITRelatedPackagePriorityCollector >> relatedClassesTo: aPackage [
 		  , (self classesDependedBy: aPackage) ]
 ]
 
+{ #category : 'accessing' }
+TITRelatedPackagePriorityCollector >> sourceName [
+
+	^ 'Related packages'
+]
+
 { #category : 'processing' }
 TITRelatedPackagePriorityCollector >> visitTypedNode: aTypedNode [
 
-	aTypedNode typeInfo setOrIntersectWithPrioritizedClasses:
-		(self relatedClassesTo: aTypedNode package systemPackage)
+	relatedClasses := self relatedClassesTo:
+		                  aTypedNode package systemPackage.
+	aTypedNode typeInfo addTypes: relatedClasses by: self.
+	aTypedNode typeInfo
+		addCollectionElementTypes: relatedClasses
+		by: self
+]
+
+{ #category : 'accessing' }
+TITRelatedPackagePriorityCollector >> weight [
+
+	^ 0.1
 ]

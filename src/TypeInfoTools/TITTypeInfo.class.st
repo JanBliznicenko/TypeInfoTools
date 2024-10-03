@@ -12,27 +12,15 @@ Class {
 }
 
 { #category : 'adding' }
-TITTypeInfo >> addCollectionElementType: aClass [
+TITTypeInfo >> addCollectionElementTypes: aClassCollection by: aTypeCollector [
 
-	collectionElementTypes add: aClass
+	collectionElementTypes addClasses: aClassCollection by: aTypeCollector
 ]
 
 { #category : 'adding' }
-TITTypeInfo >> addCollectionElementTypes: aClassCollection [
+TITTypeInfo >> addTypes: aClassCollection by: aTypeCollector [
 
-	collectionElementTypes addClasses: aClassCollection
-]
-
-{ #category : 'adding' }
-TITTypeInfo >> addType: aClass [
-
-	types add: aClass
-]
-
-{ #category : 'adding' }
-TITTypeInfo >> addTypes: aClassCollection [
-
-	types addClasses: aClassCollection
+	types addClasses: aClassCollection by: aTypeCollector
 ]
 
 { #category : 'accessing' }
@@ -41,18 +29,12 @@ TITTypeInfo >> collectionElementTypes [
 	^ collectionElementTypes
 ]
 
-{ #category : 'accessing' }
-TITTypeInfo >> collectionElementTypes: anObject [
-
-	collectionElementTypes := anObject
-]
-
 { #category : 'initialization' }
 TITTypeInfo >> initialize [
 
 	super initialize.
-	types := TITTypesCollection new.
-	collectionElementTypes := TITTypesCollection new
+	types := TITTypesCollection forTypeInfo: self.
+	collectionElementTypes := TITTypesCollection forTypeInfo: self
 ]
 
 { #category : 'testing' }
@@ -91,10 +73,4 @@ TITTypeInfo >> setOrIntersectWithPrioritizedClasses: aCollection [
 TITTypeInfo >> types [
 
 	^ types
-]
-
-{ #category : 'accessing' }
-TITTypeInfo >> types: anObject [
-
-	types := anObject
 ]

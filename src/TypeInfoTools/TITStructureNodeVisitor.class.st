@@ -7,12 +7,6 @@ Class {
 }
 
 { #category : 'processing' }
-TITStructureNodeVisitor >> addTypesTo: aStructureNode [
-
-	aStructureNode accept: self
-]
-
-{ #category : 'processing' }
 TITStructureNodeVisitor >> visitBlock: aBlock [
 
 	aBlock temporaryVariables do: [ :each |
@@ -38,7 +32,7 @@ TITStructureNodeVisitor >> visitClass: aClass [
 { #category : 'processing' }
 TITStructureNodeVisitor >> visitInstanceVariable: anInstanceVariable [
 
-	^ self visitTypedNode: anInstanceVariable
+	^ self visitVariable: anInstanceVariable
 ]
 
 { #category : 'processing' }
@@ -78,7 +72,7 @@ TITStructureNodeVisitor >> visitPackage: aPackage [
 { #category : 'processing' }
 TITStructureNodeVisitor >> visitSharedVariable: aSharedVariable [
 
-	^ self visitTypedNode: aSharedVariable
+	^ self visitVariable: aSharedVariable
 
 	
 ]
@@ -86,7 +80,7 @@ TITStructureNodeVisitor >> visitSharedVariable: aSharedVariable [
 { #category : 'processing' }
 TITStructureNodeVisitor >> visitTemporaryVariable: aTemporaryVariable [
 
-	^ self visitTypedNode: aTemporaryVariable
+	^ self visitVariable: aTemporaryVariable
 ]
 
 { #category : 'processing' }
@@ -94,4 +88,10 @@ TITStructureNodeVisitor >> visitTypedNode: aTypedNode [
 	"adds types to the typedNode's typeInfo - to be overridden if applicable"
 
 	
+]
+
+{ #category : 'processing' }
+TITStructureNodeVisitor >> visitVariable: aVariable [
+
+	^ self visitTypedNode: aVariable
 ]

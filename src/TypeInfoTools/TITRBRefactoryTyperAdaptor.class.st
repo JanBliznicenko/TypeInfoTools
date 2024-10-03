@@ -1,6 +1,6 @@
 Class {
 	#name : 'TITRBRefactoryTyperAdaptor',
-	#superclass : 'TITInferenceToolAdaptor',
+	#superclass : 'TITStructureNodeTypeCollector',
 	#instVars : [
 		'typers'
 	],
@@ -52,7 +52,7 @@ TITRBRefactoryTyperAdaptor >> initialize [
 ]
 
 { #category : 'accessing' }
-TITRBRefactoryTyperAdaptor >> name [
+TITRBRefactoryTyperAdaptor >> sourceName [
 
 	^ 'RBRefactoryTyper'
 ]
@@ -81,6 +81,12 @@ TITRBRefactoryTyperAdaptor >> visitInstanceVariable: aVariable [
 			                           collect: #realClass
 			                           as: Set).
 	aVariable typeInfo
-		addTypes: types;
-		addCollectionElementTypes: collectionElementTypes
+		addTypes: types by: self;
+		addCollectionElementTypes: collectionElementTypes by: self
+]
+
+{ #category : 'accessing' }
+TITRBRefactoryTyperAdaptor >> weight [
+
+	^ 2
 ]

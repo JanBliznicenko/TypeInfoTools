@@ -2,7 +2,7 @@ Class {
 	#name : 'TITSequentialAdaptorsTypeCollector',
 	#superclass : 'Object',
 	#instVars : [
-		'adaptors',
+		'collectors',
 		'reportingBlock'
 	],
 	#category : 'TypeInfoTools-Inference',
@@ -11,32 +11,33 @@ Class {
 }
 
 { #category : 'adding' }
-TITSequentialAdaptorsTypeCollector >> adaptors [
-
-	^ adaptors ifNil: [ self defaultAdaptors ]
-]
-
-{ #category : 'adding' }
-TITSequentialAdaptorsTypeCollector >> adaptors: aCollectionOfAdaptors [
-
-	adaptors := aCollectionOfAdaptors
-]
-
-{ #category : 'adding' }
 TITSequentialAdaptorsTypeCollector >> addTypesTo: aStructureNode [
 
-	self adaptors do: [ :each |
+	self collectors do: [ :each |
 		each addTypesTo: aStructureNode.
 		reportingBlock cull: each ]
 ]
 
 { #category : 'adding' }
-TITSequentialAdaptorsTypeCollector >> defaultAdaptors [
+TITSequentialAdaptorsTypeCollector >> collectors [
+
+	^ collectors ifNil: [ self defaultCollectors ]
+]
+
+{ #category : 'adding' }
+TITSequentialAdaptorsTypeCollector >> collectors: aCollectionOfCollectors [
+
+	collectors := aCollectionOfCollectors
+]
+
+{ #category : 'adding' }
+TITSequentialAdaptorsTypeCollector >> defaultCollectors [
 
 	^ {
 		  TITRelatedPackagePriorityCollector new.
 		  TITRoelTyperAdaptor new.
-		  TITRBRefactoryTyperAdaptor new }
+		  TITRBRefactoryTyperAdaptor new.
+		  TITNameTyperAdaptor new }
 ]
 
 { #category : 'initialization' }

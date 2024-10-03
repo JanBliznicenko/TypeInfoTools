@@ -1,7 +1,7 @@
 Extension { #name : 'DAPackageDependency' }
 
 { #category : '*TypeInfoTools' }
-DAPackageDependency >> dependencies [
+DAPackageDependency >> referencedClasses [
 
-	^ { self }
+	^ self subclassResponsibility
 ]

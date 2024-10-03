@@ -17,7 +17,7 @@ TITTShowTypesCommand >> defaultMenuItemName [
 	^ 'Infer Types v2'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'ui - dialogs' }
 TITTShowTypesCommand >> informNoneFound [
 
 	self inform: 'No types were found'
