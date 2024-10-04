@@ -115,7 +115,7 @@ TITTypedNodePresenter >> updateWindow: aWindow [
 		(typedNode ifNil: [ '' ] ifNotNil: [ :node | node longDescription ]).
 	windowExtent := (self hasCollectionElementTypes
 		                 ifTrue: [ 1200 ]
-		                 ifFalse: [ 600 ]) @ 500.
+		                 ifFalse: [ 600 ]) @ 400.
 	aWindow isDisplayed
 		ifTrue: [ aWindow extent: windowExtent ]
 		ifFalse: [ aWindow initialExtent: windowExtent ]

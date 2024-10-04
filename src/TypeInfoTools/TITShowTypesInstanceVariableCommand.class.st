@@ -24,11 +24,25 @@ TITShowTypesInstanceVariableCommand class >> fullBrowserMenuActivation [
 ]
 
 { #category : 'activation' }
+TITShowTypesInstanceVariableCommand class >> fullBrowserMenuShortcutActivation [
+   <classAnnotation>
+
+   ^CmdShortcutActivation by: $t meta shift for: ClyFullBrowserVariableContext
+]
+
+{ #category : 'activation' }
 TITShowTypesInstanceVariableCommand class >> sourceCodeMenuActivation [
 
 	<classAnnotation>
 	^ SycSourceCodeMenuActivation byRootGroupItemFor:
 		  ClySourceCodeContext
+]
+
+{ #category : 'activation' }
+TITShowTypesInstanceVariableCommand class >> sourceCodeShortcutActivation [
+   <classAnnotation>
+
+   ^CmdShortcutActivation by: $t meta shift for: ClySourceCodeContext
 ]
 
 { #category : 'accessing' }
@@ -40,9 +54,19 @@ TITShowTypesInstanceVariableCommand >> definingClass [
 { #category : 'execution' }
 TITShowTypesInstanceVariableCommand >> execute [
 
-	| systemVariables variableNodes classes |
+	^ [ :job |
+	  job title: 'Running type inference'.
+	  self executeInJob: job ] asJob run
+]
+
+{ #category : 'execution' }
+TITShowTypesInstanceVariableCommand >> executeInJob: job [
+
+	| systemVariables classes variableNodes collector |
 	systemVariables := variables collect: [ :each | each actualVariable ].
-	classes := systemVariables collect: [ :each | each owningClass ] as: Set.
+	classes := systemVariables
+		           collect: [ :each | each owningClass ]
+		           as: Set.
 	classes size > 1 ifTrue: [
 		self inform:
 			'Unable to infer variables from multiple classes, providing results for '
@@ -55,7 +79,12 @@ TITShowTypesInstanceVariableCommand >> execute [
 		                 each owningClass = self definingClass ]
 		                 thenCollect: [ :each |
 		                 TITInstanceVariable forSystemInstanceVariable: each ].
-	variableNodes do: [:each | TITSequentialAdaptorsTypeCollector new addTypesTo: each].
+	collector := TITSequentialAdaptorsTypeCollector new
+		             reportingBlock: [ :typer |
+			             job currentValue: job currentValue + 1 ];
+		             yourself.
+	job max: collector collectors size * variableNodes size.
+	variableNodes do: [ :each | collector addTypesTo: each ].
 
 	(variableNodes allSatisfy: [ :each | each typeInfo isEmpty ])
 		ifTrue: [ ^ self informNoneFound ].

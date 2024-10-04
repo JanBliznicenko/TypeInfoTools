@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'table',
 		'typesWithSources',
-		'headingLabel'
+		'headingLabel',
+		'maxWeight'
 	],
 	#category : 'TypeInfoTools-GUI',
 	#package : 'TypeInfoTools',
@@ -47,16 +48,39 @@ TITTypesWithSourcesPresenter >> initializePresenters [
 	headingLabel displayBold: [ :x | true ].
 	table := self newTable.
 	table
-		addColumn:
-			((SpStringTableColumn title: 'Type' evaluated: [ :pair | pair key ])
+		addColumn: ((SpStringTableColumn
+				  title: 'Type'
+				  evaluated: [ :pair | pair key name ])
 				 width: 250;
 				 beSortable;
+				 displayColor: [ :pair |
+					 (self isLowWeight: pair value weight)
+						 ifTrue: [ self theme disabledTextColor ]
+						 ifFalse: [ self theme textColor ] ];
 				 yourself);
 		addColumn: ((SpStringTableColumn
 				  title: 'Sources'
-				  evaluated: [ :pair | pair value ])
+				  evaluated: [ :pair | pair value asString ])
 				 beSortable;
+				 displayColor: [ :pair |
+					 (self isLowWeight: pair value weight)
+						 ifTrue: [ self theme disabledTextColor ]
+						 ifFalse: [ self theme textColor ] ];
 				 yourself)
+]
+
+{ #category : 'testing' }
+TITTypesWithSourcesPresenter >> isLowWeight: aWeight [
+
+	^ aWeight * 3 < self maxWeight
+]
+
+{ #category : 'accessing' }
+TITTypesWithSourcesPresenter >> maxWeight [
+
+	maxWeight ifNotNil: [ ^ maxWeight ].
+	table items ifEmpty: [ ^ 0 ].
+	^ maxWeight := table items max: [ :pair | pair value weight ]
 ]
 
 { #category : 'accessing' }
@@ -64,7 +88,9 @@ TITTypesWithSourcesPresenter >> typesWithSources: anOrderedDictionary [
 
 	typesWithSources := anOrderedDictionary.
 
-	table ifNotNil: [ self updateTable ]
+	table ifNotNil: [ self updateTable ].
+
+	maxWeight := nil
 ]
 
 { #category : 'updating - presenters' }

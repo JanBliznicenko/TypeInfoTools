@@ -73,6 +73,12 @@ TITTypesCollection >> isNotEmpty [
 ]
 
 { #category : 'adding' }
+TITTypesCollection >> minimumWeight [
+
+	^ 0.99
+]
+
+{ #category : 'adding' }
 TITTypesCollection >> resetCache [
 
 	sortedClasses := nil
@@ -96,7 +102,7 @@ TITTypesCollection >> sortedClasses [
 					 (each key includesBehavior: String) not ]) ifTrue: [
 					each value add: TITCollectionElementTypesFoundMarker new ] ] ].
 	^ sortedClasses := ((classes associations select: [ :eachPair |
-		                     eachPair value weight > 0.99 ]) sorted: [ :a :b |
+		                     eachPair value weight >= self minimumWeight ]) sorted: [ :a :b |
 		                    a value weight > b value weight ])
 		                   asOrderedDictionary
 ]
