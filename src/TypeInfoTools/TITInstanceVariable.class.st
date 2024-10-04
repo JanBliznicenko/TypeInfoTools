@@ -24,6 +24,12 @@ TITInstanceVariable >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
+TITInstanceVariable >> classDescription [
+
+	^ 'Instance variable'
+]
+
+{ #category : 'accessing' }
 TITInstanceVariable >> ownerClass [
 
 	^ ownerClass

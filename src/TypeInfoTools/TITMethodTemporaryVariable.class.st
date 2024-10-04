@@ -16,6 +16,12 @@ TITMethodTemporaryVariable >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
+TITMethodTemporaryVariable >> classDescription [
+
+	^ 'Temporary variable'
+]
+
+{ #category : 'accessing' }
 TITMethodTemporaryVariable >> method [
 
 	^ method

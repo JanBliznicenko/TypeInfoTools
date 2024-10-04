@@ -16,6 +16,12 @@ TITSharedVariable >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
+TITSharedVariable >> classDescription [
+
+	^ 'Shared variable'
+]
+
+{ #category : 'accessing' }
 TITSharedVariable >> ownerClass [
 
 	^ ownerClass

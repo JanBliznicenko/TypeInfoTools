@@ -69,18 +69,5 @@ TITShowTypesInstanceVariableCommand >> execute [
 { #category : 'execution' }
 TITShowTypesInstanceVariableCommand >> showSingleItem: aVariableNode [
 
-	| results collectionResults |
-	results := aVariableNode typeInfo types sortedClasses.
-
-	results inspectWithLabel:
-		'Type info for variable ''' , aVariableNode name , ''''.
-
-
-	collectionResults := aVariableNode typeInfo collectionElementTypes
-		                     sortedClasses.
-
-	collectionResults isEmpty ifTrue: [ ^ self ].
-	collectionResults inspectWithLabel:
-		'Collection element type info for variable ''' , aVariableNode name
-		, ''''
+	^ TITTypedNodePresenter openOn: aVariableNode
 ]

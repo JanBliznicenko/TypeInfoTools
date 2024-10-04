@@ -27,6 +27,12 @@ TITClass >> accept: anInferenceToolAdaptor [
 	^ anInferenceToolAdaptor visitClass: self
 ]
 
+{ #category : 'accessing' }
+TITClass >> classDescription [
+
+	^ 'Class'
+]
+
 { #category : 'initialization' }
 TITClass >> initialize [
 
@@ -56,6 +62,12 @@ TITClass >> methods [
 TITClass >> methods: anObject [
 
 	methods := anObject
+]
+
+{ #category : 'accessing' }
+TITClass >> name [
+
+	^ realClass name
 ]
 
 { #category : 'accessing' }

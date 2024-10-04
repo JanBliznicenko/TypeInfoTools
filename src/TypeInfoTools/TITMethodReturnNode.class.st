@@ -16,6 +16,12 @@ TITMethodReturnNode >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
+TITMethodReturnNode >> classDescription [
+
+	^ 'Returned value'
+]
+
+{ #category : 'accessing' }
 TITMethodReturnNode >> method [
 
 	^ method
@@ -25,6 +31,12 @@ TITMethodReturnNode >> method [
 TITMethodReturnNode >> method: anObject [
 
 	method := anObject
+]
+
+{ #category : 'accessing' }
+TITMethodReturnNode >> name [
+
+	^ '^'
 ]
 
 { #category : 'accessing' }
@@ -43,4 +55,10 @@ TITMethodReturnNode >> parent [
 TITMethodReturnNode >> realClass [
 
 	^ self method realClass
+]
+
+{ #category : 'accessing' }
+TITMethodReturnNode >> shortDescription [
+
+	^ self classDescription
 ]

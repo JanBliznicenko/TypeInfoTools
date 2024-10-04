@@ -13,6 +13,24 @@ TITStructureNode >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
+TITStructureNode >> classDescription [
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'accessing' }
+TITStructureNode >> longDescription [
+
+	^ self shortDescription , ' in ' , self parent shortDescription
+]
+
+{ #category : 'accessing' }
+TITStructureNode >> name [
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'accessing' }
 TITStructureNode >> package [
 
 	^ self parent package
@@ -22,4 +40,10 @@ TITStructureNode >> package [
 TITStructureNode >> parent [
 
 	^ self subclassResponsibility
+]
+
+{ #category : 'accessing' }
+TITStructureNode >> shortDescription [
+
+	^ self classDescription , ' "' , self name , '"'
 ]

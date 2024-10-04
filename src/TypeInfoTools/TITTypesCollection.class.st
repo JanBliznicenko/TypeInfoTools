@@ -63,13 +63,13 @@ TITTypesCollection >> initialize [
 { #category : 'testing' }
 TITTypesCollection >> isEmpty [
 
-	^ classes isEmpty
+	^ self sortedClasses isEmpty
 ]
 
 { #category : 'testing' }
 TITTypesCollection >> isNotEmpty [
 
-	^ classes isNotEmpty
+	^ self isEmpty not
 ]
 
 { #category : 'adding' }

@@ -26,6 +26,12 @@ TITBlock >> allBlocks [
 ]
 
 { #category : 'accessing' }
+TITBlock >> classDescription [
+
+	^ 'Block'
+]
+
+{ #category : 'accessing' }
 TITBlock >> compiledBlock [
 
 	^ compiledBlock
@@ -44,6 +50,12 @@ TITBlock >> compiledCode [
 ]
 
 { #category : 'accessing' }
+TITBlock >> longDescription [
+
+	^ self shortDescription , ' in ' , self method shortDescription
+]
+
+{ #category : 'accessing' }
 TITBlock >> method [
 
 	^ self parent method
@@ -59,6 +71,12 @@ TITBlock >> methodLevelIndex [
 TITBlock >> methodLevelIndex: anObject [
 
 	methodLevelIndex := anObject
+]
+
+{ #category : 'accessing' }
+TITBlock >> name [
+
+	^ methodLevelIndex asString
 ]
 
 { #category : 'accessing' }
@@ -95,4 +113,10 @@ TITBlock >> parentLevelIndex: anObject [
 TITBlock >> realClass [
 
 	^ self parent realClass
+]
+
+{ #category : 'accessing' }
+TITBlock >> shortDescription [
+
+	^ self classDescription , ' ' , self name
 ]

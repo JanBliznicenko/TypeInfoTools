@@ -16,6 +16,12 @@ TITMethodInputParameter >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
+TITMethodInputParameter >> classDescription [
+
+	^ 'Parameter'
+]
+
+{ #category : 'accessing' }
 TITMethodInputParameter >> method [
 
 	^ method

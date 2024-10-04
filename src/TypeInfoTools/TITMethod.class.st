@@ -25,6 +25,12 @@ TITMethod >> allBlocks [
 ]
 
 { #category : 'accessing' }
+TITMethod >> classDescription [
+
+	^ 'Method'
+]
+
+{ #category : 'accessing' }
 TITMethod >> compiledCode [
 
 	^ self compiledMethod
@@ -40,6 +46,12 @@ TITMethod >> compiledMethod [
 TITMethod >> compiledMethod: anObject [
 
 	compiledMethod := anObject
+]
+
+{ #category : 'accessing' }
+TITMethod >> name [
+
+	^ self compiledMethod selector
 ]
 
 { #category : 'accessing' }

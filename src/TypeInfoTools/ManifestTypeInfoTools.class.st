@@ -10,6 +10,13 @@ Class {
 }
 
 { #category : 'code-critics' }
+ManifestTypeInfoTools class >> ruleInconsistentMethodClassificationRuleV1FalsePositive [
+
+	<ignoreForCoverage>
+	^ #(#(#(#RGMethodDefinition #(#TITTypedNodePresenter #update #false)) #'2024-10-04T09:54:48.714+02:00') )
+]
+
+{ #category : 'code-critics' }
 ManifestTypeInfoTools class >> ruleUsesAddRuleV1FalsePositive [
 
 	<ignoreForCoverage>

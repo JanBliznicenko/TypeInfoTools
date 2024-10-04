@@ -1,6 +1,8 @@
 Class {
 	#name : 'TITTypesCollectionSources',
 	#superclass : 'Object',
+	#traits : 'TComparable',
+	#classTraits : 'TComparable classTrait',
 	#instVars : [
 		'collectors',
 		'weight'
@@ -10,11 +12,32 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'comparing' }
+TITTypesCollectionSources >> < aComparable [
+	"Answer whether the receiver is less than the argument."
+
+	^ self weight > aComparable weight
+]
+
+{ #category : 'comparing' }
+TITTypesCollectionSources >> = aComparable [
+	"Compare the receiver with the argument and answer with true if the
+	receiver is equal to the argument. Otherwise answer false."
+
+	^ self collectors = aComparable collectors
+]
+
 { #category : 'adding' }
 TITTypesCollectionSources >> add: aCollector [
 
 	collectors addIfNotPresent: aCollector.
 	weight := nil
+]
+
+{ #category : 'accessing' }
+TITTypesCollectionSources >> collectors [
+
+	^ collectors
 ]
 
 { #category : 'initialization' }

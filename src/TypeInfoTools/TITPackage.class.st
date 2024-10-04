@@ -40,6 +40,12 @@ TITPackage >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
+TITPackage >> classDescription [
+
+	^ 'Package'
+]
+
+{ #category : 'accessing' }
 TITPackage >> classes [
 
 	^ classes ifNil: [
@@ -61,6 +67,18 @@ TITPackage >> initialize [
 ]
 
 { #category : 'accessing' }
+TITPackage >> longDescription [
+
+	^ self shortDescription
+]
+
+{ #category : 'accessing' }
+TITPackage >> name [
+
+	^ self systemPackage name
+]
+
+{ #category : 'accessing' }
 TITPackage >> package [
 
 	^ self
@@ -69,7 +87,7 @@ TITPackage >> package [
 { #category : 'accessing' }
 TITPackage >> parent [
 
-	^ systemPackage organizer
+	^ TITNoNode new
 ]
 
 { #category : 'accessing' }

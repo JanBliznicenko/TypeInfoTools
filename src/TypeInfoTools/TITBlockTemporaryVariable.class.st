@@ -28,6 +28,12 @@ TITBlockTemporaryVariable >> block: anObject [
 ]
 
 { #category : 'accessing' }
+TITBlockTemporaryVariable >> classDescription [
+
+	^ 'Block-level temporary variable'
+]
+
+{ #category : 'accessing' }
 TITBlockTemporaryVariable >> parent [
 
 	^ self block
