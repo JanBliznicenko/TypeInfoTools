@@ -1,5 +1,5 @@
 Class {
-	#name : 'TITShowTypesInstanceVariableCommand',
+	#name : 'TITShowTypesInstVarCommand',
 	#superclass : 'SycVariableCommand',
 	#traits : 'TITTShowTypesCommand',
 	#classTraits : 'TITTShowTypesCommand classTrait',
@@ -9,14 +9,14 @@ Class {
 }
 
 { #category : 'testing' }
-TITShowTypesInstanceVariableCommand class >> canBeExecutedInContext: aToolContext [
+TITShowTypesInstVarCommand class >> canBeExecutedInContext: aToolContext [
 
 	^ (super canBeExecutedInContext: aToolContext) and: [
 		  aToolContext isGlobalVariableSelected not ]
 ]
 
 { #category : 'activation' }
-TITShowTypesInstanceVariableCommand class >> fullBrowserMenuActivation [
+TITShowTypesInstVarCommand class >> fullBrowserMenuActivation [
 
 	<classAnnotation>
 	^ CmdContextMenuActivation byRootGroupItemFor:
@@ -24,14 +24,14 @@ TITShowTypesInstanceVariableCommand class >> fullBrowserMenuActivation [
 ]
 
 { #category : 'activation' }
-TITShowTypesInstanceVariableCommand class >> fullBrowserMenuShortcutActivation [
+TITShowTypesInstVarCommand class >> fullBrowserMenuShortcutActivation [
    <classAnnotation>
 
    ^CmdShortcutActivation by: $t meta shift for: ClyFullBrowserVariableContext
 ]
 
 { #category : 'activation' }
-TITShowTypesInstanceVariableCommand class >> sourceCodeMenuActivation [
+TITShowTypesInstVarCommand class >> sourceCodeMenuActivation [
 
 	<classAnnotation>
 	^ SycSourceCodeMenuActivation byRootGroupItemFor:
@@ -39,20 +39,20 @@ TITShowTypesInstanceVariableCommand class >> sourceCodeMenuActivation [
 ]
 
 { #category : 'activation' }
-TITShowTypesInstanceVariableCommand class >> sourceCodeShortcutActivation [
+TITShowTypesInstVarCommand class >> sourceCodeShortcutActivation [
    <classAnnotation>
 
    ^CmdShortcutActivation by: $t meta shift for: ClySourceCodeContext
 ]
 
 { #category : 'accessing' }
-TITShowTypesInstanceVariableCommand >> definingClass [
+TITShowTypesInstVarCommand >> definingClass [
 
 	^ variables first actualVariable owningClass
 ]
 
 { #category : 'execution' }
-TITShowTypesInstanceVariableCommand >> executeInJob: job [
+TITShowTypesInstVarCommand >> executeInJob: job [
 
 	| systemVariables classes variableNodes collector |
 	systemVariables := variables collect: [ :each | each actualVariable ].
