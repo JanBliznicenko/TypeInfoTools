@@ -2,16 +2,22 @@ Class {
 	#name : 'TITBlock',
 	#superclass : 'TITCompiledCodeContainedNode',
 	#instVars : [
-		'#parent => ToOneRelationSlot inverse: #blocks inClass: #TITCompiledCodeContainedNode',
-		'#compiledBlock',
-		'#parentLevelIndex',
-		'#methodLevelIndex',
-		'#temporaryVariables => ToManyRelationSlot inverse: #block inClass: #TITBlockTemporaryVariable'
+		'parent',
+		'astBlockNode',
+		'index'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',
 	#tag : 'Structure'
 }
+
+{ #category : 'as yet unclassified' }
+TITBlock class >> forASTBlockNode: anASTBlockNode [
+
+	^ self new
+		  astBlockNode: anASTBlockNode;
+		  yourself
+]
 
 { #category : 'visiting' }
 TITBlock >> accept: anInferenceToolAdaptor [
@@ -20,9 +26,15 @@ TITBlock >> accept: anInferenceToolAdaptor [
 ]
 
 { #category : 'accessing' }
-TITBlock >> allBlocks [
+TITBlock >> astBlockNode [
 
-	^ self blocks flatCollect: [ :each | each allBlocks ]
+	^ astBlockNode
+]
+
+{ #category : 'accessing' }
+TITBlock >> astBlockNode: anObject [
+
+	astBlockNode := anObject
 ]
 
 { #category : 'accessing' }
@@ -32,21 +44,16 @@ TITBlock >> classDescription [
 ]
 
 { #category : 'accessing' }
-TITBlock >> compiledBlock [
-
-	^ compiledBlock
-]
-
-{ #category : 'accessing' }
-TITBlock >> compiledBlock: anObject [
-
-	compiledBlock := anObject
-]
-
-{ #category : 'accessing' }
 TITBlock >> compiledCode [
 
 	^ self compiledBlock
+]
+
+{ #category : 'accessing' }
+TITBlock >> index [
+
+	^ index ifNil: [
+		  index := self method astMethod blockNodes indexOf: astBlockNode ]
 ]
 
 { #category : 'accessing' }
@@ -62,21 +69,9 @@ TITBlock >> method [
 ]
 
 { #category : 'accessing' }
-TITBlock >> methodLevelIndex [
-
-	^ methodLevelIndex
-]
-
-{ #category : 'accessing' }
-TITBlock >> methodLevelIndex: anObject [
-
-	methodLevelIndex := anObject
-]
-
-{ #category : 'accessing' }
 TITBlock >> name [
 
-	^ methodLevelIndex asString
+	^ index asString
 ]
 
 { #category : 'accessing' }
@@ -88,25 +83,14 @@ TITBlock >> ownerClass [
 { #category : 'accessing' }
 TITBlock >> parent [
 
-	^ parent
+	^ parent ifNil: [
+		  parent := TITMethod forASTMethodNode: astBlockNode methodNode ]
 ]
 
 { #category : 'accessing' }
 TITBlock >> parent: anObject [
 
 	parent := anObject
-]
-
-{ #category : 'accessing' }
-TITBlock >> parentLevelIndex [
-
-	^ parentLevelIndex
-]
-
-{ #category : 'accessing' }
-TITBlock >> parentLevelIndex: anObject [
-
-	parentLevelIndex := anObject
 ]
 
 { #category : 'accessing' }

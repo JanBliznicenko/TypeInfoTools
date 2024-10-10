@@ -41,7 +41,7 @@ TITTShowTypesCommandV1 >> defaultMenuIconName [
 { #category : 'accessing' }
 TITTShowTypesCommandV1 >> defaultMenuItemName [
 
-	^ 'Infer Types v1'
+	^ 'Infer Types (legacy)'
 ]
 
 { #category : 'as yet unclassified' }

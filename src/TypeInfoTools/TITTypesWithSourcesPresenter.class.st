@@ -72,7 +72,7 @@ TITTypesWithSourcesPresenter >> initializePresenters [
 { #category : 'testing' }
 TITTypesWithSourcesPresenter >> isLowWeight: aWeight [
 
-	^ aWeight * 3 < self maxWeight
+	^ aWeight * 2 < self maxWeight
 ]
 
 { #category : 'accessing' }

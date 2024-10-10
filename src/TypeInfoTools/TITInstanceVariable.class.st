@@ -2,7 +2,7 @@ Class {
 	#name : 'TITInstanceVariable',
 	#superclass : 'TITVariable',
 	#instVars : [
-		'#ownerClass => ToOneRelationSlot inverse: #instanceVariables inClass: #TITClass'
+		'ownerClass'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',

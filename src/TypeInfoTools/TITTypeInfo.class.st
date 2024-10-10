@@ -29,6 +29,14 @@ TITTypeInfo >> collectionElementTypes [
 	^ collectionElementTypes
 ]
 
+{ #category : 'testing' }
+TITTypeInfo >> ifEmpty: aBlock [
+
+	^ self isEmpty
+		  ifTrue: [ aBlock value ]
+		  ifFalse: [ self ]
+]
+
 { #category : 'initialization' }
 TITTypeInfo >> initialize [
 

@@ -2,8 +2,7 @@ Class {
 	#name : 'TITPackage',
 	#superclass : 'TITContainerNode',
 	#instVars : [
-		'#systemPackage',
-		'#classes => ToManyRelationSlot inverse: #package inClass: #TITClass'
+		'systemPackage'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',
@@ -43,27 +42,6 @@ TITPackage >> accept: anInferenceToolAdaptor [
 TITPackage >> classDescription [
 
 	^ 'Package'
-]
-
-{ #category : 'accessing' }
-TITPackage >> classes [
-
-	^ classes ifNil: [
-		  classes := self systemPackage definedClasses collect: [ :each |
-			             TITClass forActualClass: each ] ]
-]
-
-{ #category : 'accessing' }
-TITPackage >> classes: anObject [
-
-	classes := anObject
-]
-
-{ #category : 'initialization' }
-TITPackage >> initialize [
-
-	self class initializeSlots: self.
-	super initialize.
 ]
 
 { #category : 'accessing' }

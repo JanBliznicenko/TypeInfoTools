@@ -31,7 +31,7 @@ TITRoelTyperAdaptor >> resultsForClass: aClass [
 TITRoelTyperAdaptor >> resultsForMethod: aMethod [
 
 	resultsByClasses
-		at: aMethod class systemClass
+		at: aMethod class realClass
 		ifPresent: [ self halt ].
 	^ resultsByMethods
 		  at: aMethod compiledMethod
@@ -52,8 +52,8 @@ TITRoelTyperAdaptor >> visitBlockTemporaryVariable: aBlockTemp [
 	results := self resultsForMethod: actualMethod.
 	aBlockTemp typeInfo
 		addTypes: (results at:
-				 '_block' , aBlockTemp block methodLevelIndex asString , '->'
-				 , aBlockTemp name) types
+				 ('_block' , aBlockTemp block index asString , '->'
+				  , aBlockTemp name) asSymbol) types
 		by: self
 ]
 
@@ -63,7 +63,7 @@ TITRoelTyperAdaptor >> visitInstanceVariable: aVariable [
 	| results |
 	results := self resultsForClass: aVariable realClass.
 	aVariable typeInfo
-		addTypes: (results at: aVariable name) types
+		addTypes: (results at: aVariable name asSymbol) types
 		by: self
 ]
 
@@ -80,7 +80,7 @@ TITRoelTyperAdaptor >> visitMethodLevelTemporaryVariable: aMethodTemp [
 	actualMethod := aMethodTemp method compiledMethod.
 	results := self resultsForMethod: actualMethod.
 	aMethodTemp typeInfo
-		addTypes: (results at: aMethodTemp name) types
+		addTypes: (results at: aMethodTemp name asSymbol) types
 		by: self
 ]
 

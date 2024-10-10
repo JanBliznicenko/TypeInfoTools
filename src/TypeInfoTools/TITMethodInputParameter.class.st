@@ -2,12 +2,21 @@ Class {
 	#name : 'TITMethodInputParameter',
 	#superclass : 'TITTemporaryVariable',
 	#instVars : [
-		'#method => ToOneRelationSlot inverse: #parameterVariables inClass: #TITMethod'
+		'method'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',
 	#tag : 'Structure'
 }
+
+{ #category : 'as yet unclassified' }
+TITMethodInputParameter class >> forASTVariableNode: aVariableNode [
+
+	^ self new
+		  name: aVariableNode name;
+		  method: (TITMethod forASTMethodNode: aVariableNode methodNode);
+		  yourself
+]
 
 { #category : 'visiting' }
 TITMethodInputParameter >> accept: anInferenceToolAdaptor [

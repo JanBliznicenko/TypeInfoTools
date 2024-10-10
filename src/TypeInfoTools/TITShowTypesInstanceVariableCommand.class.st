@@ -52,14 +52,6 @@ TITShowTypesInstanceVariableCommand >> definingClass [
 ]
 
 { #category : 'execution' }
-TITShowTypesInstanceVariableCommand >> execute [
-
-	^ [ :job |
-	  job title: 'Running type inference'.
-	  self executeInJob: job ] asJob run
-]
-
-{ #category : 'execution' }
 TITShowTypesInstanceVariableCommand >> executeInJob: job [
 
 	| systemVariables classes variableNodes collector |
@@ -93,10 +85,4 @@ TITShowTypesInstanceVariableCommand >> executeInJob: job [
 		^ self showSingleItem: variableNodes anyOne ].
 
 	^ self showInstVarsFrom: variableNodes
-]
-
-{ #category : 'execution' }
-TITShowTypesInstanceVariableCommand >> showSingleItem: aVariableNode [
-
-	^ TITTypedNodePresenter openOn: aVariableNode
 ]

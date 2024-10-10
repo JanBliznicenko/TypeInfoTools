@@ -2,7 +2,7 @@ Class {
 	#name : 'TITMethodReturnNode',
 	#superclass : 'TITTypedNode',
 	#instVars : [
-		'#method => ToOneRelationSlot inverse: #returnNode inClass: #TITMethod'
+		'method'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',

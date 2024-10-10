@@ -68,20 +68,36 @@ TITNameTyperAdaptor >> sourceName [
 	^ 'Var name'
 ]
 
-{ #category : 'processing' }
+{ #category : 'as yet unclassified' }
 TITNameTyperAdaptor >> typesForName: aString [
 
-	| foundClasses |
-	foundClasses := ((Smalltalk globals keys
-		                  select: [ :each |
-		                  (each beginsWith: aString) or: [
-			                  each endsWith: aString ] ]
-		                  thenCollect: [ :each | Smalltalk at: each ])
-		                 select: [ :each | each isBehavior ]) asSet.
-	aString = 'Name' ifTrue: [ foundClasses add: String ].
-	aString = 'Selector' ifTrue: [ foundClasses add: Symbol ].
-	aString = 'Amount' ifTrue: [ foundClasses add: Integer ].
-	aString = 'Count' ifTrue: [ foundClasses add: Integer ].
+	| foundClasses typicalNames |
+	foundClasses := aString size < 2
+		                ifTrue: [ Set new ]
+		                ifFalse: [
+			                ((Smalltalk globals keys
+				                  select: [ :each |
+				                  (each beginsWith: aString) or: [
+					                  each endsWith: aString ] ]
+				                  thenCollect: [ :each | Smalltalk at: each ])
+				                 select: [ :each | each isBehavior ]) asSet ].
+	typicalNames := {
+		                ('S' -> {
+			                 String.
+			                 Stream }).
+		                ('I' -> { Integer }).
+		                ('Name' -> { String }).
+		                ('Selector' -> { Symbol }).
+		                ('Index' -> { Integer }).
+		                ('Amount' -> { Integer }).
+		                ('Count' -> { Integer }).
+		                ('Avg' -> { Number }).
+		                ('Average' -> { Number }).
+		                ('Max' -> { Number }).
+		                ('Min' -> { Number }) } asDictionary.
+	typicalNames
+		at: aString
+		ifPresent: [ :typicalClasses | foundClasses addAll: typicalClasses ].
 	^ foundClasses
 ]
 

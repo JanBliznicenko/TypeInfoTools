@@ -14,11 +14,25 @@ TITTShowTypesCommand >> defaultMenuIconName [
 { #category : 'accessing' }
 TITTShowTypesCommand >> defaultMenuItemName [
 
-	^ 'Infer Types v2'
+	^ 'Infer Types'
+]
+
+{ #category : 'executing' }
+TITTShowTypesCommand >> execute [
+
+	^ [ :job |
+	  job title: 'Running type inference'.
+	  self executeInJob: job ] asJob run
 ]
 
 { #category : 'ui - dialogs' }
 TITTShowTypesCommand >> informNoneFound [
 
 	self inform: 'No types were found'
+]
+
+{ #category : 'execution' }
+TITTShowTypesCommand >> showSingleItem: aVariableNode [
+
+	^ TITTypedNodePresenter openOn: aVariableNode
 ]

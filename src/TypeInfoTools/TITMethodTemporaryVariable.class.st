@@ -2,12 +2,21 @@ Class {
 	#name : 'TITMethodTemporaryVariable',
 	#superclass : 'TITTemporaryVariable',
 	#instVars : [
-		'#method => ToOneRelationSlot inverse: #temporaryVariables inClass: #TITMethod'
+		'method'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',
 	#tag : 'Structure'
 }
+
+{ #category : 'as yet unclassified' }
+TITMethodTemporaryVariable class >> forASTVariableNode: aVariableNode [
+
+	^ self new
+		  name: aVariableNode name;
+		  method: (TITMethod forASTMethodNode: aVariableNode methodNode);
+		  yourself
+]
 
 { #category : 'visiting' }
 TITMethodTemporaryVariable >> accept: anInferenceToolAdaptor [

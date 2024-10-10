@@ -2,15 +2,21 @@ Class {
 	#name : 'TITMethod',
 	#superclass : 'TITCompiledCodeContainedNode',
 	#instVars : [
-		'#ownerClass => ToOneRelationSlot inverse: #methods inClass: #TITClass',
-		'#compiledMethod',
-		'#parameterVariables => ToManyRelationSlot inverse: #method inClass: #TITMethodInputParameter',
-		'#temporaryVariables => ToManyRelationSlot inverse: #method inClass: #TITMethodTemporaryVariable'
+		'ownerClass',
+		'astMethod'
 	],
 	#category : 'TypeInfoTools-Structure',
 	#package : 'TypeInfoTools',
 	#tag : 'Structure'
 }
+
+{ #category : 'as yet unclassified' }
+TITMethod class >> forASTMethodNode: aMethodNode [
+
+	^ self new
+		  astMethod: aMethodNode;
+		  yourself
+]
 
 { #category : 'visiting' }
 TITMethod >> accept: anInferenceToolAdaptor [
@@ -22,6 +28,18 @@ TITMethod >> accept: anInferenceToolAdaptor [
 TITMethod >> allBlocks [
 
 	^ self blocks flatCollect: [ :each | each allBlocks ]
+]
+
+{ #category : 'accessing' }
+TITMethod >> astMethod [
+
+	^ astMethod
+]
+
+{ #category : 'accessing' }
+TITMethod >> astMethod: anObject [
+
+	astMethod := anObject
 ]
 
 { #category : 'accessing' }
@@ -39,43 +57,32 @@ TITMethod >> compiledCode [
 { #category : 'accessing' }
 TITMethod >> compiledMethod [
 
-	^ compiledMethod
+	^ astMethod compiledMethod
 ]
 
 { #category : 'accessing' }
-TITMethod >> compiledMethod: anObject [
+TITMethod >> method [
 
-	compiledMethod := anObject
+	^ self
 ]
 
 { #category : 'accessing' }
 TITMethod >> name [
 
-	^ self compiledMethod selector
+	^ self astMethod selector
 ]
 
 { #category : 'accessing' }
 TITMethod >> ownerClass [
 
-	^ ownerClass
+	^ ownerClass ifNil: [
+		  ownerClass := TITClass forRealClass: astMethod methodClass ]
 ]
 
 { #category : 'accessing' }
 TITMethod >> ownerClass: anObject [
 
 	ownerClass := anObject
-]
-
-{ #category : 'accessing' }
-TITMethod >> parameterVariables [
-
-	^ parameterVariables
-]
-
-{ #category : 'accessing' }
-TITMethod >> parameterVariables: anObject [
-
-	parameterVariables := anObject
 ]
 
 { #category : 'accessing' }

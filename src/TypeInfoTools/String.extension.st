@@ -41,7 +41,7 @@ String >> isPlural [
 	                    'teeth'. 'feet'. 'geese'. 'criteria'. 'data'.
 	                    'phenomena'. 'lice'. 'cacti'. 'nuclei'. 'fungi'.
 	                    'bacteria'. 'indices'. 'matrices'. 'oxen' }.
-	singularExceptions := #( 'news' 'series' 'species' 'deer' 'sheep'
+	singularExceptions := #( 's' 'news' 'series' 'species' 'deer' 'sheep'
 	                         'fish' 'aircraft' 'information'
 	                         'equipment' ).
 	wordLowercase := self asLowercase.
