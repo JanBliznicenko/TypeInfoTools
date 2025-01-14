@@ -9,12 +9,12 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
-TITMethodTemporaryVariable class >> forASTVariableNode: aVariableNode [
+{ #category : 'instance creation' }
+TITMethodTemporaryVariable class >> forOCVariableNode: aVariableNode [
 
 	^ self new
 		  name: aVariableNode name;
-		  method: (TITMethod forASTMethodNode: aVariableNode methodNode);
+		  method: (TITMethod forOCMethodNode: aVariableNode methodNode);
 		  yourself
 ]
 

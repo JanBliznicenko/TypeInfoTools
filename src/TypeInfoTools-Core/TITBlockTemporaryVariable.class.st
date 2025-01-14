@@ -9,8 +9,8 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
-TITBlockTemporaryVariable class >> forASTVariableNode: aVariableNode [
+{ #category : 'instance creation' }
+TITBlockTemporaryVariable class >> forOCVariableNode: aVariableNode [
 
 	| blockNode |
 	blockNode := aVariableNode methodOrBlockNode.

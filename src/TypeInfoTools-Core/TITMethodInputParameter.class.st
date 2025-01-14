@@ -9,12 +9,12 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
-TITMethodInputParameter class >> forASTVariableNode: aVariableNode [
+{ #category : 'instance creation' }
+TITMethodInputParameter class >> forOCVariableNode: aVariableNode [
 
 	^ self new
 		  name: aVariableNode name;
-		  method: (TITMethod forASTMethodNode: aVariableNode methodNode);
+		  method: (TITMethod forOCMethodNode: aVariableNode methodNode);
 		  yourself
 ]
 

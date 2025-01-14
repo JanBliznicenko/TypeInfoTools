@@ -3,15 +3,15 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'typeInfo',
-		'classes',
-		'sortedClasses'
+		'sortedClasses',
+		'classesWithCollectors'
 	],
 	#category : 'TypeInfoTools-Core-Inference',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'Inference'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'instance creation' }
 TITTypesCollection class >> forTypeInfo: aTypeInfo [
 
 	^ self new
@@ -20,10 +20,19 @@ TITTypesCollection class >> forTypeInfo: aTypeInfo [
 ]
 
 { #category : 'adding' }
+TITTypesCollection >> addAllFrom: otherTypesCollection [
+
+	otherTypesCollection classesWithCollectors keysAndValuesDo: [
+		:class
+		:collectors |
+		collectors do: [ :collector | self addClass: class by: collector ] ]
+]
+
+{ #category : 'adding' }
 TITTypesCollection >> addClass: aClass by: aTypeCollector [
 
 	aClass = Object ifTrue: [ ^ self ].
-	(classes at: aClass ifAbsentPut: [ TITTypesCollectionSources new ])
+	(classesWithCollectors at: aClass ifAbsentPut: [ TITTypesCollectionSources new ])
 		add: aTypeCollector.
 	self resetCache
 ]
@@ -36,28 +45,34 @@ TITTypesCollection >> addClasses: aCollection by: aTypeCollector [
 ]
 
 { #category : 'adding' }
-TITTypesCollection >> classes [
+TITTypesCollection >> classesWithCollectors [
 
-	^ classes asSet
+	^ classesWithCollectors
+]
+
+{ #category : 'accessing' }
+TITTypesCollection >> classesWithCollectors: anObject [
+
+	classesWithCollectors := anObject
 ]
 
 { #category : 'adding' }
 TITTypesCollection >> collect: aBlock [
 
-	^ classes valuesAndCounts collect: [ :pair | aBlock value: pair key ]
+	^ classesWithCollectors valuesAndCounts collect: [ :pair | aBlock value: pair key ]
 ]
 
 { #category : 'adding' }
 TITTypesCollection >> do: aBlock [
 
-	^ classes doWithOccurrences: [ :key :value | aBlock value: key ]
+	^ classesWithCollectors doWithOccurrences: [ :key :value | aBlock value: key ]
 ]
 
 { #category : 'initialization' }
 TITTypesCollection >> initialize [
 
 	super initialize.
-	classes := Dictionary new
+	classesWithCollectors := Dictionary new
 ]
 
 { #category : 'testing' }
@@ -78,6 +93,15 @@ TITTypesCollection >> minimumWeight [
 	^ 0.99
 ]
 
+{ #category : 'printing' }
+TITTypesCollection >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream nextPutAll: '('.
+	aStream nextPutAll: self size asString.
+	aStream nextPutAll: ')'
+]
+
 { #category : 'adding' }
 TITTypesCollection >> resetCache [
 
@@ -87,7 +111,13 @@ TITTypesCollection >> resetCache [
 { #category : 'adding' }
 TITTypesCollection >> select: aBlock [
 
-	^ classes valuesAndCounts select: [ :pair | aBlock value: pair key ]
+	^ classesWithCollectors valuesAndCounts select: [ :pair | aBlock value: pair key ]
+]
+
+{ #category : 'adding' }
+TITTypesCollection >> size [
+
+	^ classesWithCollectors size
 ]
 
 { #category : 'adding' }
@@ -97,12 +127,14 @@ TITTypesCollection >> sortedClasses [
 	(typeInfo types == self and: [
 		 typeInfo collectionElementTypes sortedClasses isNotEmpty ])
 		ifTrue: [
-			classes associationsDo: [ :each |
+			classesWithCollectors associationsDo: [ :each |
 				(each key isCollectionClass and: [
 					 (each key includesBehavior: String) not ]) ifTrue: [
 					each value add: TITCollectionElementTypesFoundMarker new ] ] ].
-	^ sortedClasses := ((classes associations select: [ :eachPair |
-		                     eachPair value weight >= self minimumWeight ]) sorted: [ :a :b |
+	^ sortedClasses := ((classesWithCollectors associations select: [
+		                     :eachPair |
+		                     eachPair value weight >= self minimumWeight ])
+		                    sorted: [ :a :b |
 		                    a value weight > b value weight ])
 		                   asOrderedDictionary
 ]

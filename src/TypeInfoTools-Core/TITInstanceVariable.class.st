@@ -9,7 +9,7 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'instance creation' }
 TITInstanceVariable class >> forSystemInstanceVariable: aVariable [
 
 	^ self new

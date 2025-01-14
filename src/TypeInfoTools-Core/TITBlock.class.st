@@ -1,6 +1,6 @@
 Class {
 	#name : 'TITBlock',
-	#superclass : 'TITCompiledCodeContainedNode',
+	#superclass : 'TITTypedNode',
 	#instVars : [
 		'parent',
 		'astBlockNode',
@@ -11,7 +11,7 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'instance creation' }
 TITBlock class >> forASTBlockNode: anASTBlockNode [
 
 	^ self new
@@ -41,12 +41,6 @@ TITBlock >> astBlockNode: anObject [
 TITBlock >> classDescription [
 
 	^ 'Block'
-]
-
-{ #category : 'accessing' }
-TITBlock >> compiledCode [
-
-	^ self compiledBlock
 ]
 
 { #category : 'accessing' }
@@ -84,7 +78,7 @@ TITBlock >> ownerClass [
 TITBlock >> parent [
 
 	^ parent ifNil: [
-		  parent := TITMethod forASTMethodNode: astBlockNode methodNode ]
+		  parent := TITMethod forOCMethodNode: astBlockNode methodNode ]
 ]
 
 { #category : 'accessing' }

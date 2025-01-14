@@ -68,7 +68,7 @@ TITNameTyperAdaptor >> sourceName [
 	^ 'Var name'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'processing' }
 TITNameTyperAdaptor >> typesForName: aString [
 
 	| foundClasses typicalNames |
@@ -101,7 +101,7 @@ TITNameTyperAdaptor >> typesForName: aString [
 	^ foundClasses
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITNameTyperAdaptor >> visitVariable: aVariable [
 
 	| simplifiedName wordClusters |

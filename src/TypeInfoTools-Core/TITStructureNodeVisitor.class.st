@@ -6,70 +6,61 @@ Class {
 	#tag : 'Inference'
 }
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitBlock: aBlock [
 
-	aBlock temporaryVariables do: [ :each |
-		self visitBlockTemporaryVariable: each ].
-	aBlock blocks do: [ :each | self visitBlock: each ]
+	^ self visitTypedNode: aBlock
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitBlockTemporaryVariable: aBlockTemporaryVariable [
 
 	^ self visitTemporaryVariable: aBlockTemporaryVariable
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitClass: aClass [
 
-	aClass methods do: [ :each | self visitMethod: each ].
-	aClass instanceVariables do: [ :each |
-		self visitInstanceVariable: each ].
-	aClass sharedVariables do: [ :each | self visitSharedVariable: each ]
+	^ self visitTypedNode: aClass
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitInstanceVariable: anInstanceVariable [
 
 	^ self visitVariable: anInstanceVariable
 ]
 
-{ #category : 'processing' }
-TITStructureNodeVisitor >> visitMethod: aMethod [
+{ #category : 'visiting' }
+TITStructureNodeVisitor >> visitMessageSend: aMessageSend [
 
-	aMethod parameterVariables do: [ :each |
-		self visitMethodInputParameter: each ].
-	aMethod temporaryVariables do: [ :each |
-		self visitMethodTemporaryVariable: each ].
-	aMethod blocks do: [ :each | self visitBlock: each ]
+	^ self visitTypedNode: aMessageSend
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
+TITStructureNodeVisitor >> visitMethod: aMethod [
+
+	^ self visitTypedNode: aMethod
+]
+
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitMethodInputParameter: aMethodInputParameter [
 
 	^ self visitTemporaryVariable: aMethodInputParameter
 ]
 
-{ #category : 'processing' }
-TITStructureNodeVisitor >> visitMethodReturn: aMethodReturn [
-
-	^ self visitTypedNode: aMethodReturn
-]
-
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitMethodTemporaryVariable: aMethodTemporaryVariable [
 
 	^ self visitTemporaryVariable: aMethodTemporaryVariable
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitPackage: aPackage [
 
 	aPackage classes do: [ :each | self visitClass: each ]
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitSharedVariable: aSharedVariable [
 
 	^ self visitVariable: aSharedVariable
@@ -77,20 +68,20 @@ TITStructureNodeVisitor >> visitSharedVariable: aSharedVariable [
 	
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitTemporaryVariable: aTemporaryVariable [
 
 	^ self visitVariable: aTemporaryVariable
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitTypedNode: aTypedNode [
 	"adds types to the typedNode's typeInfo - to be overridden if applicable"
 
 	
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITStructureNodeVisitor >> visitVariable: aVariable [
 
 	^ self visitTypedNode: aVariable

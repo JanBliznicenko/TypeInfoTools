@@ -27,14 +27,16 @@ TITShowTypesTempVariableCommand class >> sourceCodeMenuActivation [
 TITShowTypesTempVariableCommand class >> sourceCodeShortcutActivation [
 
 	<classAnnotation>
-	^ CmdShortcutActivation by: $t meta shift for: ClySourceCodeContext
+	^ CmdShortcutActivation
+		  by: $t meta shift
+		  for: ClyMethodSourceCodeContext
 ]
 
 { #category : 'execution' }
 TITShowTypesTempVariableCommand >> executeInJob: job [
 
 	| titVariable collector |
-	titVariable := TITTemporaryVariable forASTVariableNode: sourceNode.
+	titVariable := TITTemporaryVariable forOCVariableNode: sourceNode.
 
 	collector := TITSequentialAdaptorsTypeCollector new
 		             reportingBlock: [ :typer |

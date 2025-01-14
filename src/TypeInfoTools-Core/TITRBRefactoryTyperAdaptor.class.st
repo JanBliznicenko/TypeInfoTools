@@ -33,7 +33,7 @@ TITRBRefactoryTyperAdaptor class >> replacements [
 	^ { (ProtoObject -> Object) } asDictionary
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'processing' }
 TITRBRefactoryTyperAdaptor >> filterTypes: aCollectionOfClasses [
 
 	| invalidClasses replacements |
@@ -48,7 +48,7 @@ TITRBRefactoryTyperAdaptor >> filterTypes: aCollectionOfClasses [
 TITRBRefactoryTyperAdaptor >> initialize [
 
 	super initialize.
-	typers := IdentityDictionary new
+	typers := Dictionary new
 ]
 
 { #category : 'accessing' }
@@ -57,7 +57,7 @@ TITRBRefactoryTyperAdaptor >> sourceName [
 	^ 'RBRefactoryTyper'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TITRBRefactoryTyperAdaptor >> typerOf: aClass [
 
 	^ typers
@@ -65,7 +65,7 @@ TITRBRefactoryTyperAdaptor >> typerOf: aClass [
 		  ifAbsentPut: [ RBRefactoryTyper new runOn: aClass ]
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITRBRefactoryTyperAdaptor >> visitInstanceVariable: aVariable [
 
 	| typer types collectionElementTypes |

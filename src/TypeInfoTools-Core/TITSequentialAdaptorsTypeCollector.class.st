@@ -1,6 +1,6 @@
 Class {
 	#name : 'TITSequentialAdaptorsTypeCollector',
-	#superclass : 'Object',
+	#superclass : 'TITStructureNodeVisitor',
 	#instVars : [
 		'collectors',
 		'reportingBlock'
@@ -34,10 +34,13 @@ TITSequentialAdaptorsTypeCollector >> collectors: aCollectionOfCollectors [
 TITSequentialAdaptorsTypeCollector >> defaultCollectors [
 
 	^ {
-		  TITRelatedPackagePriorityCollector new.
-		  TITRoelTyperAdaptor new.
-		  TITRBRefactoryTyperAdaptor new.
-		  TITNameTyperAdaptor new }
+		  TITRelatedPackagePriorityCollector.
+		  TITRoelTyperAdaptor.
+		  TITRBRefactoryTyperAdaptor.
+		  TITNameTyperAdaptor } collect: [ :each |
+		  each new
+			  relatedCollector: self;
+			  yourself ]
 ]
 
 { #category : 'initialization' }
@@ -51,4 +54,10 @@ TITSequentialAdaptorsTypeCollector >> initialize [
 TITSequentialAdaptorsTypeCollector >> reportingBlock: aBlock [
 
 	reportingBlock := aBlock
+]
+
+{ #category : 'visiting' }
+TITSequentialAdaptorsTypeCollector >> visitTypedNode: aTypedNode [
+
+	^ self addTypesTo: aTypedNode
 ]

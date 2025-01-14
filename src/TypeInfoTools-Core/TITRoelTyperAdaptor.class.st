@@ -2,7 +2,6 @@ Class {
 	#name : 'TITRoelTyperAdaptor',
 	#superclass : 'TITStructureNodeTypeCollector',
 	#instVars : [
-		'resultsByClasses',
 		'resultsByMethods'
 	],
 	#category : 'TypeInfoTools-Core-Inference',
@@ -14,25 +13,12 @@ Class {
 TITRoelTyperAdaptor >> initialize [
 
 	super initialize.
-	resultsByClasses := IdentityDictionary new.
-	resultsByMethods := IdentityDictionary new
-]
-
-{ #category : 'processing' }
-TITRoelTyperAdaptor >> resultsForClass: aClass [
-
-	^ resultsByClasses
-		  at: aClass realClass
-		  ifAbsentPut: [
-		  TypeCollector typeInstvarsOfClass: aClass realClass ]
+	resultsByMethods := Dictionary new
 ]
 
 { #category : 'accessing' }
 TITRoelTyperAdaptor >> resultsForMethod: aMethod [
 
-	resultsByClasses
-		at: aMethod class realClass
-		ifPresent: [ self halt ].
 	^ resultsByMethods
 		  at: aMethod compiledMethod
 		  ifAbsentPut: [ TypeCollector typeTmpsIn: aMethod compiledMethod ]
@@ -44,7 +30,7 @@ TITRoelTyperAdaptor >> sourceName [
 	^ 'RoelTyper'
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITRoelTyperAdaptor >> visitBlockTemporaryVariable: aBlockTemp [
 
 	| actualMethod results |
@@ -57,7 +43,7 @@ TITRoelTyperAdaptor >> visitBlockTemporaryVariable: aBlockTemp [
 		by: self
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITRoelTyperAdaptor >> visitInstanceVariable: aVariable [
 
 	| results |
@@ -67,13 +53,22 @@ TITRoelTyperAdaptor >> visitInstanceVariable: aVariable [
 		by: self
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
+TITRoelTyperAdaptor >> visitMethod: aMethod [
+
+	| actualMethod results |
+	actualMethod := aMethod compiledMethod.
+	results := self resultsForMethod: actualMethod.
+	aMethod typeInfo addTypes: (results at: '^' asSymbol) types by: self
+]
+
+{ #category : 'visiting' }
 TITRoelTyperAdaptor >> visitMethodInputParameter: aMethodTemp [
 
 	self visitMethodLevelTemporaryVariable: aMethodTemp
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITRoelTyperAdaptor >> visitMethodLevelTemporaryVariable: aMethodTemp [
 
 	| actualMethod results |
@@ -84,7 +79,7 @@ TITRoelTyperAdaptor >> visitMethodLevelTemporaryVariable: aMethodTemp [
 		by: self
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITRoelTyperAdaptor >> visitMethodTemporaryVariable: aMethodTemp [
 
 	self visitMethodLevelTemporaryVariable: aMethodTemp

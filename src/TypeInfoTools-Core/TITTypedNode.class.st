@@ -9,6 +9,18 @@ Class {
 	#tag : 'Structure'
 }
 
+{ #category : 'instance creation' }
+TITTypedNode class >> forOCNode: anOCNode [
+
+	^ TITTypedNodeCreationVisitor visit: anOCNode
+]
+
+{ #category : 'testing' }
+TITTypedNode >> ifNotProcessedByAnyCollectorAccept: aVisitor [
+
+	self processedByAnyCollector ifFalse: [ self accept: aVisitor ]
+]
+
 { #category : 'accessing' }
 TITTypedNode >> initialize [
 
@@ -20,6 +32,12 @@ TITTypedNode >> initialize [
 TITTypedNode >> ownerClass [
 
 	^ self parent ownerClass
+]
+
+{ #category : 'testing' }
+TITTypedNode >> processedByAnyCollector [
+
+	^ self typeInfo processedByAnyCollector
 ]
 
 { #category : 'class membership' }

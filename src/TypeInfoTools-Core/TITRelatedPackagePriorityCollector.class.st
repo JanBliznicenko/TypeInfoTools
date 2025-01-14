@@ -32,6 +32,16 @@ TITRelatedPackagePriorityCollector >> classesDependedBy: aPackage [
 		  :each | each referencedClasses ]
 ]
 
+{ #category : 'processing' }
+TITRelatedPackagePriorityCollector >> classesRelevantToAllPackages [
+
+	^ Set withAll: {
+			  Class.
+			  Metaclass.
+			  ClassDescription.
+			  Behavior }
+]
+
 { #category : 'initialization' }
 TITRelatedPackagePriorityCollector >> initialize [
 
@@ -47,7 +57,8 @@ TITRelatedPackagePriorityCollector >> relatedClassesTo: aPackage [
 		  | nameRoot |
 		  nameRoot := aPackage name copyUpTo: $-.
 		  (self classesByPackageNameRoot: nameRoot) asSet
-		  , (self classesDependedBy: aPackage) ]
+		  , (self classesDependedBy: aPackage)
+		  , self classesRelevantToAllPackages ]
 ]
 
 { #category : 'accessing' }
@@ -56,14 +67,15 @@ TITRelatedPackagePriorityCollector >> sourceName [
 	^ 'Related packages'
 ]
 
-{ #category : 'processing' }
+{ #category : 'visiting' }
 TITRelatedPackagePriorityCollector >> visitTypedNode: aTypedNode [
 
-	relatedClasses := self relatedClassesTo:
-		                  aTypedNode package systemPackage.
-	aTypedNode typeInfo addTypes: relatedClasses by: self.
+	| relatedClassesToPackage |
+	relatedClassesToPackage := self relatedClassesTo:
+		                           aTypedNode package systemPackage.
+	aTypedNode typeInfo addTypes: relatedClassesToPackage by: self.
 	aTypedNode typeInfo
-		addCollectionElementTypes: relatedClasses
+		addCollectionElementTypes: relatedClassesToPackage
 		by: self
 ]
 

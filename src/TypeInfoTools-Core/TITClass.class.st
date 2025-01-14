@@ -1,6 +1,6 @@
 Class {
 	#name : 'TITClass',
-	#superclass : 'TITContainerNode',
+	#superclass : 'TITTypedNode',
 	#instVars : [
 		'package',
 		'realClass'
@@ -10,7 +10,7 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'instance creation' }
 TITClass class >> forRealClass: aClass [
 
 	^ self new

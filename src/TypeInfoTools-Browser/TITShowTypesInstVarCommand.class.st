@@ -25,9 +25,11 @@ TITShowTypesInstVarCommand class >> fullBrowserMenuActivation [
 
 { #category : 'activation' }
 TITShowTypesInstVarCommand class >> fullBrowserMenuShortcutActivation [
-   <classAnnotation>
 
-   ^CmdShortcutActivation by: $t meta shift for: ClyFullBrowserVariableContext
+	<classAnnotation>
+	^ CmdShortcutActivation
+		  by: $t meta shift
+		  for: ClyFullBrowserVariableContext
 ]
 
 { #category : 'activation' }
@@ -40,9 +42,9 @@ TITShowTypesInstVarCommand class >> sourceCodeMenuActivation [
 
 { #category : 'activation' }
 TITShowTypesInstVarCommand class >> sourceCodeShortcutActivation [
-   <classAnnotation>
 
-   ^CmdShortcutActivation by: $t meta shift for: ClySourceCodeContext
+	<classAnnotation>
+	^ CmdShortcutActivation by: $t meta shift for: ClySourceCodeContext
 ]
 
 { #category : 'accessing' }
@@ -62,9 +64,7 @@ TITShowTypesInstVarCommand >> executeInJob: job [
 	classes size > 1 ifTrue: [
 		self inform:
 			'Unable to infer variables from multiple classes, providing results for '
-			, (systemVariables size = 1
-					 ifTrue: [ 'variable ''' , systemVariables anyOne name , '''' ]
-					 ifFalse: [ 'class ' , self definingClass name ]) ].
+			, ('class ' , self definingClass name) ].
 
 	variableNodes := systemVariables
 		                 select: [ :each |

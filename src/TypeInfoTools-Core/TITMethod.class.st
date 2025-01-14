@@ -1,6 +1,6 @@
 Class {
 	#name : 'TITMethod',
-	#superclass : 'TITCompiledCodeContainedNode',
+	#superclass : 'TITTypedNode',
 	#instVars : [
 		'ownerClass',
 		'astMethod'
@@ -10,8 +10,8 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
-TITMethod class >> forASTMethodNode: aMethodNode [
+{ #category : 'instance creation' }
+TITMethod class >> forOCMethodNode: aMethodNode [
 
 	^ self new
 		  astMethod: aMethodNode;
@@ -22,12 +22,6 @@ TITMethod class >> forASTMethodNode: aMethodNode [
 TITMethod >> accept: anInferenceToolAdaptor [
 
 	^ anInferenceToolAdaptor visitMethod: self
-]
-
-{ #category : 'accessing' }
-TITMethod >> allBlocks [
-
-	^ self blocks flatCollect: [ :each | each allBlocks ]
 ]
 
 { #category : 'accessing' }
@@ -46,12 +40,6 @@ TITMethod >> astMethod: anObject [
 TITMethod >> classDescription [
 
 	^ 'Method'
-]
-
-{ #category : 'accessing' }
-TITMethod >> compiledCode [
-
-	^ self compiledMethod
 ]
 
 { #category : 'accessing' }

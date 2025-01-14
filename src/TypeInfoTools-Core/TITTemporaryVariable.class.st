@@ -6,16 +6,16 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
-TITTemporaryVariable class >> forASTVariableNode: aVariableNode [
+{ #category : 'instance creation' }
+TITTemporaryVariable class >> forOCVariableNode: aVariableNode [
 
-	aVariableNode methodOrBlockNode isBlock ifTrue: [
-		^ TITBlockTemporaryVariable forASTVariableNode: aVariableNode ].
+	aVariableNode isDefinedByBlock ifTrue: [
+		^ TITBlockTemporaryVariable forOCVariableNode: aVariableNode ].
 
 	aVariableNode isArgumentVariable ifTrue: [
-		^ TITMethodInputParameter forASTVariableNode: aVariableNode ].
+		^ TITMethodInputParameter forOCVariableNode: aVariableNode ].
 
-	^ TITMethodTemporaryVariable forASTVariableNode: aVariableNode
+	^ TITMethodTemporaryVariable forOCVariableNode: aVariableNode
 ]
 
 { #category : 'testing' }

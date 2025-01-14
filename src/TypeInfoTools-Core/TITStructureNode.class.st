@@ -21,7 +21,10 @@ TITStructureNode >> classDescription [
 { #category : 'accessing' }
 TITStructureNode >> longDescription [
 
-	^ self shortDescription , ' in ' , self parent shortDescription
+	^ String streamContents: [ :s |
+		  s << self shortDescription.
+		  self parent ifNotNil: [ :foundParent |
+			  s << foundParent shortDescription ] ]
 ]
 
 { #category : 'accessing' }

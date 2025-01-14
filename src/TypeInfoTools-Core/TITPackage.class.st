@@ -1,6 +1,6 @@
 Class {
 	#name : 'TITPackage',
-	#superclass : 'TITContainerNode',
+	#superclass : 'TITStructureNode',
 	#instVars : [
 		'systemPackage'
 	],
@@ -17,7 +17,7 @@ TITPackage class >> forActualPackage: aPackage [
 		  yourself
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'instance creation' }
 TITPackage class >> forSystemPackage: aPackage [
 
 	^ self new

@@ -40,6 +40,12 @@ TITTypesCollectionSources >> collectors [
 	^ collectors
 ]
 
+{ #category : 'enumerating' }
+TITTypesCollectionSources >> do: aBlock [
+
+	^ collectors do: aBlock
+]
+
 { #category : 'initialization' }
 TITTypesCollectionSources >> initialize [
 

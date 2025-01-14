@@ -32,7 +32,7 @@ TITTShowTypesCommand >> informNoneFound [
 ]
 
 { #category : 'execution' }
-TITTShowTypesCommand >> showSingleItem: aVariableNode [
+TITTShowTypesCommand >> showSingleItem: aTITNode [
 
-	^ TITTypedNodePresenter openOn: aVariableNode
+	^ TITTypedNodePresenter openOn: aTITNode
 ]

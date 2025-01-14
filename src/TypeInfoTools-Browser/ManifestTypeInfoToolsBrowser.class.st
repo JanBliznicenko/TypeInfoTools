@@ -10,6 +10,13 @@ Class {
 }
 
 { #category : 'code-critics' }
+ManifestTypeInfoToolsBrowser class >> ruleClassNotReferencedRuleV1FalsePositive [
+
+	<ignoreForCoverage>
+	^ #(#(#(#RGClassDefinition #(#TITShowTypesMethodReturnCommand)) #'2025-01-14T19:03:58.363+01:00') #(#(#RGClassDefinition #(#TITShowTypesMessageSendCommand)) #'2025-01-14T19:04:02.814+01:00') #(#(#RGClassDefinition #(#TITShowTypesInstVarCommand)) #'2025-01-14T19:04:06.33+01:00') #(#(#RGClassDefinition #(#TITShowTypesTempVariableCommand)) #'2025-01-14T19:04:09.877+01:00') )
+]
+
+{ #category : 'code-critics' }
 ManifestTypeInfoToolsBrowser class >> ruleInconsistentMethodClassificationRuleV1FalsePositive [
 
 	<ignoreForCoverage>
