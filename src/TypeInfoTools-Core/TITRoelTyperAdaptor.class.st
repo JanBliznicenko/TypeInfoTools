@@ -2,7 +2,8 @@ Class {
 	#name : 'TITRoelTyperAdaptor',
 	#superclass : 'TITStructureNodeTypeCollector',
 	#instVars : [
-		'resultsByMethods'
+		'resultsByMethods',
+		'resultsByClasses'
 	],
 	#category : 'TypeInfoTools-Core-Inference',
 	#package : 'TypeInfoTools-Core',
@@ -13,7 +14,17 @@ Class {
 TITRoelTyperAdaptor >> initialize [
 
 	super initialize.
-	resultsByMethods := Dictionary new
+	resultsByMethods := Dictionary new.
+	resultsByClasses := Dictionary new
+]
+
+{ #category : 'as yet unclassified' }
+TITRoelTyperAdaptor >> resultsForClass: aClass [
+
+	^ resultsByClasses
+		  at: aClass realClass
+		  ifAbsentPut: [
+		  TypeCollector typeInstvarsOfClass: aClass realClass ]
 ]
 
 { #category : 'accessing' }
