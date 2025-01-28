@@ -15,8 +15,12 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				spec
 					repository: 'github://JanBliznicenko/RoelTyper';
 					loads: 'Tests' ];
+			baseline: 'J2Inferer' with: [
+			spec
+				repository: 'github://JanBliznicenko/J2Inferer';
+				loads: 'dev' ];
 			package: 'TypeInfoTools-Core'
-			with: [ spec requires: #( 'RoelTyper' ) ];
+			with: [ spec requires: #( 'RoelTyper' 'J2Inferer' ) ];
 			package: 'TypeInfoTools-MessageList'
 			with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
 			package: 'TypeInfoTools-Browser'
