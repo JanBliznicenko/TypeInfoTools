@@ -1,7 +1,7 @@
-Extension { #name : 'DACompositeDependency' }
+Extension { #name : 'StCompositeDependency' }
 
 { #category : '*TypeInfoTools-Core' }
-DACompositeDependency >> referencedClasses [
+StCompositeDependency >> referencedClasses [
 
 	^ self dependencies flatCollectAsSet: [ :each |
 		  each referencedClasses ]
