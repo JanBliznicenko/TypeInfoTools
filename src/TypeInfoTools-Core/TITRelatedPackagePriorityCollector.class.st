@@ -26,7 +26,7 @@ TITRelatedPackagePriorityCollector >> classesByPackageNameRoot: aNameRoot [
 { #category : 'processing' }
 TITRelatedPackagePriorityCollector >> classesDependedBy: aPackage [
 
-	^ (DADependencyChecker new
+	^ (StDependencyChecker new
 		   shouldComputeMessageSendDependencies: false;
 		   daPackageFor: aPackage name) dependencies flatCollectAsSet: [
 		  :each | each referencedClasses ]

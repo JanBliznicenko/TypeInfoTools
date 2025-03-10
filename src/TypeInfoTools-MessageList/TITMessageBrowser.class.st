@@ -23,3 +23,13 @@ TITMessageBrowser >> typeInfo: aTypeInfo [
 
 	messageList typeInfo: aTypeInfo
 ]
+
+{ #category : 'private' }
+TITMessageBrowser >> windowTitle [
+
+	self flag: #todo_remove_when_superclass_fixed.
+	^ (title ifNil: [ 'Message Browser' ]) , (messageList
+		   ifNil: [ '' ]
+		   ifNotNil: [ :foundList |
+		   ' [' , foundList numberOfElements printString , ']' ])
+]
