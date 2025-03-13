@@ -112,7 +112,7 @@ TITTypedNodePresenter >> updateWindow: aWindow [
 	| windowExtent |
 	aWindow title: 'Types of '
 		,
-		(typedNode ifNil: [ '' ] ifNotNil: [ :node | node longDescription ]).
+		(typedNode ifNil: [ '' ] ifNotNil: [ :node | node longDescription uncapitalized ]).
 	windowExtent := (self hasCollectionElementTypes
 		                 ifTrue: [ 1200 ]
 		                 ifFalse: [ 600 ]) @ 400.

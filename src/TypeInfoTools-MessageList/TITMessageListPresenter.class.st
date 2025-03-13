@@ -56,10 +56,14 @@ TITMessageListPresenter >> isLowWeight: aWeight [
 { #category : 'accessing' }
 TITMessageListPresenter >> isLowWeightMethod: aMethod [
 
-	^ self isLowWeight:
-		  ((self typeCollectorsByMessages ifEmpty: [ ^ false ])
-			   at: aMethod
-			   ifAbsent: [ ^ true ]) weight
+	| collectors |
+	collectors := self typeCollectorsByMessages ifEmpty: [ ^ false ].
+	collectors at: aMethod ifPresent: [ :collector |
+		(self isLowWeight: collector weight) ifFalse: [ ^ false ] ].
+	^ aMethod overriddenMethod
+		  ifNil: [ true ]
+		  ifNotNil: [ :overriddenMethod |
+		  self isLowWeightMethod: overriddenMethod ]
 ]
 
 { #category : 'accessing' }

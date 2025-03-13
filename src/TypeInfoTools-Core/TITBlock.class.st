@@ -53,7 +53,9 @@ TITBlock >> index [
 { #category : 'accessing' }
 TITBlock >> longDescription [
 
-	^ self shortDescription , ' in ' , self method shortDescription
+	^ String streamContents: [ :s |
+		  s << self shortDescription.
+		  self method shortDescriptionJoinedBy: ' in ' to: s ]
 ]
 
 { #category : 'accessing' }

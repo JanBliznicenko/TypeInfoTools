@@ -31,6 +31,14 @@ TITMessageSendNode >> classDescription [
 ]
 
 { #category : 'accessing' }
+TITMessageSendNode >> longDescription [
+
+	^ String streamContents: [ :s |
+		  s << self shortDescription.
+		  self parent shortDescriptionJoinedBy: ' to ' to: s ]
+]
+
+{ #category : 'accessing' }
 TITMessageSendNode >> message [
 
 	^ message
@@ -51,7 +59,7 @@ TITMessageSendNode >> name [
 { #category : 'accessing' }
 TITMessageSendNode >> parent [
 
-	^ TITNoNode new
+	^ self receiver
 ]
 
 { #category : 'accessing' }

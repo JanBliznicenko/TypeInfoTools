@@ -36,9 +36,9 @@ TITBlockTemporaryVariable >> block [
 ]
 
 { #category : 'accessing' }
-TITBlockTemporaryVariable >> block: anObject [
+TITBlockTemporaryVariable >> block: aTITBlock [
 
-	block := anObject
+	block := aTITBlock
 ]
 
 { #category : 'accessing' }

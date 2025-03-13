@@ -13,6 +13,12 @@ TITTypedNodeCreationVisitor class >> visit: anOCNode [
 ]
 
 { #category : 'visiting' }
+TITTypedNodeCreationVisitor >> visitArrayNode: anArrayNode [
+
+	^ TITClass forRealClass: Array
+]
+
+{ #category : 'visiting' }
 TITTypedNodeCreationVisitor >> visitInstanceVariableNode: anInstanceVariableNode [
 
 	^ TITInstanceVariable forSystemInstanceVariable:

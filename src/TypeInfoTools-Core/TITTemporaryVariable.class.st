@@ -9,13 +9,16 @@ Class {
 { #category : 'instance creation' }
 TITTemporaryVariable class >> forOCVariableNode: aVariableNode [
 
-	aVariableNode isDefinedByBlock ifTrue: [
-		^ TITBlockTemporaryVariable forOCVariableNode: aVariableNode ].
+	| definingNode |
+	definingNode := aVariableNode variable definingNode.
 
-	aVariableNode isArgumentVariable ifTrue: [
-		^ TITMethodInputParameter forOCVariableNode: aVariableNode ].
+	definingNode isDefinedByBlock ifTrue: [
+		^ TITBlockTemporaryVariable forOCVariableNode: definingNode ].
 
-	^ TITMethodTemporaryVariable forOCVariableNode: aVariableNode
+	definingNode isArgumentVariable ifTrue: [
+		^ TITMethodInputParameter forOCVariableNode: definingNode ].
+
+	^ TITMethodTemporaryVariable forOCVariableNode: definingNode
 ]
 
 { #category : 'testing' }

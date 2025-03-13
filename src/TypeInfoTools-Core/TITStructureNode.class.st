@@ -23,8 +23,7 @@ TITStructureNode >> longDescription [
 
 	^ String streamContents: [ :s |
 		  s << self shortDescription.
-		  self parent ifNotNil: [ :foundParent |
-			  s << foundParent shortDescription ] ]
+		  self parent shortDescriptionJoinedBy: ' in ' to: s ]
 ]
 
 { #category : 'accessing' }
@@ -49,4 +48,10 @@ TITStructureNode >> parent [
 TITStructureNode >> shortDescription [
 
 	^ self classDescription , ' "' , self name , '"'
+]
+
+{ #category : 'accessing' }
+TITStructureNode >> shortDescriptionJoinedBy: aString to: aStream [
+
+	^ aStream << aString << self shortDescription uncapitalized
 ]

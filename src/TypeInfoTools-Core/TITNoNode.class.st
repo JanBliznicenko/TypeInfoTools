@@ -32,3 +32,9 @@ TITNoNode >> parent [
 		'Do not ask for parent of "No" node, as you might get an infinite loop'.
 	^ self
 ]
+
+{ #category : 'accessing' }
+TITNoNode >> shortDescription [
+
+	^ ''
+]
