@@ -10,7 +10,35 @@ Class {
 	#tag : 'Inference'
 }
 
-{ #category : 'adding' }
+{ #category : 'constants' }
+TITSequentialAdaptorsTypeCollector class >> allCollectors [
+
+	^ {
+		  TITRoelTyperAdaptor.
+		  TITJ2InfererTyperAdaptor.
+		  TITRBRefactoryTyperAdaptor.
+		  TITRelatedPackagePriorityCollector.
+		  TITNameTyperAdaptor }
+]
+
+{ #category : 'instance creation' }
+TITSequentialAdaptorsTypeCollector class >> fast [
+
+	^ self new
+		  collectors: self fastCollectors;
+		  yourself
+]
+
+{ #category : 'constants' }
+TITSequentialAdaptorsTypeCollector class >> fastCollectors [
+
+	^ {
+		  TITRoelTyperAdaptor.
+		  TITRelatedPackagePriorityCollector.
+		  TITNameTyperAdaptor }
+]
+
+{ #category : 'processing' }
 TITSequentialAdaptorsTypeCollector >> addTypesTo: aStructureNode [
 
 	self collectors do: [ :each |
@@ -33,11 +61,7 @@ TITSequentialAdaptorsTypeCollector >> collectors: aCollectionOfCollectors [
 { #category : 'adding' }
 TITSequentialAdaptorsTypeCollector >> defaultCollectors [
 
-	^ {
-		  TITRelatedPackagePriorityCollector.
-		  TITRoelTyperAdaptor.
-		  TITRBRefactoryTyperAdaptor.
-		  TITNameTyperAdaptor } collect: [ :each |
+	^ self class allCollectors collect: [ :each |
 		  each new
 			  relatedCollector: self;
 			  yourself ]

@@ -21,8 +21,20 @@ TITTemporaryVariable class >> forOCVariableNode: aVariableNode [
 	^ TITMethodTemporaryVariable forOCVariableNode: definingNode
 ]
 
+{ #category : 'accessing' }
+TITTemporaryVariable >> compiledMethod [
+
+	^ self method compiledMethod
+]
+
 { #category : 'testing' }
 TITTemporaryVariable >> isTemporary [
 
 	^ true
+]
+
+{ #category : 'accessing' }
+TITTemporaryVariable >> method [
+
+	^ self subclassResponsibility
 ]

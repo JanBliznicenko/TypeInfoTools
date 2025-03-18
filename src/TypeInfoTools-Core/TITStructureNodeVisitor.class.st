@@ -6,6 +6,12 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'processing' }
+TITStructureNodeVisitor >> addTypesTo: aStructureNode [
+
+	self subclassResponsibility
+]
+
 { #category : 'visiting' }
 TITStructureNodeVisitor >> visitBlock: aBlock [
 
