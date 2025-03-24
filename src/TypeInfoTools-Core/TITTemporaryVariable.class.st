@@ -10,7 +10,8 @@ Class {
 TITTemporaryVariable class >> forOCVariableNode: aVariableNode [
 
 	| definingNode |
-	definingNode := aVariableNode variable definingNode.
+	definingNode := aVariableNode variable originalVar definingNode
+		                ifNil: [ aVariableNode variable definingNode ].
 
 	definingNode isDefinedByBlock ifTrue: [
 		^ TITBlockTemporaryVariable forOCVariableNode: definingNode ].
