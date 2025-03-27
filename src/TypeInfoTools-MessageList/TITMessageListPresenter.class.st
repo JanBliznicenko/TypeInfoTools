@@ -4,12 +4,26 @@ Class {
 	#instVars : [
 		'typeInfo',
 		'maxWeight',
-		'typeCollectorsByMessages'
+		'typeCollectorsByMessages',
+		'lowWeightResults'
 	],
 	#category : 'TypeInfoTools-MessageList-Presenters',
 	#package : 'TypeInfoTools-MessageList',
 	#tag : 'Presenters'
 }
+
+{ #category : 'weight' }
+TITMessageListPresenter >> calculateIsLowWeightMethod: aMethod [
+
+	| collectors |
+	collectors := self typeCollectorsByMessages ifEmpty: [ ^ false ].
+	collectors at: aMethod ifPresent: [ :collector |
+		collector weight * 2 < self maxWeight ifFalse: [ ^ false ] ].
+	^ aMethod overriddenMethod
+		  ifNil: [ true ]
+		  ifNotNil: [ :overriddenMethod |
+		  self isLowWeightMethod: overriddenMethod ]
+]
 
 { #category : 'initialization' }
 TITMessageListPresenter >> colorOf: item [
@@ -47,26 +61,22 @@ TITMessageListPresenter >> initializePresenters [
 	listPresenter actions: self messageListActions
 ]
 
-{ #category : 'accessing' }
-TITMessageListPresenter >> isLowWeight: aWeight [
-
-	^ aWeight * 2 < self maxWeight
-]
-
-{ #category : 'accessing' }
+{ #category : 'weight' }
 TITMessageListPresenter >> isLowWeightMethod: aMethod [
 
-	| collectors |
-	collectors := self typeCollectorsByMessages ifEmpty: [ ^ false ].
-	collectors at: aMethod ifPresent: [ :collector |
-		(self isLowWeight: collector weight) ifFalse: [ ^ false ] ].
-	^ aMethod overriddenMethod
-		  ifNil: [ true ]
-		  ifNotNil: [ :overriddenMethod |
-		  self isLowWeightMethod: overriddenMethod ]
+	^ self lowWeightResults
+		  at: aMethod
+		  ifAbsentPut: [ self calculateIsLowWeightMethod: aMethod ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'weight' }
+TITMessageListPresenter >> lowWeightResults [
+
+	^ lowWeightResults ifNil: [
+		  lowWeightResults := IdentityDictionary new ]
+]
+
+{ #category : 'weight' }
 TITMessageListPresenter >> maxWeight [
 
 	maxWeight ifNotNil: [ ^ maxWeight ].
@@ -75,12 +85,24 @@ TITMessageListPresenter >> maxWeight [
 		               pair value weight ]
 ]
 
+{ #category : 'sorting' }
+TITMessageListPresenter >> sortClassesInCachedHierarchy: aMethodDefinition b: otherMethodDefinition [
+
+	| isFirstLowWeight isSecondLowWeight |
+	isFirstLowWeight := self isLowWeightMethod: aMethodDefinition.
+	isSecondLowWeight := self isLowWeightMethod: otherMethodDefinition.
+	isFirstLowWeight = isSecondLowWeight ifFalse: [ ^ isSecondLowWeight ].
+	^ super
+		  sortClassesInCachedHierarchy: aMethodDefinition
+		  b: otherMethodDefinition
+]
+
 { #category : 'accessing' }
 TITMessageListPresenter >> typeCollectorsByMessages [
 
 	typeCollectorsByMessages ifNotNil: [ ^ typeCollectorsByMessages ].
 	typeCollectorsByMessages := Dictionary new.
-	allMessages do: [ :eachMessage |
+	listPresenter items do: [ :eachMessage |
 		eachMessage -> (typeInfo types sortedClasses associations
 			 detect: [ :any |
 			 (any key lookupSelector: eachMessage selector) = eachMessage ]

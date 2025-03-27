@@ -1,6 +1,8 @@
 Class {
 	#name : 'TITMessageSendNode',
 	#superclass : 'TITTypedNode',
+	#traits : 'TITTTypedNodeInMethod',
+	#classTraits : 'TITTTypedNodeInMethod classTrait',
 	#instVars : [
 		'message',
 		'receiver'
@@ -48,6 +50,12 @@ TITMessageSendNode >> message [
 TITMessageSendNode >> message: anObject [
 
 	message := anObject
+]
+
+{ #category : 'accessing' }
+TITMessageSendNode >> method [
+
+	^ self receiver method
 ]
 
 { #category : 'accessing' }

@@ -65,9 +65,9 @@ TITBrowseImplementorsCommand >> executeInJob: job [
 
 	^ TITMessageBrowser new
 		  setRefreshingBlockForImplementorsOf: sourceNode selector;
-		  messages: sourceNode selector implementors;
 		  typeInfo: titNode typeInfo;
 		  title: 'Implementors of ' , sourceNode selector;
+		  messages: sourceNode selector implementors;
 		  open
 ]
 

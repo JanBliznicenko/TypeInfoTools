@@ -3,7 +3,9 @@ Class {
 	#superclass : 'TITTypedNode',
 	#instVars : [
 		'ownerClass',
-		'astMethod'
+		'astMethod',
+		'compilationBlock',
+		'compiledMethod'
 	],
 	#category : 'TypeInfoTools-Core-Structure',
 	#package : 'TypeInfoTools-Core',
@@ -43,9 +45,24 @@ TITMethod >> classDescription [
 ]
 
 { #category : 'accessing' }
+TITMethod >> compilationBlock [
+
+	^ compilationBlock ifNil: [
+		  [ :ocMethod | self realClass >> ocMethod selector asSymbol ] ]
+]
+
+{ #category : 'accessing' }
+TITMethod >> compilationBlock: aBlock [
+
+	compilationBlock := aBlock
+]
+
+{ #category : 'accessing' }
 TITMethod >> compiledMethod [
 
-	^ astMethod compiledMethod
+	^ compiledMethod ifNil: [
+		  compiledMethod := astMethod compiledMethod ifNil: [
+			                    self compilationBlock value: astMethod ] ]
 ]
 
 { #category : 'accessing' }

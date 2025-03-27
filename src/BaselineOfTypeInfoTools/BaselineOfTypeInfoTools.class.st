@@ -21,10 +21,14 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				loads: 'dev' ];
 			package: 'TypeInfoTools-Core'
 			with: [ spec requires: #( 'RoelTyper' 'J2Inferer' ) ];
-			package: 'TypeInfoTools-MessageList'
-			with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
 			package: 'TypeInfoTools-Browser'
 			with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
-			group: 'default'
-			with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser' ) ]
+			package: 'TypeInfoTools-MessageList'
+			with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
+			package: 'TypeInfoTools-Completion'
+			with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
+			group: 'all'
+			with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser'
+				   'TypeInfoTools-Completion' );
+			group: 'default' with: #( 'all' ) ]
 ]

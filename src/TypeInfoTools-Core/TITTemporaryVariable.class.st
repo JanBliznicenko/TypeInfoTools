@@ -1,6 +1,8 @@
 Class {
 	#name : 'TITTemporaryVariable',
 	#superclass : 'TITVariable',
+	#traits : 'TITTTypedNodeInMethod',
+	#classTraits : 'TITTTypedNodeInMethod classTrait',
 	#category : 'TypeInfoTools-Core-Structure',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'Structure'
