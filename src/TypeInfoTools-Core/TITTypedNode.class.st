@@ -15,6 +15,13 @@ TITTypedNode class >> forOCNode: anOCNode [
 	^ TITTypedNodeCreationVisitor visit: anOCNode
 ]
 
+{ #category : 'accessing' }
+TITTypedNode >> compilationBlock: aBlock [
+	"do nothing, hook for subclasses"
+
+	
+]
+
 { #category : 'testing' }
 TITTypedNode >> ifNotProcessedByAnyCollectorAccept: aVisitor [
 

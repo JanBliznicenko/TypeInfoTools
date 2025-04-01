@@ -26,6 +26,6 @@ TITPartialCompiler >> compileMethod: anOCMethod [
 TITPartialCompiler >> compileMethod: anOCMethod onErrorDo: aBlock [
 
 	^ anOCMethod compiler
-		  failBlock: aBlock;
+		  permitFaulty: true;
 		  compile
 ]

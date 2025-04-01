@@ -5,10 +5,16 @@ Trait {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TITTTypedNodeInMethod >> compilationBlock: aBlock [
 
 	self method compilationBlock: aBlock
+]
+
+{ #category : 'accessing' }
+TITTTypedNodeInMethod >> compiledMethod [
+
+	^ self method compiledMethod
 ]
 
 { #category : 'accessing' }

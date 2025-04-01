@@ -22,7 +22,8 @@ TITTypeInferenceCompletionSorter >> sortCompletionList: aList [
 	collector := TITSequentialAdaptorsTypeCollector new.
 	collector addTypesTo: titNode ]
 		on: Error
-		do: [ ^ self weightGroupSorter sortCompletionList: aList ].
+		do: [ :error |
+			^ self weightGroupSorter sortCompletionList: aList ].
 
 	^ self weightGroupSorter sortCompletionList: aList
 ]
