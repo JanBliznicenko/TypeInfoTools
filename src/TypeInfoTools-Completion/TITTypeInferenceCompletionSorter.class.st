@@ -19,7 +19,7 @@ TITTypeInferenceCompletionSorter >> sortCompletionList: aList [
 	titNode := TITTypedNodeCreationVisitor visit: sourceNode receiver.
 	titNode compilationBlock: [ :ocMethod |
 		TITPartialCompiler compileMethod: ocMethod ].
-	collector := TITSequentialAdaptorsTypeCollector new.
+	collector := TITSequentialAdaptorsTypeCollector fast.
 	collector addTypesTo: titNode ]
 		on: Error
 		do: [ :error |

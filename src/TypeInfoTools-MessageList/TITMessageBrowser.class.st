@@ -27,7 +27,8 @@ TITMessageBrowser >> typeInfo: aTypeInfo [
 { #category : 'private' }
 TITMessageBrowser >> windowTitle [
 
-	self flag: #todo_remove_when_superclass_fixed.
+	self flag:
+		'Hotfix of https://github.com/pharo-project/pharo/issues/18052 - remove when fixed'.
 	^ (title ifNil: [ 'Message Browser' ]) , (messageList
 		   ifNil: [ '' ]
 		   ifNotNil: [ :foundList |
