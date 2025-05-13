@@ -64,6 +64,18 @@ TITTypesCollectionSources >> printOn: aStream [
 		  separatedBy: [ aStream nextPutAll: ', ' ]
 ]
 
+{ #category : 'comparing' }
+TITTypesCollectionSources >> threeWayCompareTo: otherSources [
+
+	| weightComparison |
+	weightComparison := (self weight threeWayCompareTo:
+		                     otherSources weight) negated.
+	weightComparison isZero ifFalse: [ ^ weightComparison ].
+	^ self collectors ifEmpty: [ 0 ] ifNotEmpty: [ :existingCollectors |
+			  existingCollectors first sourceName threeWayCompareTo:
+				  otherSources collectors first sourceName ]
+]
+
 { #category : 'accessing' }
 TITTypesCollectionSources >> weight [
 

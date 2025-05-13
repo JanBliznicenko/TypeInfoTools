@@ -25,6 +25,7 @@ TITPartialCompiler >> compileMethod: anOCMethod [
 { #category : 'compiling' }
 TITPartialCompiler >> compileMethod: anOCMethod onErrorDo: aBlock [
 
+	self halt.
 	^ anOCMethod compiler
 		  permitFaulty: true;
 		  compile

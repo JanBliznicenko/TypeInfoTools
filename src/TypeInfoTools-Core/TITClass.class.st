@@ -18,6 +18,15 @@ TITClass class >> forRealClass: aClass [
 		  yourself
 ]
 
+{ #category : 'instance creation' }
+TITClass class >> forRealClass: aClass node: anOCNode [
+
+	^ self new
+		  realClass: aClass;
+		  ocProgramNode: anOCNode;
+		  yourself
+]
+
 { #category : 'visiting' }
 TITClass >> accept: anInferenceToolAdaptor [
 

@@ -9,6 +9,12 @@ Class {
 	#tag : 'Structure'
 }
 
+{ #category : 'instance creation' }
+TITVariable class >> forOCVariableNode: anOCVariableNode [
+
+	^ self subclassResponsibility
+]
+
 { #category : 'testing' }
 TITVariable >> isTemporary [
 

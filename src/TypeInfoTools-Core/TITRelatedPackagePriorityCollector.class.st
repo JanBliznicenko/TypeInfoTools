@@ -35,11 +35,15 @@ TITRelatedPackagePriorityCollector >> classesDependedBy: aPackage [
 { #category : 'processing' }
 TITRelatedPackagePriorityCollector >> classesRelevantToAllPackages [
 
-	^ Set withAll: {
-			  Class.
-			  Metaclass.
-			  ClassDescription.
-			  Behavior }
+	^ (Set withAll: {
+			   Class.
+			   Metaclass.
+			   ClassDescription.
+			   Behavior.
+			   Boolean.
+			   Exception.
+			   String.
+			   Symbol }) , Magnitude withAllSubclasses
 ]
 
 { #category : 'initialization' }
@@ -54,11 +58,11 @@ TITRelatedPackagePriorityCollector >> initialize [
 TITRelatedPackagePriorityCollector >> relatedClassesTo: aPackage [
 
 	^ relatedClasses at: aPackage ifAbsentPut: [
-		  | nameRoot |
-		  nameRoot := aPackage name copyUpTo: $-.
-		  (self classesByPackageNameRoot: nameRoot) asSet
-		  , (self classesDependedBy: aPackage)
-		  , self classesRelevantToAllPackages ]
+			  | nameRoot |
+			  nameRoot := aPackage name copyUpTo: $-.
+			  (self classesByPackageNameRoot: nameRoot) asSet
+			  , (self classesDependedBy: aPackage)
+			  , self classesRelevantToAllPackages ]
 ]
 
 { #category : 'accessing' }

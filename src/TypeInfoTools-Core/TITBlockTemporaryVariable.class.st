@@ -19,7 +19,8 @@ TITBlockTemporaryVariable class >> forOCVariableNode: aVariableNode [
 			'Unable to create TITBlockTemporaryVariable for non-block var' ].
 	^ self new
 		  name: aVariableNode name;
-		  block: (TITBlock forASTBlockNode: blockNode);
+		  block: (TITBlock forOCBlockNode: blockNode);
+		  ocProgramNode: aVariableNode;
 		  yourself
 ]
 

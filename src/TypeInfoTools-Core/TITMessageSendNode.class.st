@@ -4,7 +4,6 @@ Class {
 	#traits : 'TITTTypedNodeInMethod',
 	#classTraits : 'TITTTypedNodeInMethod classTrait',
 	#instVars : [
-		'message',
 		'receiver'
 	],
 	#category : 'TypeInfoTools-Core-Structure',
@@ -13,7 +12,7 @@ Class {
 }
 
 { #category : 'instance creation' }
-TITMessageSendNode class >> forMessage: aMessage [
+TITMessageSendNode class >> forOCMessageNode: aMessage [
 
 	^ self new
 		  message: aMessage;
@@ -43,13 +42,13 @@ TITMessageSendNode >> longDescription [
 { #category : 'accessing' }
 TITMessageSendNode >> message [
 
-	^ message
+	^ self ocProgramNode
 ]
 
 { #category : 'accessing' }
-TITMessageSendNode >> message: anObject [
+TITMessageSendNode >> message: aNode [
 
-	message := anObject
+	^ self ocProgramNode: aNode
 ]
 
 { #category : 'accessing' }
@@ -61,7 +60,7 @@ TITMessageSendNode >> method [
 { #category : 'accessing' }
 TITMessageSendNode >> name [
 
-	^ message selector
+	^ self message selector
 ]
 
 { #category : 'accessing' }
@@ -74,11 +73,11 @@ TITMessageSendNode >> parent [
 TITMessageSendNode >> receiver [
 
 	^ receiver ifNil: [
-		  receiver := TITTypedNodeCreationVisitor visit: message receiver ]
+		  receiver := TITTypedNodeCreationVisitor visit: self message receiver ]
 ]
 
 { #category : 'accessing' }
 TITMessageSendNode >> selector [
 
-	^ message selector
+	^ self message selector
 ]

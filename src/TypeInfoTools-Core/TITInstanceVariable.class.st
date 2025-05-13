@@ -10,6 +10,14 @@ Class {
 }
 
 { #category : 'instance creation' }
+TITInstanceVariable class >> forOCVariableNode: aVariableNode [
+
+	^ (self forSystemInstanceVariable: aVariableNode variable)
+		  ocProgramNode: aVariableNode;
+		  yourself
+]
+
+{ #category : 'instance creation' }
 TITInstanceVariable class >> forSystemInstanceVariable: aVariable [
 
 	^ self new

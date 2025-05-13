@@ -59,7 +59,39 @@ TITTypesCollection >> classesWithCollectors: anObject [
 { #category : 'adding' }
 TITTypesCollection >> collect: aBlock [
 
-	^ classesWithCollectors valuesAndCounts collect: [ :pair | aBlock value: pair key ]
+	^ classesWithCollectors keys collect: [ :pair | aBlock value: pair key ]
+]
+
+{ #category : 'adding' }
+TITTypesCollection >> commonSuperclassOfTopWeightClasses [
+
+	^ self topWeightClasses
+		  ifEmpty: [ nil ]
+		  ifNotEmpty: [ :topWeightClasses |
+				  | arbitraryOne |
+				  arbitraryOne := topWeightClasses anyOne.
+				  topWeightClasses
+					  inject: arbitraryOne
+					  into: [ :commonSuperclass :eachClass |
+							  eachClass = arbitraryOne
+								  ifTrue: [ commonSuperclass ]
+								  ifFalse: [
+										  eachClass isMeta = arbitraryOne isMeta
+											  ifTrue: [
+											  eachClass commonSuperclassWith: commonSuperclass ]
+											  ifFalse: [ ^ nil ] ] ] ]
+]
+
+{ #category : 'adding' }
+TITTypesCollection >> commonSuperclassOfTopWeightClassesOrAny [
+
+	| commonSuperclassOfTopWeightClasses |
+	commonSuperclassOfTopWeightClasses := self
+		                                      commonSuperclassOfTopWeightClasses.
+	(commonSuperclassOfTopWeightClasses = Object or: [
+		 commonSuperclassOfTopWeightClasses = ProtoObject ]) ifTrue: [
+		^ self sortedClasses keyAtIndex: 1 ].
+	^ commonSuperclassOfTopWeightClasses
 ]
 
 { #category : 'adding' }
@@ -111,7 +143,7 @@ TITTypesCollection >> resetCache [
 { #category : 'adding' }
 TITTypesCollection >> select: aBlock [
 
-	^ classesWithCollectors valuesAndCounts select: [ :pair | aBlock value: pair key ]
+	^ classesWithCollectors keys select: [ :pair | aBlock value: pair key ]
 ]
 
 { #category : 'adding' }
@@ -127,16 +159,35 @@ TITTypesCollection >> sortedClasses [
 	(typeInfo types == self and: [
 		 typeInfo collectionElementTypes sortedClasses isNotEmpty ])
 		ifTrue: [
-			classesWithCollectors associationsDo: [ :each |
-				(each key isCollectionClass and: [
-					 (each key includesBehavior: String) not ]) ifTrue: [
-					each value add: TITCollectionElementTypesFoundMarker new ] ] ].
+				classesWithCollectors associationsDo: [ :each |
+						(each key isCollectionClass and: [
+							 (each key includesBehavior: String) not ]) ifTrue: [
+							each value add: TITCollectionElementTypesFoundMarker new ] ] ].
 	^ sortedClasses := ((classesWithCollectors associations select: [
 		                     :eachPair |
 		                     eachPair value weight >= self minimumWeight ])
 		                    sorted: [ :a :b |
 		                    a value weight > b value weight ])
 		                   asOrderedDictionary
+]
+
+{ #category : 'adding' }
+TITTypesCollection >> topWeightClasses [
+
+	| topWeightClasses topWeight |
+	self sortedClasses ifEmpty: [ ^ self sortedClasses ].
+	topWeightClasses := Set new.
+	topWeight := nil.
+	self sortedClasses keysAndValuesDo: [ :class :collectors |
+			topWeight
+				ifNil: [
+						topWeight := collectors weight.
+						topWeightClasses add: class ]
+				ifNotNil: [
+						(collectors weight closeTo: topWeight)
+							ifTrue: [ topWeightClasses add: class ]
+							ifFalse: [ ^ topWeightClasses ] ] ].
+	^ topWeightClasses
 ]
 
 { #category : 'accessing' }

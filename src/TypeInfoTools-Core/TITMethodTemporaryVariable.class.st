@@ -15,6 +15,7 @@ TITMethodTemporaryVariable class >> forOCVariableNode: aVariableNode [
 	^ self new
 		  name: aVariableNode name;
 		  method: (TITMethod forOCMethodNode: aVariableNode methodNode);
+		  ocProgramNode: aVariableNode;
 		  yourself
 ]
 

@@ -49,7 +49,8 @@ TITOCTypingVisitorAdaptor >> sourceName [
 { #category : 'private' }
 TITOCTypingVisitorAdaptor >> typeOf: aTITNode [
 
-	^ (self visitorOf: aTITNode realClass) visit: aTITNode halt
+	aTITNode ocProgramNode ifNil: [ ^ self ].
+	^ (self visitorOf: aTITNode realClass) visit: aTITNode ocProgramNode
 ]
 
 { #category : 'accessing' }
@@ -67,14 +68,12 @@ TITOCTypingVisitorAdaptor >> visitInstanceVariable: aVariable [
 { #category : 'visiting' }
 TITOCTypingVisitorAdaptor >> visitMessageSend: aMessageSend [
 
-	self halt.
 	^ self typeOf: aMessageSend
 ]
 
 { #category : 'visiting' }
 TITOCTypingVisitorAdaptor >> visitMethod: aMethod [
 
-	self halt.
 	^ self typeOf: aMethod
 ]
 

@@ -14,6 +14,7 @@ Class {
 TITSequentialAdaptorsTypeCollector class >> allCollectors [
 
 	^ {
+		  TITOCTypingVisitorAdaptor.
 		  TITRoelTyperAdaptor.
 		  TITJ2InfererTyperAdaptor.
 		  TITRBRefactoryTyperAdaptor.
@@ -25,7 +26,7 @@ TITSequentialAdaptorsTypeCollector class >> allCollectors [
 TITSequentialAdaptorsTypeCollector class >> fast [
 
 	^ self new
-		  collectors: self fastCollectors;
+		  collectorClasses: self fastCollectors;
 		  yourself
 ]
 
@@ -34,6 +35,7 @@ TITSequentialAdaptorsTypeCollector class >> fastCollectors [
 
 	^ {
 		  TITRoelTyperAdaptor.
+		  TITRBRefactoryTyperAdaptor.
 		  TITRelatedPackagePriorityCollector.
 		  TITNameTyperAdaptor }
 ]
@@ -42,8 +44,27 @@ TITSequentialAdaptorsTypeCollector class >> fastCollectors [
 TITSequentialAdaptorsTypeCollector >> addTypesTo: aStructureNode [
 
 	self collectors do: [ :each |
-		each addTypesTo: aStructureNode.
-		reportingBlock cull: each ]
+			[ each addTypesTo: aStructureNode ]
+				on: Error
+				do: [ :err |
+						err freeze.
+						[
+							(GrowlMorph
+								 openWithLabel: 'Type inference: ' , err className
+								 contents: err messageText , String cr , '(click to debug)'
+								 backgroundColor: GrowlMorph theme dangerBackgroundColor
+								 labelColor: GrowlMorph theme badgeTextColor) actionBlock: [
+								err debug ] ] fork ].
+			reportingBlock cull: each ]
+]
+
+{ #category : 'adding' }
+TITSequentialAdaptorsTypeCollector >> collectorClasses: aCollection [
+
+	^ self collectors: (aCollection collect: [ :each |
+				   each new
+					   relatedCollector: self;
+					   yourself ])
 ]
 
 { #category : 'adding' }
@@ -55,16 +76,13 @@ TITSequentialAdaptorsTypeCollector >> collectors [
 { #category : 'adding' }
 TITSequentialAdaptorsTypeCollector >> collectors: aCollectionOfCollectors [
 
-	collectors := aCollectionOfCollectors
+	^ collectors := aCollectionOfCollectors
 ]
 
 { #category : 'adding' }
 TITSequentialAdaptorsTypeCollector >> defaultCollectors [
 
-	^ self class allCollectors collect: [ :each |
-		  each new
-			  relatedCollector: self;
-			  yourself ]
+	^ self collectorClasses: self class allCollectors
 ]
 
 { #category : 'initialization' }

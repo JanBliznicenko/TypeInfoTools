@@ -2,17 +2,18 @@ Class {
 	#name : 'TITTypedNode',
 	#superclass : 'TITStructureNode',
 	#instVars : [
-		'#typeInfo => ToOneRelationSlot inverse: #node inClass: #TITTypeInfo'
+		'#typeInfo => ToOneRelationSlot inverse: #node inClass: #TITTypeInfo',
+		'#ocProgramNode'
 	],
 	#category : 'TypeInfoTools-Core-Structure',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'Structure'
 }
 
-{ #category : 'instance creation' }
-TITTypedNode class >> forOCNode: anOCNode [
+{ #category : 'as yet unclassified' }
+TITTypedNode >> assumesNameOtherMeansSameClass [
 
-	^ TITTypedNodeCreationVisitor visit: anOCNode
+	^ false
 ]
 
 { #category : 'accessing' }
@@ -33,6 +34,18 @@ TITTypedNode >> initialize [
 
 	super initialize.
 	typeInfo := TITTypeInfo new
+]
+
+{ #category : 'accessing' }
+TITTypedNode >> ocProgramNode [
+
+	^ ocProgramNode
+]
+
+{ #category : 'accessing' }
+TITTypedNode >> ocProgramNode: anOCNode [
+
+	ocProgramNode := anOCNode
 ]
 
 { #category : 'class membership' }

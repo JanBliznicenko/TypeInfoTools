@@ -15,6 +15,7 @@ TITMethodInputParameter class >> forOCVariableNode: aVariableNode [
 	^ self new
 		  name: aVariableNode name;
 		  method: (TITMethod forOCMethodNode: aVariableNode methodNode);
+		  ocProgramNode: aVariableNode;
 		  yourself
 ]
 
@@ -22,6 +23,12 @@ TITMethodInputParameter class >> forOCVariableNode: aVariableNode [
 TITMethodInputParameter >> accept: anInferenceToolAdaptor [
 
 	^ anInferenceToolAdaptor visitMethodInputParameter: self
+]
+
+{ #category : 'as yet unclassified' }
+TITMethodInputParameter >> assumesNameOtherMeansSameClass [
+
+	^ true
 ]
 
 { #category : 'accessing' }

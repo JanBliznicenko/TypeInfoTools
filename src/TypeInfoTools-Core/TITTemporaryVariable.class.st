@@ -13,15 +13,17 @@ TITTemporaryVariable class >> forOCVariableNode: aVariableNode [
 
 	| definingNode |
 	definingNode := aVariableNode variable originalVar definingNode
-		                ifNil: [ aVariableNode variable definingNode ].
+		                ifNil: [
+		                aVariableNode variable definingNode ifNil: [
+			                ^ TITNoNode new ] ].
 
 	definingNode isDefinedByBlock ifTrue: [
-		^ TITBlockTemporaryVariable forOCVariableNode: definingNode ].
+		^ TITBlockTemporaryVariable forOCVariableNode: aVariableNode ].
 
 	definingNode isArgumentVariable ifTrue: [
-		^ TITMethodInputParameter forOCVariableNode: definingNode ].
+		^ TITMethodInputParameter forOCVariableNode: aVariableNode ].
 
-	^ TITMethodTemporaryVariable forOCVariableNode: definingNode
+	^ TITMethodTemporaryVariable forOCVariableNode: aVariableNode
 ]
 
 { #category : 'accessing' }

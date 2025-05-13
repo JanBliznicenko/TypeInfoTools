@@ -3,7 +3,6 @@ Class {
 	#superclass : 'TITTypedNode',
 	#instVars : [
 		'parent',
-		'astBlockNode',
 		'index'
 	],
 	#category : 'TypeInfoTools-Core-Structure',
@@ -12,10 +11,10 @@ Class {
 }
 
 { #category : 'instance creation' }
-TITBlock class >> forASTBlockNode: anASTBlockNode [
+TITBlock class >> forOCBlockNode: aBlockNode [
 
 	^ self new
-		  astBlockNode: anASTBlockNode;
+		  ocProgramNode: aBlockNode;
 		  yourself
 ]
 
@@ -23,18 +22,6 @@ TITBlock class >> forASTBlockNode: anASTBlockNode [
 TITBlock >> accept: anInferenceToolAdaptor [
 
 	^ anInferenceToolAdaptor visitBlock: self
-]
-
-{ #category : 'accessing' }
-TITBlock >> astBlockNode [
-
-	^ astBlockNode
-]
-
-{ #category : 'accessing' }
-TITBlock >> astBlockNode: anObject [
-
-	astBlockNode := anObject
 ]
 
 { #category : 'accessing' }
@@ -47,7 +34,7 @@ TITBlock >> classDescription [
 TITBlock >> index [
 
 	^ index ifNil: [
-		  index := self method astMethod blockNodes indexOf: astBlockNode ]
+		  index := self method astMethod blockNodes indexOf: self ocProgramNode ]
 ]
 
 { #category : 'accessing' }
@@ -80,7 +67,7 @@ TITBlock >> ownerClass [
 TITBlock >> parent [
 
 	^ parent ifNil: [
-		  parent := TITMethod forOCMethodNode: astBlockNode methodNode ]
+		  parent := TITMethod forOCMethodNode: self ocProgramNode methodNode ]
 ]
 
 { #category : 'accessing' }

@@ -3,12 +3,51 @@ Class {
 	#superclass : 'TITStructureNodeTypeCollector',
 	#instVars : [
 		'results',
-		'collectionElementResults'
+		'collectionElementResults',
+		'variable'
+	],
+	#classInstVars : [
+		'typicalNames'
 	],
 	#category : 'TypeInfoTools-Core-Inference',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'Inference'
 }
+
+{ #category : 'accessing' }
+TITNameTyperAdaptor class >> reset [
+
+	<script>
+	typicalNames := nil
+]
+
+{ #category : 'accessing' }
+TITNameTyperAdaptor class >> typicalNames [
+
+	^ typicalNames ifNil: [
+			  typicalNames := {
+				                  ('Object' -> { Object }).
+				                  ('S' -> {
+					                   String.
+					                   Stream }).
+				                  ('I' -> { Integer }).
+				                  ('Id' -> {
+					                   Integer.
+					                   UUID }).
+				                  ('Name' -> { String }).
+				                  ('Selector' -> { Symbol }).
+				                  ('Index' -> { Integer }).
+				                  ('Amount' -> { Integer }).
+				                  ('Length' -> {
+					                   Number.
+					                   Duration.
+					                   Timespan }).
+				                  ('Count' -> { Integer }).
+				                  ('Avg' -> { Number }).
+				                  ('Average' -> { Number }).
+				                  ('Max' -> { Number }).
+				                  ('Min' -> { Number }) } asDictionary ]
+]
 
 { #category : 'processing' }
 TITNameTyperAdaptor >> checkName: aString [
@@ -31,6 +70,23 @@ TITNameTyperAdaptor >> checkPluralName: aString [
 TITNameTyperAdaptor >> checkSingularName: aString [
 
 	^ self typesForName: aString
+]
+
+{ #category : 'processing' }
+TITNameTyperAdaptor >> classesIncludingName: aString [
+
+	^ ((Smalltalk globals keys
+		    select: [ :each |
+		    (each beginsWith: aString) or: [ each endsWith: aString ] ]
+		    thenCollect: [ :each | Smalltalk at: each ]) select: [ :each |
+		   each isBehavior ]) asSet
+]
+
+{ #category : 'processing' }
+TITNameTyperAdaptor >> isOtherOfSameClass: aString [
+
+	^ variable assumesNameOtherMeansSameClass and: [
+		  (aString beginsWith: 'Other') or: [ aString beginsWith: 'Another' ] ]
 ]
 
 { #category : 'accessing' }
@@ -71,34 +127,13 @@ TITNameTyperAdaptor >> sourceName [
 { #category : 'processing' }
 TITNameTyperAdaptor >> typesForName: aString [
 
-	| foundClasses typicalNames |
-	foundClasses := aString size < 2
-		                ifTrue: [ Set new ]
-		                ifFalse: [
-			                ((Smalltalk globals keys
-				                  select: [ :each |
-				                  (each beginsWith: aString) or: [
-					                  each endsWith: aString ] ]
-				                  thenCollect: [ :each | Smalltalk at: each ])
-				                 select: [ :each | each isBehavior ]) asSet ].
-	typicalNames := {
-		                ('S' -> {
-			                 String.
-			                 Stream }).
-		                ('I' -> { Integer }).
-		                ('Name' -> { String }).
-		                ('Selector' -> { Symbol }).
-		                ('Index' -> { Integer }).
-		                ('Amount' -> { Integer }).
-		                ('Count' -> { Integer }).
-		                ('Avg' -> { Number }).
-		                ('Average' -> { Number }).
-		                ('Max' -> { Number }).
-		                ('Min' -> { Number }) } asDictionary.
-	typicalNames
-		at: aString
-		ifPresent: [ :typicalClasses | foundClasses addAll: typicalClasses ].
-	^ foundClasses
+	self class typicalNames at: aString ifPresent: [ :typicalClasses |
+			^ typicalClasses flatCollect: [ :each |
+				  each withAllSuperclasses copyUpTo: Object ] ].
+	aString size < 2 ifTrue: [ ^ Set new ].
+	(self isOtherOfSameClass: aString) ifTrue: [
+		^ Set with: variable realClass ].
+	^ self classesIncludingName: aString
 ]
 
 { #category : 'visiting' }
@@ -107,17 +142,18 @@ TITNameTyperAdaptor >> visitVariable: aVariable [
 	| simplifiedName wordClusters |
 	results := Set new.
 	collectionElementResults := Set new.
+	variable := aVariable.
 
 	simplifiedName := (self simplifyName: aVariable name) capitalized.
 
 	wordClusters := OrderedCollection new.
 	wordClusters add: OrderedCollection new.
 	simplifiedName splitCamelCase do: [ :each |
-		each = 'Or'
-			ifTrue: [
-				wordClusters last ifNotEmpty: [
-					wordClusters add: OrderedCollection new ] ]
-			ifFalse: [ wordClusters last add: each ] ].
+			each = 'Or'
+				ifTrue: [
+						wordClusters last ifNotEmpty: [
+							wordClusters add: OrderedCollection new ] ]
+				ifFalse: [ wordClusters last add: each ] ].
 
 	wordClusters do: [ :each | self processCluster: each ].
 

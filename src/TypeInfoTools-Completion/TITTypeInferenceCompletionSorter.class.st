@@ -15,17 +15,21 @@ TITTypeInferenceCompletionSorter >> sortCompletionList: aList [
 	aList ifEmpty: [ ^ aList ].
 
 	[
-	sourceNode := aList anyOne node.
-	titNode := TITTypedNodeCreationVisitor visit: sourceNode receiver.
-	titNode compilationBlock: [ :ocMethod |
-		TITPartialCompiler compileMethod: ocMethod ].
-	collector := TITSequentialAdaptorsTypeCollector fast.
-	collector addTypesTo: titNode ]
+		sourceNode := aList anyOne node.
+		self flag: #wtf.
+		sourceNode parent replaceNode: sourceNode withNode: sourceNode receiver.
+		titNode := TITTypedNodeCreationVisitor visit: sourceNode receiver.
+		titNode compilationBlock: [ :ocMethod | self halt.
+			TITPartialCompiler compileMethod: ocMethod ].
+		collector := TITSequentialAdaptorsTypeCollector fast.
+		collector addTypesTo: titNode ]
 		on: Error
 		do: [ :error |
-			^ self weightGroupSorter sortCompletionList: aList ].
-
-	^ self weightGroupSorter sortCompletionList: aList
+				self halt.
+				^ self weightGroupSorter sortCompletionList: aList ].
+	titNode typeInfo types isEmpty ifFalse: [
+		^ aList sorted: [ :a :b | (titNode typeInfo types sortedClasses keys first includesSelector: a contents) and: [ (titNode typeInfo types sortedClasses keys first includesSelector: a contents) not ]] ].
+	^ aList
 ]
 
 { #category : 'accessing' }

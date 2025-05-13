@@ -6,6 +6,12 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'adding' }
+TITStructureNodeVisitor class >> addTypesTo: aTITNode [
+
+	^ self new addTypesTo: aTITNode
+]
+
 { #category : 'processing' }
 TITStructureNodeVisitor >> addTypesTo: aStructureNode [
 
