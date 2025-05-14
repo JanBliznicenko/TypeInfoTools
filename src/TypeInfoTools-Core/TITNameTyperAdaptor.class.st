@@ -106,6 +106,14 @@ TITNameTyperAdaptor >> processCluster: words [
 	words do: [ :each | self checkName: each ]
 ]
 
+{ #category : 'visiting' }
+TITNameTyperAdaptor >> removeImmprobableResults [
+
+	(variable name includesSubstring: 'test' caseSensitive: false)
+		ifFalse: [
+		results removeAllSuchThat: [ :each | each inheritsFrom: TestCase ] ]
+]
+
 { #category : 'processing' }
 TITNameTyperAdaptor >> simplifyName: aString [
 
@@ -156,6 +164,8 @@ TITNameTyperAdaptor >> visitVariable: aVariable [
 				ifFalse: [ wordClusters last add: each ] ].
 
 	wordClusters do: [ :each | self processCluster: each ].
+
+	self removeImmprobableResults.
 
 	aVariable typeInfo
 		addTypes: results by: self;

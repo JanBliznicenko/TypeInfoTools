@@ -78,7 +78,7 @@ TITTypesCollection >> commonSuperclassOfTopWeightClasses [
 								  ifFalse: [
 										  eachClass isMeta = arbitraryOne isMeta
 											  ifTrue: [
-											  eachClass commonSuperclassWith: commonSuperclass ]
+											  eachClass commonSuperclassSymmetricWith: commonSuperclass ]
 											  ifFalse: [ ^ nil ] ] ] ]
 ]
 
