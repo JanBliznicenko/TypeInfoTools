@@ -65,7 +65,7 @@ TITTypesCollection >> collect: aBlock [
 { #category : 'adding' }
 TITTypesCollection >> commonSuperclassOfTopWeightClasses [
 
-	^ self topWeightClasses
+	^ (self topWeightClasses reject: [ :any | any superclass isNil ])
 		  ifEmpty: [ nil ]
 		  ifNotEmpty: [ :topWeightClasses |
 				  | arbitraryOne |
