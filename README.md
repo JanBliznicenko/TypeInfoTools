@@ -4,7 +4,9 @@ This repository contains experimental tools for type inference in Pharo. The mai
 
 ## Features
 
-- Select an instance or temporary variable and press `Ctrl`/`Cmd` + `Shift` + `T` to display unified type inference results from multiple tools.
+- Select an instance, temporary variable, method or message send and press `Ctrl`/`Cmd` + `Shift` + `T` to display unified type inference results from multiple tools.
+- Select an a message send and press `Ctrl`/`Cmd` + `Shift` + `M` to open implementors with most probable ones at the top
+- Replaces code typing completion by slower but more precise version
 
 ## Compatibility
 
