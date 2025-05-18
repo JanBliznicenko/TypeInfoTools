@@ -18,22 +18,24 @@ TITTypePropertyCompletionSorter >> originalCompletionSorter [
 { #category : 'sorting' }
 TITTypePropertyCompletionSorter >> sortCompletionList: aList [
 
-	| sourceNode type typeWithSuperclasses leastImportantPriority byPriority |
+	| sourceNode type typeWithSuperclasses leastImportantPriority byPriority list |
 	aList ifEmpty: [ ^ aList ].
 
-	sourceNode := aList anyOne node.
+	list := aList asOrderedCollection removeDuplicates asArray.
+
+	sourceNode := list anyOne node.
 
 	sourceNode isMessage ifFalse: [
 			self halt.
-			^ self originalCompletionSorter sortCompletionList: aList ].
+			^ self originalCompletionSorter sortCompletionList: list ].
 	type := sourceNode receiver
 		        propertyAt: #type
 		        ifAbsent: [
-		        ^ self originalCompletionSorter sortCompletionList: aList ].
+		        ^ self originalCompletionSorter sortCompletionList: list ].
 	typeWithSuperclasses := type withAllSuperclasses.
 
 	leastImportantPriority := typeWithSuperclasses size + 1.
-	byPriority := aList groupedBy: [ :eachListItem |
+	byPriority := list groupedBy: [ :eachListItem |
 			              typeWithSuperclasses
 				              detectIndex: [ :class |
 				              class includesSelector: eachListItem contents ]
