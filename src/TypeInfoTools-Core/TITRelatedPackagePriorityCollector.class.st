@@ -35,15 +35,31 @@ TITRelatedPackagePriorityCollector >> classesDependedBy: aPackage [
 { #category : 'processing' }
 TITRelatedPackagePriorityCollector >> classesRelevantToAllPackages [
 
-	^ (Set withAll: {
-			   Class.
-			   Metaclass.
-			   ClassDescription.
-			   Behavior.
-			   Boolean.
-			   Exception.
-			   String.
-			   Symbol }) , Magnitude withAllSubclasses
+	^ Set withAll: {
+			  Class.
+			  Metaclass.
+			  ClassDescription.
+			  Behavior.
+			  Boolean.
+			  Exception.
+			  Error.
+			  String.
+			  Symbol.
+			  Collection.
+			  Array.
+			  OrderedCollection.
+			  Set.
+			  Dictionary.
+			  SortedCollection.
+			  IdentitySet.
+			  OrderedDictionary.
+			  Interval.
+			  Magnitude.
+			  Number.
+			  Character.
+			  Float.
+			  Fraction.
+			  Integer }
 ]
 
 { #category : 'initialization' }

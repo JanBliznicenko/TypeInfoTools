@@ -4,10 +4,11 @@ Class {
 	#instVars : [
 		'results',
 		'collectionElementResults',
-		'variable'
+		'typedNode'
 	],
 	#classInstVars : [
-		'typicalNames'
+		'typicalNames',
+		'collectionClasses'
 	],
 	#category : 'TypeInfoTools-Core-Inference',
 	#package : 'TypeInfoTools-Core',
@@ -15,10 +16,20 @@ Class {
 }
 
 { #category : 'accessing' }
+TITNameTyperAdaptor class >> collectionClasses [
+
+	^ collectionClasses ifNil: [
+			  collectionClasses := Collection withAllSubclasses asSet
+				                       copyWithoutAll:
+				                       TITNodeCollectionType atomicCollectionTypes ]
+]
+
+{ #category : 'class initialization' }
 TITNameTyperAdaptor class >> reset [
 
 	<script>
-	typicalNames := nil
+	typicalNames := nil.
+	collectionClasses := nil
 ]
 
 { #category : 'accessing' }
@@ -54,16 +65,16 @@ TITNameTyperAdaptor >> checkName: aString [
 
 	(self checkSingularName: aString) ifNotEmpty: [ :foundClasses |
 		^ results addAll: foundClasses ].
-	^ collectionElementResults addAll: (self checkPluralName: aString)
+
+	aString isPlural ifFalse: [ ^ {  } ].
+	collectionElementResults addAll: (self checkPluralName: aString).
+	^ results addAll: self class collectionClasses
 ]
 
 { #category : 'processing' }
 TITNameTyperAdaptor >> checkPluralName: aString [
 
-	| singular |
-	aString isPlural ifFalse: [ ^ Set empty ].
-	singular := aString singularize.
-	^ self typesForName: aString
+	^ self typesForName: aString singularize
 ]
 
 { #category : 'processing' }
@@ -75,9 +86,9 @@ TITNameTyperAdaptor >> checkSingularName: aString [
 { #category : 'processing' }
 TITNameTyperAdaptor >> classesIncludingName: aString [
 
+	aString size < 4 ifTrue: [ ^ {  } ].
 	^ ((Smalltalk globals keys
-		    select: [ :each |
-		    (each beginsWith: aString) or: [ each endsWith: aString ] ]
+		    select: [ :each | each splitCamelCase includes: aString ]
 		    thenCollect: [ :each | Smalltalk at: each ]) select: [ :each |
 		   each isBehavior ]) asSet
 ]
@@ -85,8 +96,14 @@ TITNameTyperAdaptor >> classesIncludingName: aString [
 { #category : 'processing' }
 TITNameTyperAdaptor >> isOtherOfSameClass: aString [
 
-	^ variable assumesNameOtherMeansSameClass and: [
+	^ typedNode assumesNameOtherMeansSameClass and: [
 		  (aString beginsWith: 'Other') or: [ aString beginsWith: 'Another' ] ]
+]
+
+{ #category : 'constants' }
+TITNameTyperAdaptor >> majorityTreshold [
+
+	^ 4 / 5
 ]
 
 { #category : 'accessing' }
@@ -107,9 +124,37 @@ TITNameTyperAdaptor >> processCluster: words [
 ]
 
 { #category : 'visiting' }
+TITNameTyperAdaptor >> processTypedNode: aTypedNode [
+
+	| simplifiedName wordClusters |
+	results := Set new.
+	collectionElementResults := Set new.
+	typedNode := aTypedNode.
+
+	simplifiedName := (self simplifyName: aTypedNode name) capitalized.
+
+	wordClusters := OrderedCollection new.
+	wordClusters add: OrderedCollection new.
+	simplifiedName splitCamelCase do: [ :each |
+			each = 'Or'
+				ifTrue: [
+						wordClusters last ifNotEmpty: [
+							wordClusters add: OrderedCollection new ] ]
+				ifFalse: [ wordClusters last add: each ] ].
+
+	wordClusters do: [ :each | self processCluster: each ].
+
+	self removeImmprobableResults.
+
+	aTypedNode typeInfo
+		addTypes: results by: self;
+		addCollectionElementTypes: collectionElementResults by: self
+]
+
+{ #category : 'visiting' }
 TITNameTyperAdaptor >> removeImmprobableResults [
 
-	(variable name includesSubstring: 'test' caseSensitive: false)
+	(typedNode name includesSubstring: 'test' caseSensitive: false)
 		ifFalse: [
 		results removeAllSuchThat: [ :each | each inheritsFrom: TestCase ] ]
 ]
@@ -117,6 +162,10 @@ TITNameTyperAdaptor >> removeImmprobableResults [
 { #category : 'processing' }
 TITNameTyperAdaptor >> simplifyName: aString [
 
+	aString size > 4 ifTrue: [
+			((aString beginsWith: 'each') or: [ aString beginsWith: 'any' ])
+				ifTrue: [
+				aString fifth isUppercase ifTrue: [ ^ aString allButFirst: 4 ] ] ].
 	aString size < 2 ifTrue: [ ^ aString ].
 	aString first = $a ifFalse: [ ^ aString ].
 	aString second isUppercase ifTrue: [ ^ aString allButFirst: 1 ].
@@ -140,36 +189,36 @@ TITNameTyperAdaptor >> typesForName: aString [
 				  each withAllSuperclasses copyUpTo: Object ] ].
 	aString size < 2 ifTrue: [ ^ Set new ].
 	(self isOtherOfSameClass: aString) ifTrue: [
-		^ Set with: variable realClass ].
+		^ Set with: typedNode realClass ].
 	^ self classesIncludingName: aString
+]
+
+{ #category : 'visiting' }
+TITNameTyperAdaptor >> visitMessageSend: aMessageSend [
+
+	| implementors |
+	aMessageSend ocProgramNode isUnary ifFalse: [ ^ self ].
+	implementors := SystemNavigation default allImplementorsOf:
+		                aMessageSend selector.
+	(implementors count: [ :each |
+		 each protocolName beginsWith: 'access' ])
+	< (implementors size * self majorityTreshold) ifTrue: [ ^ self ].
+	self processTypedNode: aMessageSend
+]
+
+{ #category : 'visiting' }
+TITNameTyperAdaptor >> visitMethod: aMethod [
+
+	aMethod selector isUnary ifFalse: [ ^ self ].
+	(aMethod compiledMethod protocolName beginsWith: 'access') ifFalse: [
+		^ self ].
+	self processTypedNode: aMethod
 ]
 
 { #category : 'visiting' }
 TITNameTyperAdaptor >> visitVariable: aVariable [
 
-	| simplifiedName wordClusters |
-	results := Set new.
-	collectionElementResults := Set new.
-	variable := aVariable.
-
-	simplifiedName := (self simplifyName: aVariable name) capitalized.
-
-	wordClusters := OrderedCollection new.
-	wordClusters add: OrderedCollection new.
-	simplifiedName splitCamelCase do: [ :each |
-			each = 'Or'
-				ifTrue: [
-						wordClusters last ifNotEmpty: [
-							wordClusters add: OrderedCollection new ] ]
-				ifFalse: [ wordClusters last add: each ] ].
-
-	wordClusters do: [ :each | self processCluster: each ].
-
-	self removeImmprobableResults.
-
-	aVariable typeInfo
-		addTypes: results by: self;
-		addCollectionElementTypes: collectionElementResults by: self
+	^ self processTypedNode: aVariable
 ]
 
 { #category : 'accessing' }

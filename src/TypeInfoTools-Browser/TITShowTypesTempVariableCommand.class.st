@@ -38,7 +38,7 @@ TITShowTypesTempVariableCommand >> executeInJob: job [
 	| titVariable collector |
 	titVariable := TITTemporaryVariable forOCVariableNode: sourceNode.
 
-	collector := TITSequentialAdaptorsTypeCollector new
+	collector := TITSequentialAdaptorsTypeCollector fast
 		             reportingBlock: [ :typer |
 			             job currentValue: job currentValue + 1 ];
 		             yourself.

@@ -18,7 +18,7 @@ TITOCNodeTypingVisitor >> typeTITNode: aTITNode [
 
 	| type |
 	aTITNode ocProgramNode ifNil: [ ^ self ].
-
+	
 	TITSequentialAdaptorsTypeCollector fast addTypesTo: aTITNode.
 
 	type := aTITNode typeInfo types

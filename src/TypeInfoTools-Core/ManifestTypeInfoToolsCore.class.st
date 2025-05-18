@@ -10,6 +10,13 @@ Class {
 }
 
 { #category : 'code-critics' }
+ManifestTypeInfoToolsCore class >> ruleCollectionProtocolRuleV1FalsePositive [
+
+	<ignoreForCoverage>
+	^ #(#(#(#RGMethodDefinition #(#TITAbstractClassTreeNode #mergeIntoParentWithMyCollectors #false)) #'2025-05-18T12:57:27.866+02:00') )
+]
+
+{ #category : 'code-critics' }
 ManifestTypeInfoToolsCore class >> ruleUsesAddRuleV1FalsePositive [
 
 	<ignoreForCoverage>

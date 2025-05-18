@@ -31,9 +31,12 @@ TITTypesCollection >> addAllFrom: otherTypesCollection [
 { #category : 'adding' }
 TITTypesCollection >> addClass: aClass by: aTypeCollector [
 
+	aClass = ProtoObject ifTrue: [ ^ self ].
 	aClass = Object ifTrue: [ ^ self ].
-	(classesWithCollectors at: aClass ifAbsentPut: [ TITTypesCollectionSources new ])
-		add: aTypeCollector.
+	aClass isTrait ifTrue: [ ^ self ].
+	(classesWithCollectors
+		 at: aClass
+		 ifAbsentPut: [ TITTypesCollectionSources new ]) add: aTypeCollector.
 	self resetCache
 ]
 
@@ -44,7 +47,24 @@ TITTypesCollection >> addClasses: aCollection by: aTypeCollector [
 	aCollection do: [ :each | self addClass: each by: aTypeCollector ]
 ]
 
-{ #category : 'adding' }
+{ #category : 'converting' }
+TITTypesCollection >> asClassTree [
+
+	^ TITClassTree fromDictionary: self classesWithCollectors
+]
+
+{ #category : 'converting' }
+TITTypesCollection >> asSimplifiedClassTree [
+
+	^ self asClassTree
+		  mergeRedundantChildren;
+		  removeProtoObject;
+		  removeVeryLowWeightNodes;
+		  sortByWeight;
+		  yourself
+]
+
+{ #category : 'accessing' }
 TITTypesCollection >> classesWithCollectors [
 
 	^ classesWithCollectors
@@ -56,13 +76,13 @@ TITTypesCollection >> classesWithCollectors: anObject [
 	classesWithCollectors := anObject
 ]
 
-{ #category : 'adding' }
+{ #category : 'enumerating' }
 TITTypesCollection >> collect: aBlock [
 
 	^ classesWithCollectors keys collect: [ :pair | aBlock value: pair key ]
 ]
 
-{ #category : 'adding' }
+{ #category : 'hierarchy' }
 TITTypesCollection >> commonSuperclassOfTopWeightClasses [
 
 	^ (self topWeightClasses reject: [ :any | any superclass isNil ])
@@ -82,7 +102,7 @@ TITTypesCollection >> commonSuperclassOfTopWeightClasses [
 											  ifFalse: [ ^ nil ] ] ] ]
 ]
 
-{ #category : 'adding' }
+{ #category : 'hierarchy' }
 TITTypesCollection >> commonSuperclassOfTopWeightClassesOrAny [
 
 	| commonSuperclassOfTopWeightClasses |
@@ -94,7 +114,7 @@ TITTypesCollection >> commonSuperclassOfTopWeightClassesOrAny [
 	^ commonSuperclassOfTopWeightClasses
 ]
 
-{ #category : 'adding' }
+{ #category : 'enumerating' }
 TITTypesCollection >> do: aBlock [
 
 	^ classesWithCollectors doWithOccurrences: [ :key :value | aBlock value: key ]
@@ -119,7 +139,7 @@ TITTypesCollection >> isNotEmpty [
 	^ self isEmpty not
 ]
 
-{ #category : 'adding' }
+{ #category : 'accessing' }
 TITTypesCollection >> minimumWeight [
 
 	^ 0.99
@@ -134,25 +154,25 @@ TITTypesCollection >> printOn: aStream [
 	aStream nextPutAll: ')'
 ]
 
-{ #category : 'adding' }
+{ #category : 'initialization' }
 TITTypesCollection >> resetCache [
 
 	sortedClasses := nil
 ]
 
-{ #category : 'adding' }
+{ #category : 'enumerating' }
 TITTypesCollection >> select: aBlock [
 
 	^ classesWithCollectors keys select: [ :pair | aBlock value: pair key ]
 ]
 
-{ #category : 'adding' }
+{ #category : 'accessing' }
 TITTypesCollection >> size [
 
 	^ classesWithCollectors size
 ]
 
-{ #category : 'adding' }
+{ #category : 'accessing' }
 TITTypesCollection >> sortedClasses [
 
 	sortedClasses ifNotNil: [ ^ sortedClasses ].
@@ -162,7 +182,7 @@ TITTypesCollection >> sortedClasses [
 				classesWithCollectors associationsDo: [ :each |
 						(each key isCollectionClass and: [
 							 (each key includesBehavior: String) not ]) ifTrue: [
-							each value add: TITCollectionElementTypesFoundMarker new ] ] ].
+							each value add: TITCollectionElementTypesFoundMarker instance ] ] ].
 	^ sortedClasses := ((classesWithCollectors associations select: [
 		                     :eachPair |
 		                     eachPair value weight >= self minimumWeight ])
@@ -171,7 +191,7 @@ TITTypesCollection >> sortedClasses [
 		                   asOrderedDictionary
 ]
 
-{ #category : 'adding' }
+{ #category : 'enumerating' }
 TITTypesCollection >> topWeightClasses [
 
 	| topWeightClasses topWeight |

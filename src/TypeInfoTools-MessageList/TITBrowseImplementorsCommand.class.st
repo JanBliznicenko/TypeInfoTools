@@ -56,7 +56,7 @@ TITBrowseImplementorsCommand >> executeInJob: job [
 	| titNode collector |
 	titNode := TITTypedNodeCreationVisitor visit: sourceNode receiver.
 
-	collector := TITSequentialAdaptorsTypeCollector new
+	collector := TITSequentialAdaptorsTypeCollector fast
 		             reportingBlock: [ :typer |
 			             job currentValue: job currentValue + 1 ];
 		             yourself.
@@ -80,5 +80,5 @@ TITBrowseImplementorsCommand >> informNoneFound [
 { #category : 'execution' }
 TITBrowseImplementorsCommand >> showSingleItem: aTITNode [
 
-	^ TITTypedNodePresenter openOn: aTITNode
+	^ TITTypedNodeTreePresenter openOn: aTITNode
 ]

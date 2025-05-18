@@ -1,5 +1,5 @@
 Class {
-	#name : 'TITTypedNodePresenter',
+	#name : 'TITTypedNodeListPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'typesPresenter',
@@ -12,7 +12,7 @@ Class {
 }
 
 { #category : 'instance creation' }
-TITTypedNodePresenter class >> openOn: aVariableNode [
+TITTypedNodeListPresenter class >> openOn: aVariableNode [
 
 	^ self new
 		  typedNode: aVariableNode;
@@ -20,14 +20,14 @@ TITTypedNodePresenter class >> openOn: aVariableNode [
 ]
 
 { #category : 'initialization' }
-TITTypedNodePresenter >> connectPresenters [
+TITTypedNodeListPresenter >> connectPresenters [
 
 	super connectPresenters.
 	typedNode ifNotNil: [ self update ]
 ]
 
 { #category : 'layout' }
-TITTypedNodePresenter >> defaultCollectionLayout [
+TITTypedNodeListPresenter >> defaultCollectionLayout [
 
 	^ SpPanedLayout newLeftToRight
 		  add: typesPresenter;
@@ -36,7 +36,7 @@ TITTypedNodePresenter >> defaultCollectionLayout [
 ]
 
 { #category : 'layout' }
-TITTypedNodePresenter >> defaultLayout [
+TITTypedNodeListPresenter >> defaultLayout [
 
 	self hasCollectionElementTypes ifTrue: [
 		^ self defaultCollectionLayout ].
@@ -44,7 +44,7 @@ TITTypedNodePresenter >> defaultLayout [
 ]
 
 { #category : 'layout' }
-TITTypedNodePresenter >> defaultSimpleLayout [
+TITTypedNodeListPresenter >> defaultSimpleLayout [
 
 	^ SpBoxLayout newLeftToRight
 		  add: typesPresenter;
@@ -52,14 +52,14 @@ TITTypedNodePresenter >> defaultSimpleLayout [
 ]
 
 { #category : 'layout' }
-TITTypedNodePresenter >> hasCollectionElementTypes [
+TITTypedNodeListPresenter >> hasCollectionElementTypes [
 
 	^ typedNode isNotNil and: [
 		  typedNode typeInfo collectionElementTypes isNotEmpty ]
 ]
 
 { #category : 'initialization' }
-TITTypedNodePresenter >> initializePresenters [
+TITTypedNodeListPresenter >> initializePresenters [
 
 	super initializePresenters.
 	typesPresenter := self instantiate: TITTypesWithSourcesPresenter.
@@ -70,22 +70,29 @@ TITTypedNodePresenter >> initializePresenters [
 ]
 
 { #category : 'initialization' }
-TITTypedNodePresenter >> initializeWindow: aWindow [
+TITTypedNodeListPresenter >> initializeWindow: aWindow [
 
 	super initializeWindow: aWindow.
 	self updateWindow: aWindow
 ]
 
 { #category : 'initialization' }
-TITTypedNodePresenter >> typedNode: aTypedNode [
+TITTypedNodeListPresenter >> typedNode: aTypedNode [
 
 	typedNode := aTypedNode.
 	typesPresenter ifNotNil: [ self update ]
 ]
 
 { #category : 'updating - presenters' }
-TITTypedNodePresenter >> update [
+TITTypedNodeListPresenter >> update [
 
+	(TITClassTree fromDictionary:
+			 typedNode typeInfo types classesWithCollectors)
+		mergeRedundantChildren;
+		removeProtoObject;
+		removeVeryLowWeightNodes;
+		sortByWeight;
+		inspect.
 	typesPresenter typesWithSources:
 		typedNode typeInfo types sortedClasses.
 	collectionElementTypesPresenter typesWithSources:
@@ -95,19 +102,19 @@ TITTypedNodePresenter >> update [
 ]
 
 { #category : 'private' }
-TITTypedNodePresenter >> updateLayout [
+TITTypedNodeListPresenter >> updateLayout [
 
 	self layout: self defaultLayout
 ]
 
 { #category : 'updating - presenters' }
-TITTypedNodePresenter >> updateWindow [
+TITTypedNodeListPresenter >> updateWindow [
 
 	self withWindowDo: [ :window | self updateWindow: window ]
 ]
 
 { #category : 'updating - presenters' }
-TITTypedNodePresenter >> updateWindow: aWindow [
+TITTypedNodeListPresenter >> updateWindow: aWindow [
 
 	| windowExtent |
 	aWindow title: 'Types of '

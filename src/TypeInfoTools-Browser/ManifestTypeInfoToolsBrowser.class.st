@@ -20,5 +20,5 @@ ManifestTypeInfoToolsBrowser class >> ruleClassNotReferencedRuleV1FalsePositive 
 ManifestTypeInfoToolsBrowser class >> ruleInconsistentMethodClassificationRuleV1FalsePositive [
 
 	<ignoreForCoverage>
-	^ #(#(#(#RGMethodDefinition #(#TITTypedNodePresenter #update #false)) #'2025-01-12T14:39:57.645+01:00') )
+	^ #(#(#(#RGMethodDefinition #(#TITTypedNodeListPresenter #update #false)) #'2025-01-12T14:39:57.645+01:00') )
 ]

@@ -34,5 +34,5 @@ TITTShowTypesCommand >> informNoneFound [
 { #category : 'execution' }
 TITTShowTypesCommand >> showSingleItem: aTITNode [
 
-	^ TITTypedNodePresenter openOn: aTITNode
+	^ TITTypedNodeTreePresenter openOn: aTITNode
 ]

@@ -46,6 +46,12 @@ TITTypesCollectionSources >> do: aBlock [
 	^ collectors do: aBlock
 ]
 
+{ #category : 'testing' }
+TITTypesCollectionSources >> includesCollector: aCollector [
+
+	^ collectors includes: aCollector
+]
+
 { #category : 'initialization' }
 TITTypesCollectionSources >> initialize [
 

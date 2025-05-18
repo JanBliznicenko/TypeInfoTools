@@ -15,8 +15,7 @@ Class {
 { #category : 'testing' }
 TITNodeCollectionType class >> acceptsValue: aValue [
 
-	^ aValue isCollection and: [
-		  (self atomicCollectionTypes includes: aValue class) not ]
+	^ self considersAsCollection: aValue class
 ]
 
 { #category : 'accessing' }
@@ -45,6 +44,13 @@ TITNodeCollectionType class >> atomicCollectionTypes [
 				                           WideCharacterSet.
 				                           WordArray } flatCollectAsSet: [ :each |
 				                           each withAllSubclasses ] ]
+]
+
+{ #category : 'testing' }
+TITNodeCollectionType class >> considersAsCollection: aClass [
+
+	^ aClass isCollectionClass and: [
+		  (self atomicCollectionTypes includes: aClass) not ]
 ]
 
 { #category : 'initialization' }

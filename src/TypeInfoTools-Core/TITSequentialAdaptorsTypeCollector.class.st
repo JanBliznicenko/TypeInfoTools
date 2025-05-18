@@ -58,7 +58,7 @@ TITSequentialAdaptorsTypeCollector >> addTypesTo: aStructureNode [
 			reportingBlock cull: each ]
 ]
 
-{ #category : 'adding' }
+{ #category : 'accessing' }
 TITSequentialAdaptorsTypeCollector >> collectorClasses: aCollection [
 
 	^ self collectors: (aCollection collect: [ :each |
@@ -67,13 +67,13 @@ TITSequentialAdaptorsTypeCollector >> collectorClasses: aCollection [
 					   yourself ])
 ]
 
-{ #category : 'adding' }
+{ #category : 'accessing' }
 TITSequentialAdaptorsTypeCollector >> collectors [
 
 	^ collectors ifNil: [ self defaultCollectors ]
 ]
 
-{ #category : 'adding' }
+{ #category : 'accessing' }
 TITSequentialAdaptorsTypeCollector >> collectors: aCollectionOfCollectors [
 
 	^ collectors := aCollectionOfCollectors

@@ -57,7 +57,7 @@ TITShowTypesMessageSendCommand >> executeInJob: job [
 	| titMessageSend collector |
 	titMessageSend := TITMessageSendNode forOCMessageNode: sourceNode.
 
-	collector := TITSequentialAdaptorsTypeCollector new
+	collector := TITSequentialAdaptorsTypeCollector fast
 		             reportingBlock: [ :typer |
 			             job currentValue: job currentValue + 1 ];
 		             yourself.
@@ -78,5 +78,5 @@ TITShowTypesMessageSendCommand >> informNoneFound [
 { #category : 'execution' }
 TITShowTypesMessageSendCommand >> showSingleItem: aTITNode [
 
-	^ TITTypedNodePresenter openOn: aTITNode
+	^ TITTypedNodeTreePresenter openOn: aTITNode
 ]

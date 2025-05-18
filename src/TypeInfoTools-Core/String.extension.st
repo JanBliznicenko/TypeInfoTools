@@ -37,11 +37,13 @@ String >> copyFrom: n UpToSubstring: aSubstring [
 String >> isPlural [
 
 	| irregularPlurals singularExceptions wordLowercase |
+	self size < 3 ifTrue: [ ^ false ].
+
 	irregularPlurals := { 'children'. 'men'. 'women'. 'people'. 'mice'.
 	                    'teeth'. 'feet'. 'geese'. 'criteria'. 'data'.
 	                    'phenomena'. 'lice'. 'cacti'. 'nuclei'. 'fungi'.
 	                    'bacteria'. 'indices'. 'matrices'. 'oxen' }.
-	singularExceptions := #( 's' 'news' 'series' 'species' 'deer' 'sheep'
+	singularExceptions := #( 'news' 'series' 'species' 'deer' 'sheep'
 	                         'fish' 'aircraft' 'information'
 	                         'equipment' ).
 	wordLowercase := self asLowercase.
@@ -53,9 +55,9 @@ String >> isPlural [
 		ifTrue: [ ^ true ].
 
 	((wordLowercase endsWith: 's') and: [
-		 (wordLowercase endsWith: 'ss') not and: [
-			 (wordLowercase endsWith: 'us') not and: [
-				 (wordLowercase endsWith: 'is') not ] ] ]) ifTrue: [ ^ true ].
+			 (wordLowercase endsWith: 'ss') not and: [
+					 (wordLowercase endsWith: 'us') not and: [
+						 (wordLowercase endsWith: 'is') not ] ] ]) ifTrue: [ ^ true ].
 
 	^ false
 ]
