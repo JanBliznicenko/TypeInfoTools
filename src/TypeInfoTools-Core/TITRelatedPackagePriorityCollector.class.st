@@ -40,6 +40,7 @@ TITRelatedPackagePriorityCollector >> classesRelevantToAllPackages [
 			  Metaclass.
 			  ClassDescription.
 			  Behavior.
+			  BlockClosure.
 			  Boolean.
 			  Exception.
 			  Error.

@@ -9,3 +9,13 @@ CompiledMethod >> methodProfilingData [
 	<primitive: 217>
 	self primitiveFailed
 ]
+
+{ #category : '*TypeInfoTools-Core' }
+CompiledMethod >> threeWayCompareTo: otherMethod [
+
+	| classComparison |
+	classComparison := self methodClass threeWayCompareTo:
+		                   otherMethod methodClass.
+	classComparison isZero ifFalse: [ ^ classComparison ].
+	^ self selector threeWayCompareTo: otherMethod selector
+]

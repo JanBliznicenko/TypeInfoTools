@@ -35,10 +35,9 @@ TITClassTreePresenter >> displayColorOf: aNode [
 	| intensity |
 	classTree maxWeightInTree = classTree minWeightInTree ifTrue: [
 		^ self theme textColor ].
-	intensity := (aNode weight - classTree minWeightInTree) squared
+	intensity := aNode weight - classTree minWeightInTree
 	             /
-	             (classTree maxWeightInTree - classTree minWeightInTree)
-		             squared.
+	             (classTree maxWeightInTree - classTree minWeightInTree).
 	^ self theme textColor
 		  mixed: intensity
 		  with: self theme disabledTextColor

@@ -25,7 +25,7 @@ TITMethodInputParameter >> accept: anInferenceToolAdaptor [
 	^ anInferenceToolAdaptor visitMethodInputParameter: self
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'testing' }
 TITMethodInputParameter >> assumesNameOtherMeansSameClass [
 
 	^ true

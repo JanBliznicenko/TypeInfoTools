@@ -10,7 +10,7 @@ Class {
 	#tag : 'Structure'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'testing' }
 TITTypedNode >> assumesNameOtherMeansSameClass [
 
 	^ false
@@ -48,7 +48,7 @@ TITTypedNode >> ocProgramNode: anOCNode [
 	ocProgramNode := anOCNode
 ]
 
-{ #category : 'class membership' }
+{ #category : 'accessing' }
 TITTypedNode >> ownerClass [
 
 	^ self parent ownerClass

@@ -3,7 +3,6 @@ Class {
 	#superclass : 'TITTypedNode',
 	#instVars : [
 		'ownerClass',
-		'astMethod',
 		'compilationBlock',
 		'compiledMethod'
 	],
@@ -16,7 +15,7 @@ Class {
 TITMethod class >> forOCMethodNode: aMethodNode [
 
 	^ self new
-		  astMethod: aMethodNode;
+		  ocProgramNode: aMethodNode;
 		  yourself
 ]
 
@@ -24,18 +23,6 @@ TITMethod class >> forOCMethodNode: aMethodNode [
 TITMethod >> accept: anInferenceToolAdaptor [
 
 	^ anInferenceToolAdaptor visitMethod: self
-]
-
-{ #category : 'accessing' }
-TITMethod >> astMethod [
-
-	^ astMethod
-]
-
-{ #category : 'accessing' }
-TITMethod >> astMethod: anObject [
-
-	astMethod := anObject
 ]
 
 { #category : 'accessing' }
@@ -61,8 +48,9 @@ TITMethod >> compilationBlock: aBlock [
 TITMethod >> compiledMethod [
 
 	^ compiledMethod ifNil: [
-		  compiledMethod := astMethod compiledMethod ifNil: [
-			                    self compilationBlock value: astMethod ] ]
+			  compiledMethod := self ocProgramNode compiledMethod ifNil: [
+				                    self compilationBlock value:
+					                    self ocProgramNode ] ]
 ]
 
 { #category : 'accessing' }
@@ -74,14 +62,15 @@ TITMethod >> method [
 { #category : 'accessing' }
 TITMethod >> name [
 
-	^ self astMethod selector
+	^ self selector
 ]
 
 { #category : 'accessing' }
 TITMethod >> ownerClass [
 
 	^ ownerClass ifNil: [
-		  ownerClass := TITClass forRealClass: astMethod methodClass ]
+		  ownerClass := TITClass forRealClass:
+			                self ocProgramNode methodClass ]
 ]
 
 { #category : 'accessing' }
@@ -100,4 +89,10 @@ TITMethod >> parent [
 TITMethod >> realClass [
 
 	^ self ownerClass realClass
+]
+
+{ #category : 'accessing' }
+TITMethod >> selector [
+
+	^ (self ocProgramNode ifNil: [ self compiledMethod ]) selector
 ]

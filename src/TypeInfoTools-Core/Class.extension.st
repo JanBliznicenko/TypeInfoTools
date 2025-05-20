@@ -6,3 +6,9 @@ Class >> commonSuperclassSymmetricWith: aClass [
 	<reflection: 'Class structural inspection - Iterating and querying hierarchy'>
 	^ self withAllSuperclasses detect: [ :class | (aClass withAllSuperclasses includes: class) ] ifNone: nil
 ]
+
+{ #category : '*TypeInfoTools-Core' }
+Class >> threeWayCompareTo: otherClass [
+
+	^ self name threeWayCompareTo: otherClass name
+]

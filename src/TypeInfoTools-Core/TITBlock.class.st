@@ -34,7 +34,7 @@ TITBlock >> classDescription [
 TITBlock >> index [
 
 	^ index ifNil: [
-		  index := self method astMethod blockNodes indexOf: self ocProgramNode ]
+		  index := self method ocProgramNode blockNodes indexOf: self ocProgramNode ]
 ]
 
 { #category : 'accessing' }

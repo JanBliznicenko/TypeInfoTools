@@ -88,9 +88,24 @@ TITNameTyperAdaptor >> classesIncludingName: aString [
 
 	aString size < 4 ifTrue: [ ^ {  } ].
 	^ ((Smalltalk globals keys
-		    select: [ :each | each splitCamelCase includes: aString ]
+		    select: [ :each | self isName: aString consideredTypeName: each ]
 		    thenCollect: [ :each | Smalltalk at: each ]) select: [ :each |
 		   each isBehavior ]) asSet
+]
+
+{ #category : 'processing' }
+TITNameTyperAdaptor >> isName: aNodeName consideredTypeName: aClassName [
+
+	| firstLowercaseIndex classWithoutPrefix |
+	(aClassName beginsWith: aNodeName) ifTrue: [ ^ true ].
+	firstLowercaseIndex := aClassName
+		                       detectIndex: [ :aCharacter |
+		                       aCharacter isLowercase ]
+		                       ifNone: 2.
+	classWithoutPrefix := aClassName
+		                      copyFrom: (firstLowercaseIndex - 1 max: 1)
+		                      to: aClassName size.
+	^ classWithoutPrefix includesSubstring: aNodeName
 ]
 
 { #category : 'processing' }
@@ -162,17 +177,18 @@ TITNameTyperAdaptor >> removeImmprobableResults [
 { #category : 'processing' }
 TITNameTyperAdaptor >> simplifyName: aString [
 
-	aString size > 4 ifTrue: [
-			((aString beginsWith: 'each') or: [ aString beginsWith: 'any' ])
-				ifTrue: [
-				aString fifth isUppercase ifTrue: [ ^ aString allButFirst: 4 ] ] ].
-	aString size < 2 ifTrue: [ ^ aString ].
+	aString size < 3 ifTrue: [ ^ aString ].
+	aString size > 3 ifTrue: [
+			(aString beginsWith: 'any') ifTrue: [
+				aString fourth isUppercase ifTrue: [ ^ aString allButFirst: 3 ] ].
+			aString size > 4 ifTrue: [
+					(aString beginsWith: 'each') ifTrue: [
+						aString fifth isUppercase ifTrue: [ ^ aString allButFirst: 4 ] ] ] ].
 	aString first = $a ifFalse: [ ^ aString ].
 	aString second isUppercase ifTrue: [ ^ aString allButFirst: 1 ].
-	aString size = 2 ifTrue: [ ^ aString ].
 	aString second = $n ifFalse: [ ^ aString ].
-	aString third isUppercase ifFalse: [ ^ aString ].
-	^ aString allButFirst: 2
+	aString third isUppercase ifTrue: [ ^ aString allButFirst: 2 ].
+	^ aString
 ]
 
 { #category : 'accessing' }
