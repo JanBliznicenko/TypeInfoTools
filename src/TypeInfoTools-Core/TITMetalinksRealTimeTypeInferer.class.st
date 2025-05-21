@@ -1,5 +1,5 @@
 Class {
-	#name : 'TITMetalinksRealTimeTypeInferer',
+	#name : 'TITMetaLinksRealTimeTypeInferer',
 	#superclass : 'Object',
 	#instVars : [
 		'typeCollectionsByNodes',
@@ -16,7 +16,7 @@ Class {
 }
 
 { #category : 'adding' }
-TITMetalinksRealTimeTypeInferer >> addLinksToArgumentsOfMethodNode: aMethodNode [
+TITMetaLinksRealTimeTypeInferer >> addLinksToArgumentsOfMethodNode: aMethodNode [
 
 	MetaLink new
 		metaObject: [ :arguments |
@@ -27,7 +27,7 @@ TITMetalinksRealTimeTypeInferer >> addLinksToArgumentsOfMethodNode: aMethodNode 
 ]
 
 { #category : 'adding' }
-TITMetalinksRealTimeTypeInferer >> addLinksToMethod: aMethod [
+TITMetaLinksRealTimeTypeInferer >> addLinksToMethod: aMethod [
 
 	| class |
 	class := aMethod methodClass ifNil: [ ^ self ].
@@ -49,7 +49,7 @@ TITMetalinksRealTimeTypeInferer >> addLinksToMethod: aMethod [
 ]
 
 { #category : 'adding' }
-TITMetalinksRealTimeTypeInferer >> addLinksToPackageNamed: aPackageName [
+TITMetaLinksRealTimeTypeInferer >> addLinksToPackageNamed: aPackageName [
 
 	| package definedClasses |
 	package := aPackageName asPackage.
@@ -62,13 +62,13 @@ TITMetalinksRealTimeTypeInferer >> addLinksToPackageNamed: aPackageName [
 ]
 
 { #category : 'adding' }
-TITMetalinksRealTimeTypeInferer >> addTypeOf: aValue asPossibleTypeOf: aNode [
+TITMetaLinksRealTimeTypeInferer >> addTypeOf: aValue asPossibleTypeOf: aNode [
 
 	(self typeCollectorFor: aValue) addTypeOf: aValue to: aNode
 ]
 
 { #category : 'initialization' }
-TITMetalinksRealTimeTypeInferer >> initialize [
+TITMetaLinksRealTimeTypeInferer >> initialize [
 
 	super initialize.
 	typeCollectionsByNodes := IdentityDictionary new

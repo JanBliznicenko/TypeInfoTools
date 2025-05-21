@@ -20,5 +20,5 @@ ManifestTypeInfoToolsCore class >> ruleCollectionProtocolRuleV1FalsePositive [
 ManifestTypeInfoToolsCore class >> ruleUsesAddRuleV1FalsePositive [
 
 	<ignoreForCoverage>
-	^ #(#(#(#RGMethodDefinition #(#TITNameTyperAdaptor #checkName: #false)) #'2024-10-03T05:06:35.534+02:00') #(#(#RGMethodDefinition #(#TITMetalinksRealTimeTypeInferer #addLinksToMethod: #false)) #'2025-05-15T09:43:46.846+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#TITNameTyperAdaptor #checkName: #false)) #'2024-10-03T05:06:35.534+02:00') #(#(#RGMethodDefinition #(#TITMetaLinksRealTimeTypeInferer #addLinksToMethod: #false)) #'2025-05-15T09:43:46.846+02:00') )
 ]

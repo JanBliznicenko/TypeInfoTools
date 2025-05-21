@@ -21,7 +21,7 @@ TITNameTyperAdaptor class >> collectionClasses [
 	^ collectionClasses ifNil: [
 			  collectionClasses := Collection withAllSubclasses asSet
 				                       copyWithoutAll:
-				                       TITNodeCollectionType atomicCollectionTypes ]
+				                       TITCollectionTypeHolder atomicCollectionTypes ]
 ]
 
 { #category : 'class initialization' }

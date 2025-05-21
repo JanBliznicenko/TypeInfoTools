@@ -1,6 +1,6 @@
 Class {
-	#name : 'TITNodeCollectionType',
-	#superclass : 'TITNodeType',
+	#name : 'TITCollectionTypeHolder',
+	#superclass : 'TITTypeHolder',
 	#instVars : [
 		'elementType'
 	],
@@ -13,13 +13,13 @@ Class {
 }
 
 { #category : 'testing' }
-TITNodeCollectionType class >> acceptsValue: aValue [
+TITCollectionTypeHolder class >> acceptsClass: aClass [
 
-	^ self considersAsCollection: aValue class
+	^ self considersAsCollection: aClass
 ]
 
 { #category : 'accessing' }
-TITNodeCollectionType class >> atomicCollectionTypes [
+TITCollectionTypeHolder class >> atomicCollectionTypes [
 
 	^ atomicCollectionTypes ifNil: [
 			  atomicCollectionTypes := {
@@ -47,39 +47,57 @@ TITNodeCollectionType class >> atomicCollectionTypes [
 ]
 
 { #category : 'testing' }
-TITNodeCollectionType class >> considersAsCollection: aClass [
+TITCollectionTypeHolder class >> considersAsCollection: aClass [
 
 	^ aClass isCollectionClass and: [
 		  (self atomicCollectionTypes includes: aClass) not ]
 ]
 
 { #category : 'initialization' }
-TITNodeCollectionType class >> reset [
+TITCollectionTypeHolder class >> reset [
 
 	<script>
 	atomicCollectionTypes := nil
 ]
 
+{ #category : 'converting' }
+TITCollectionTypeHolder >> asStringOn: aStream [
+
+	self type printOn: aStream.
+	aStream nextPut: ${.
+	self elementType printOn: aStream.
+	aStream nextPut: $}
+]
+
 { #category : 'accessing' }
-TITNodeCollectionType >> collectionType [
+TITCollectionTypeHolder >> collectionType [
 
 	^ self type
 ]
 
 { #category : 'accessing' }
-TITNodeCollectionType >> collectionType: aClass [
+TITCollectionTypeHolder >> collectionType: aClass [
 
 	self type: aClass
 ]
 
 { #category : 'accessing' }
-TITNodeCollectionType >> elementType [
+TITCollectionTypeHolder >> elementType [
 
 	^ elementType
 ]
 
 { #category : 'accessing' }
-TITNodeCollectionType >> elementType: aClass [
+TITCollectionTypeHolder >> elementType: aClass [
 
 	elementType := aClass
+]
+
+{ #category : 'accessing' }
+TITCollectionTypeHolder >> fillFromValue: aCollection [
+
+	super fillFromValue: aCollection.
+	aCollection ifEmpty: [ ^ self ].
+	"we do not save every one as it could be incredibly slow"
+	elementType := aCollection anyOne class
 ]
