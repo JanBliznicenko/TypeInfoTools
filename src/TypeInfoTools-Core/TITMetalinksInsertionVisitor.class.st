@@ -73,14 +73,14 @@ TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
 	| link |
 	link := MetaLink new.
 	link
-		metaObject: [ :arguments :value |
-				arguments withIndexDo: [ :eachArgument :index |
+		metaObject: [ :arguments |
+				arguments withIndexDo: [ :eachArgument :index | 
+					"typeGatherer
+					saveTypeOf: value
+					inReturnOfMethod: aMethodNode"
 							typeGatherer
 								saveTypeOf: eachArgument
-								inVariable: (aMethodNode arguments at: index) ]
-				"typeGatherer
-					saveTypeOf: value
-					inReturnOfMethod: aMethodNode" ];
+								inVariable: (aMethodNode arguments at: index) ] ];
 		selector: #value:;
 		arguments: #( arguments );
 		control: #before.
