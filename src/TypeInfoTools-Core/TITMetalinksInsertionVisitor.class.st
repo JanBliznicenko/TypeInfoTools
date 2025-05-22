@@ -53,39 +53,39 @@ TITMetaLinksInsertionVisitor >> visitAssignmentNode: anAssignmentNode [
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitMessageNode: aMessageNode [
 
-	| link |
+	"| link |
 	link := MetaLink new.
 	link
 		metaObject: [ :returnedValue |
 				typeGatherer saveTypeOf: returnedValue inMessage: aMessageNode  ];
 		selector: #value:;
 		arguments: #( value );
-		control: #after.
+		control: #before.
 	links add: link.
-	aMessageNode link: link.
+	aMessageNode link: link."
 
 	super visitMessageNode: aMessageNode
 ]
 
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
-	"| link |
+
+	| link |
 	link := MetaLink new.
 	link
 		metaObject: [ :arguments :value |
 				arguments withIndexDo: [ :eachArgument :index |
-					typeGatherer
-					saveTypeOf: eachArgument
-					inVariable: (aMethodNode arguments at: index)
-						 ].
-				typeGatherer
+							typeGatherer
+								saveTypeOf: eachArgument
+								inVariable: (aMethodNode arguments at: index) ]
+				"typeGatherer
 					saveTypeOf: value
-					inReturnOfMethod: aMethodNode ];
-		selector: #value:value:;
-		arguments: #( arguments value );
-		control: #after.
+					inReturnOfMethod: aMethodNode" ];
+		selector: #value:;
+		arguments: #( arguments );
+		control: #before.
 	links add: link.
-	aMethodNode link: link."
+	aMethodNode link: link.
 
 	super visitMethodNode: aMethodNode
 ]
