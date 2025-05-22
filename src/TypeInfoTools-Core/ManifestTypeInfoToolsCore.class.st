@@ -17,8 +17,29 @@ ManifestTypeInfoToolsCore class >> ruleCollectionProtocolRuleV1FalsePositive [
 ]
 
 { #category : 'code-critics' }
+ManifestTypeInfoToolsCore class >> ruleFloatReferencesRuleV1FalsePositive [
+
+	<ignoreForCoverage>
+	^ #(#(#(#RGMethodDefinition #(#'TITTypesCollection class' #classReplacements #true)) #'2025-05-22T05:11:55.136+02:00') )
+]
+
+{ #category : 'code-critics' }
+ManifestTypeInfoToolsCore class >> ruleStringConcatenationRuleV1FalsePositive [
+
+	<ignoreForCoverage>
+	^ #(#(#(#RGMethodDefinition #(#TITMetaLinksRealTimeTypeInferer #variableTypesByNames #false)) #'2025-05-22T04:40:02.307+02:00') )
+]
+
+{ #category : 'code-critics' }
 ManifestTypeInfoToolsCore class >> ruleUsesAddRuleV1FalsePositive [
 
 	<ignoreForCoverage>
 	^ #(#(#(#RGMethodDefinition #(#TITNameTyperAdaptor #checkName: #false)) #'2024-10-03T05:06:35.534+02:00') #(#(#RGMethodDefinition #(#TITMetaLinksRealTimeTypeInferer #addLinksToMethod: #false)) #'2025-05-15T09:43:46.846+02:00') )
+]
+
+{ #category : 'code-critics' }
+ManifestTypeInfoToolsCore class >> ruleUsesTrueRuleV1FalsePositive [
+
+	<ignoreForCoverage>
+	^ #(#(#(#RGMethodDefinition #(#'TITTypesCollection class' #classReplacements #true)) #'2025-05-22T05:11:48.191+02:00') )
 ]

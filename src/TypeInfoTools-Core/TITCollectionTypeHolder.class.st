@@ -61,6 +61,12 @@ TITCollectionTypeHolder class >> reset [
 	atomicCollectionTypes := nil
 ]
 
+{ #category : 'copying' }
+TITCollectionTypeHolder >> , anotherHolder [
+
+	^ anotherHolder copyWithCollectionTypeHolder: self
+]
+
 { #category : 'adding' }
 TITCollectionTypeHolder >> addValue: aValue [
 
@@ -69,10 +75,24 @@ TITCollectionTypeHolder >> addValue: aValue [
 	elementTypes := elementTypes withValue: aValue anyOne
 ]
 
+{ #category : 'adding' }
+TITCollectionTypeHolder >> copyWithCollectionHolder: anotherTypeHolder [
+
+	^ (self copyWithTypeHolder: anotherTypeHolder)
+		  elementTypes: elementTypes , anotherTypeHolder elementTypes;
+		  yourself
+]
+
 { #category : 'accessing' }
 TITCollectionTypeHolder >> elementTypes [
 
 	^ elementTypes
+]
+
+{ #category : 'accessing' }
+TITCollectionTypeHolder >> elementTypes: anObject [
+
+	elementTypes := anObject
 ]
 
 { #category : 'initialization' }
@@ -80,6 +100,13 @@ TITCollectionTypeHolder >> initialize [
 
 	super initialize.
 	elementTypes := TITEmptyTypeHolder new
+]
+
+{ #category : 'private' }
+TITCollectionTypeHolder >> mergeTypes [
+
+	super mergeTypes.
+	elementTypes mergeTypes
 ]
 
 { #category : 'adding' }

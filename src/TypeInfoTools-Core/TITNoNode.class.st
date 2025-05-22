@@ -26,6 +26,12 @@ TITNoNode >> name [
 ]
 
 { #category : 'accessing' }
+TITNoNode >> ocProgramNode [
+
+	^ nil
+]
+
+{ #category : 'accessing' }
 TITNoNode >> parent [
 
 	self notify:

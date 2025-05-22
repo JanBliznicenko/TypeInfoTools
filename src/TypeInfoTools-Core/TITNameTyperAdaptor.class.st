@@ -159,7 +159,7 @@ TITNameTyperAdaptor >> processTypedNode: aTypedNode [
 
 	wordClusters do: [ :each | self processCluster: each ].
 
-	self removeImmprobableResults.
+	self removeImprobableResults.
 
 	aTypedNode typeInfo
 		addTypes: results by: self;
@@ -167,7 +167,7 @@ TITNameTyperAdaptor >> processTypedNode: aTypedNode [
 ]
 
 { #category : 'visiting' }
-TITNameTyperAdaptor >> removeImmprobableResults [
+TITNameTyperAdaptor >> removeImprobableResults [
 
 	(typedNode name includesSubstring: 'test' caseSensitive: false)
 		ifFalse: [

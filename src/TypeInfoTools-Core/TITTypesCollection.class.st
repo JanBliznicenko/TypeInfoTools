@@ -6,10 +6,38 @@ Class {
 		'sortedClasses',
 		'classesWithCollectors'
 	],
+	#classInstVars : [
+		'classReplacements'
+	],
 	#category : 'TypeInfoTools-Core-Inference',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'Inference'
 }
+
+{ #category : 'accessing' }
+TITTypesCollection class >> afterClassReplacement: aClass [
+
+	^ self classReplacements at: aClass ifAbsent: [ aClass ]
+]
+
+{ #category : 'accessing' }
+TITTypesCollection class >> classReplacements [
+
+	^ classReplacements ifNil: [
+			  classReplacements := {
+				                       (True -> Boolean).
+				                       (False -> Boolean).
+				                       (ByteString -> String).
+				                       (WideString -> String).
+				                       (ByteSymbol -> Symbol).
+				                       (WideSymbol -> Symbol).
+				                       (BoxedFloat64 -> Float).
+				                       (SmallFloat64 -> Float).
+				                       (LargeInteger -> Integer).
+				                       (LargeNegativeInteger -> Integer).
+				                       (LargePositiveInteger -> Integer).
+				                       (SmallInteger -> Integer) } asDictionary ]
+]
 
 { #category : 'instance creation' }
 TITTypesCollection class >> forTypeInfo: aTypeInfo [
@@ -17,6 +45,13 @@ TITTypesCollection class >> forTypeInfo: aTypeInfo [
 	^ self new
 		  typeInfo: aTypeInfo;
 		  yourself
+]
+
+{ #category : 'accessing' }
+TITTypesCollection class >> reset [
+
+	super reset.
+	classReplacements := nil
 ]
 
 { #category : 'adding' }

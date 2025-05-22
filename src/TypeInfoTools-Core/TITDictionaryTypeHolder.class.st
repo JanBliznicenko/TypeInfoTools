@@ -16,11 +16,25 @@ TITDictionaryTypeHolder class >> acceptsClass: aClass [
 		  aClass = OrderedDictionary or: [ aClass = SmallDictionary ] ]
 ]
 
+{ #category : 'copying' }
+TITDictionaryTypeHolder >> , anotherHolder [
+
+	^ anotherHolder copyWithDictionaryTypeHolder: self
+]
+
 { #category : 'adding' }
 TITDictionaryTypeHolder >> addValue: aValue [
 
 	super addValue: aValue.
 	aValue keysDo: [ :eachKey | ^ keyTypes := keyTypes withValue: eachKey ]
+]
+
+{ #category : 'adding' }
+TITDictionaryTypeHolder >> copyWithDictionaryTypeHolder: anotherTypeHolder [
+
+	^ (self copyWithCollectionHolder: anotherTypeHolder)
+		  keyTypes: keyTypes , anotherTypeHolder keyTypes;
+		  yourself
 ]
 
 { #category : 'initialization' }
@@ -34,6 +48,19 @@ TITDictionaryTypeHolder >> initialize [
 TITDictionaryTypeHolder >> keyTypes [
 
 	^ keyTypes
+]
+
+{ #category : 'accessing' }
+TITDictionaryTypeHolder >> keyTypes: anObject [
+
+	keyTypes := anObject
+]
+
+{ #category : 'private' }
+TITDictionaryTypeHolder >> mergeTypes [
+
+	super mergeTypes.
+	keyTypes mergeTypes
 ]
 
 { #category : 'adding' }

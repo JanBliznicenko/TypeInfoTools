@@ -3,7 +3,7 @@ Class {
 	#superclass : 'OCProgramNodeVisitor',
 	#instVars : [
 		'links',
-		'typeBlock'
+		'typeGatherer'
 	],
 	#category : 'TypeInfoTools-Core-RealTime',
 	#package : 'TypeInfoTools-Core',
@@ -14,20 +14,13 @@ Class {
 TITMetaLinksInsertionVisitor >> initialize [
 
 	super initialize.
-	links := OrderedCollection new.
-	typeBlock := [ :node :value | Transcript crShow: value asString ]
-]
-
-{ #category : 'visiting' }
-TITMetaLinksInsertionVisitor >> saveTypeOf: aValue to: aNode [
-
-	typeBlock value: aNode value: aValue
+	links := OrderedCollection new
 ]
 
 { #category : 'accessing' }
-TITMetaLinksInsertionVisitor >> typeBlock: aBlockClosure [
+TITMetaLinksInsertionVisitor >> typeGatherer: anObject [
 
-	typeBlock := aBlockClosure
+	typeGatherer := anObject
 ]
 
 { #category : 'cleanup' }
@@ -44,10 +37,12 @@ TITMetaLinksInsertionVisitor >> visitAssignmentNode: anAssignmentNode [
 	| link |
 	link := MetaLink new.
 	link
-		metaObject: [ :value :newValue |
-				self saveTypeOf: value to: anAssignmentNode receiver ];
-		selector: #value:value:;
-		arguments: #( value newValue );
+		metaObject: [ :newValue |
+				typeGatherer
+					saveTypeOf: newValue
+					inVariable: anAssignmentNode variable ];
+		selector: #value:;
+		arguments: #( newValue );
 		control: #before.
 	links add: link.
 	anAssignmentNode link: link.
@@ -62,7 +57,7 @@ TITMetaLinksInsertionVisitor >> visitMessageNode: aMessageNode [
 	link := MetaLink new.
 	link
 		metaObject: [ :returnedValue |
-				self saveTypeOf: returnedValue to: aMessageNode ];
+				typeGatherer saveTypeOf: returnedValue inMessage: aMessageNode  ];
 		selector: #value:;
 		arguments: #( value );
 		control: #after.
@@ -74,21 +69,23 @@ TITMetaLinksInsertionVisitor >> visitMessageNode: aMessageNode [
 
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
-
-	| link |
+	"| link |
 	link := MetaLink new.
 	link
 		metaObject: [ :arguments :value |
 				arguments withIndexDo: [ :eachArgument :index |
-						self
-							saveTypeOf: eachArgument
-							to: (aMethodNode arguments at: index) ].
-				self saveTypeOf: value to: aMethodNode ];
+					typeGatherer
+					saveTypeOf: eachArgument
+					inVariable: (aMethodNode arguments at: index)
+						 ].
+				typeGatherer
+					saveTypeOf: value
+					inReturnOfMethod: aMethodNode ];
 		selector: #value:value:;
 		arguments: #( arguments value );
 		control: #after.
 	links add: link.
-	aMethodNode link: link.
+	aMethodNode link: link."
 
 	super visitMethodNode: aMethodNode
 ]

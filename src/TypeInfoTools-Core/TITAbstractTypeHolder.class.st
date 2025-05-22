@@ -34,10 +34,64 @@ TITAbstractTypeHolder class >> newWithValue: anObject [
 		  yourself
 ]
 
+{ #category : 'copying' }
+TITAbstractTypeHolder >> , anotherHolder [
+
+	^ self subclassResponsibility
+]
+
 { #category : 'adding' }
 TITAbstractTypeHolder >> addValue: aValue [
 
 	self subclassResponsibility
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder >> copyWithCollectionTypeHolder: anotherTypeHolder [
+
+	^ self copyWithTypeHolder: anotherTypeHolder
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder >> copyWithDictionaryTypeHolder: anotherTypeHolder [
+
+	^ self copyWithCollectionTypeHolder: anotherTypeHolder
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder >> copyWithKeyValueTypeHolder: anotherTypeHolder [
+
+	^ self copyWithTypeHolder: anotherTypeHolder
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'private' }
+TITAbstractTypeHolder >> mergeTypes [
+
+	
+]
+
+{ #category : 'as yet unclassified' }
+TITAbstractTypeHolder >> threeWayCompareTo: aTypeHolder [
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'as yet unclassified' }
+TITAbstractTypeHolder >> threeWayCompareToEmpty: anEmptyTypeHolder [
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'as yet unclassified' }
+TITAbstractTypeHolder >> threeWayCompareToTypeHolder: aTypeHolder [
+
+	^ self subclassResponsibility
 ]
 
 { #category : 'instance creation' }

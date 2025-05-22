@@ -16,12 +16,27 @@ TITKeyValueTypeHolder class >> acceptsClass: aClass [
 	^ aClass includesBehavior: Association
 ]
 
+{ #category : 'copying' }
+TITKeyValueTypeHolder >> , anotherHolder [
+
+	^ anotherHolder copyWithKeyValueTypeHolder: self
+]
+
 { #category : 'adding' }
 TITKeyValueTypeHolder >> addValue: aValue [
 
 	super addValue: aValue.
 	keyTypes := keyTypes withValue: aValue.
 	valueTypes := valueTypes withValue: aValue
+]
+
+{ #category : 'adding' }
+TITKeyValueTypeHolder >> copyWithKeyValueTypeHolder: anotherTypeHolder [
+
+	^ (self copyWithTypeHolder: anotherTypeHolder)
+		  keyTypes: keyTypes , anotherTypeHolder keyTypes;
+		  valueTypes: valueTypes , anotherTypeHolder valueTypes;
+		  yourself
 ]
 
 { #category : 'initialization' }
@@ -38,6 +53,20 @@ TITKeyValueTypeHolder >> keyTypes [
 	^ keyTypes
 ]
 
+{ #category : 'accessing' }
+TITKeyValueTypeHolder >> keyTypes: anObject [
+
+	keyTypes := anObject
+]
+
+{ #category : 'private' }
+TITKeyValueTypeHolder >> mergeTypes [
+
+	super mergeTypes.
+	keyTypes mergeTypes.
+	valueTypes mergeTypes
+]
+
 { #category : 'adding' }
 TITKeyValueTypeHolder >> replaceFrom: anotherHolder [
 
@@ -50,4 +79,10 @@ TITKeyValueTypeHolder >> replaceFrom: anotherHolder [
 TITKeyValueTypeHolder >> valueTypes [
 
 	^ valueTypes
+]
+
+{ #category : 'accessing' }
+TITKeyValueTypeHolder >> valueTypes: anObject [
+
+	valueTypes := anObject
 ]

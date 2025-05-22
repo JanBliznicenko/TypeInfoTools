@@ -5,7 +5,10 @@ Class {
 		'package',
 		'packagesPattern',
 		'insertionVisitor',
-		'types'
+		'variableTypes',
+		'messageTypes',
+		'parameterTypes',
+		'returnTypes'
 	],
 	#category : 'TypeInfoTools-Core-RealTime',
 	#package : 'TypeInfoTools-Core',
@@ -15,16 +18,15 @@ Class {
 { #category : 'examples' }
 TITMetaLinksRealTimeTypeInferer class >> example [
 
-	| package inferer types |
-	package := self packageOrganizer packageNamed: 'TITMyClass'.
+	| package inferer |
+	package := self packageOrganizer packageNamed: 'Zinc-HTTP'.
 	inferer := TITMetaLinksRealTimeTypeInferer new.
 
 	inferer package: package.
 	inferer installLinks.
 	inferer runTestsAndExamples.
 	inferer uninstallLinks.
-	types := inferer gatherTypes.
-	types inspect
+	inferer variableTypesByNames inspect
 ]
 
 { #category : 'adding' }
@@ -40,17 +42,14 @@ TITMetaLinksRealTimeTypeInferer >> ensurePackagesPattern [
 	packagesPattern := '.*' , (package name copyUpTo: $-) , '.*'
 ]
 
-{ #category : 'as yet unclassified' }
-TITMetaLinksRealTimeTypeInferer >> gatherTypes [
-
-	^ types
-]
-
 { #category : 'initialization' }
 TITMetaLinksRealTimeTypeInferer >> initialize [
 
 	super initialize.
-	types := Dictionary new
+	variableTypes := IdentityDictionary new.
+	messageTypes := IdentityDictionary new.
+	parameterTypes := IdentityDictionary new.
+	returnTypes := IdentityDictionary new
 ]
 
 { #category : 'adding' }
@@ -59,8 +58,7 @@ TITMetaLinksRealTimeTypeInferer >> installLinks [
 	| definedClasses |
 	insertionVisitor ifNotNil: [ insertionVisitor uninstallAll ].
 	insertionVisitor := TITMetaLinksInsertionVisitor new.
-	insertionVisitor typeBlock: [ :node :value |
-		self saveTypeOf: value to: node ].
+	insertionVisitor typeGatherer: self.
 
 	definedClasses := package definedClasses.
 	definedClasses , (definedClasses collect: #class) do: [ :eachClass |
@@ -69,17 +67,41 @@ TITMetaLinksRealTimeTypeInferer >> installLinks [
 ]
 
 { #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> messageTypes [
+
+	^ messageTypes
+]
+
+{ #category : 'accessing' }
 TITMetaLinksRealTimeTypeInferer >> package: aPackage [
 
+	self initialize.
 	package := aPackage.
-	packagesPattern := nil.
-	types := Dictionary new
+	packagesPattern := nil
 ]
 
 { #category : 'accessing' }
 TITMetaLinksRealTimeTypeInferer >> packagesPattern [
 
 	^ packagesPattern ifNil: [ '.*' , (package name copyUpTo: $-) , '.*' ]
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> packagesPattern: aString [
+
+	packagesPattern := aString
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> parameterTypes [
+
+	^ parameterTypes
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> returnTypes [
+
+	^ returnTypes
 ]
 
 { #category : 'as yet unclassified' }
@@ -162,13 +184,31 @@ TITMetaLinksRealTimeTypeInferer >> runTestsAndExamples [
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue to: aNode [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: aNode to: aDictionary [
 
-	types
+	aDictionary
 		at: aNode
 		ifPresent: [ :currentHolder |
-			types at: aNode put: (currentHolder withValue: aValue) ]
+			aDictionary at: aNode put: (currentHolder withValue: aValue) ]
 		ifAbsentPut: [ TITAbstractTypeHolder newBestForValue: aValue ]
+]
+
+{ #category : 'visiting' }
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inMessage: aMessageSendNode [
+
+	self saveTypeOf: aValue in: aMessageSendNode to: messageTypes
+]
+
+{ #category : 'visiting' }
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfMethod: aMethodNode [
+
+	self saveTypeOf: aValue in: aMethodNode to: returnTypes
+]
+
+{ #category : 'visiting' }
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariable: aVariableNode [
+
+	self saveTypeOf: aValue in: aVariableNode to: variableTypes
 ]
 
 { #category : 'as yet unclassified' }
@@ -177,7 +217,25 @@ TITMetaLinksRealTimeTypeInferer >> uninstallLinks [
 	insertionVisitor uninstallAll
 ]
 
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> variableTypes [
+
+	^ variableTypes
+]
+
 { #category : 'as yet unclassified' }
+TITMetaLinksRealTimeTypeInferer >> variableTypesByNames [
+
+	^ (((variableTypes associations collect: [ :eachPair |
+		     eachPair key name -> eachPair value ]) groupedBy: [ :eachPair |
+		    eachPair key ]) collect: [ :eachArray |
+			   eachArray
+				   inject: TITEmptyTypeHolder new
+				   into: [ :acc :each | acc , each value ] ]) collect: [ :each |
+		  each mergeTypes ]
+]
+
+{ #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> visitAllBy: aVisitor [
 
 	| definedClasses |
