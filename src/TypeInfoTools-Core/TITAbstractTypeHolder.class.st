@@ -46,6 +46,13 @@ TITAbstractTypeHolder >> addValue: aValue [
 	self subclassResponsibility
 ]
 
+{ #category : 'converting' }
+TITAbstractTypeHolder >> convertTypesToString [
+	"do nothing"
+
+	
+]
+
 { #category : 'adding' }
 TITAbstractTypeHolder >> copyWithCollectionTypeHolder: anotherTypeHolder [
 
@@ -76,19 +83,19 @@ TITAbstractTypeHolder >> mergeTypes [
 	
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'comparing' }
 TITAbstractTypeHolder >> threeWayCompareTo: aTypeHolder [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'comparing' }
 TITAbstractTypeHolder >> threeWayCompareToEmpty: anEmptyTypeHolder [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'comparing' }
 TITAbstractTypeHolder >> threeWayCompareToTypeHolder: aTypeHolder [
 
 	^ self subclassResponsibility

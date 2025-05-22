@@ -75,6 +75,13 @@ TITCollectionTypeHolder >> addValue: aValue [
 	elementTypes := elementTypes withValue: aValue anyOne
 ]
 
+{ #category : 'converting' }
+TITCollectionTypeHolder >> convertTypesToString [
+
+	super convertTypesToString.
+	elementTypes convertTypesToString
+]
+
 { #category : 'adding' }
 TITCollectionTypeHolder >> copyWithCollectionHolder: anotherTypeHolder [
 

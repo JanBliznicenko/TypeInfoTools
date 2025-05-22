@@ -209,7 +209,11 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfMethod: aMethodN
 { #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariable: aVariableNode [
 
-	self saveTypeOf: aValue in: aVariableNode variable definingNode to: variableTypes
+	| originalVariable |
+	originalVariable := aVariableNode variable definingNode ifNil: [
+			                    aVariableNode variable originalVar definingNode
+				                    ifNil: [ aVariableNode variable ] ].
+	self saveTypeOf: aValue in: originalVariable to: variableTypes
 ]
 
 { #category : 'execution' }
@@ -234,6 +238,14 @@ TITMetaLinksRealTimeTypeInferer >> variableTypesByNames [
 				   inject: TITEmptyTypeHolder new
 				   into: [ :acc :each | acc , each value ] ]) collect: [ :each |
 		  each mergeTypes ]
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> variableTypesByNamesAsStrings [
+
+	^ self variableTypesByNames
+		  do: [ :eachClass | eachClass convertTypesToString ];
+		  yourself
 ]
 
 { #category : 'visiting' }

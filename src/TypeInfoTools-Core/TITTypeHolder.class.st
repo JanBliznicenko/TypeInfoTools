@@ -38,6 +38,12 @@ TITTypeHolder >> addValue: aValue [
 	types add: (TITTypesCollection afterClassReplacement: aValue class)
 ]
 
+{ #category : 'converting' }
+TITTypeHolder >> convertTypesToString [
+
+	types := types collect: [ :each | each name ]
+]
+
 { #category : 'adding' }
 TITTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 

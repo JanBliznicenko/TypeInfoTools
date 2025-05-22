@@ -31,19 +31,19 @@ TITEmptyTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 	^ anotherTypeHolder
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'comparing' }
 TITEmptyTypeHolder >> threeWayCompareTo: aTypeHolder [
 
 	^ aTypeHolder threeWayCompareToEmpty: self
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'comparing' }
 TITEmptyTypeHolder >> threeWayCompareToEmpty: anEmptyTypeHolder [
 
 	^ 0
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'comparing' }
 TITEmptyTypeHolder >> threeWayCompareToTypeHolder: aTypeHolder [
 
 	^ -1
