@@ -1,8 +1,8 @@
 Class {
 	#name : 'TITTypeHolder',
-	#superclass : 'Object',
+	#superclass : 'TITAbstractTypeHolder',
 	#instVars : [
-		'type'
+		'types'
 	],
 	#category : 'TypeInfoTools-Core-RealTime',
 	#package : 'TypeInfoTools-Core',
@@ -16,27 +16,32 @@ TITTypeHolder class >> acceptsClass: aClass [
 ]
 
 { #category : 'instance creation' }
-TITTypeHolder class >> newForValue: anObject [
+TITTypeHolder class >> newFrom: aTypeHolder andValue: aValue [
 
-	^ self new fillFromValue: anObject
+	^ self new
+		  replaceFrom: aTypeHolder;
+		  addValue: aValue;
+		  yourself
 ]
 
-{ #category : 'converting' }
-TITTypeHolder >> asString [
+{ #category : 'adding' }
+TITTypeHolder >> addValue: aValue [
 
-	^ String streamContents: [ :s | self asStringOn: s ]
+	types add: aValue class
 ]
 
-{ #category : 'converting' }
-TITTypeHolder >> asStringOn: aStream [
+{ #category : 'initialization' }
+TITTypeHolder >> initialize [
 
-	self type printOn: aStream
+	super initialize.
+	types := Bag new
 ]
 
-{ #category : 'accessing' }
-TITTypeHolder >> fillFromValue: anObject [
+{ #category : 'inspecting' }
+TITTypeHolder >> inspectionItems: aBuilder [
 
-	type := anObject class
+	<inspectorPresentationOrder: 0 title: 'Items'>
+	^ types inspectionItems: aBuilder
 ]
 
 { #category : 'printing' }
@@ -44,18 +49,27 @@ TITTypeHolder >> printOn: aStream [
 
 	super printOn: aStream.
 	aStream nextPutAll: ' ('.
-	self asStringOn: aStream.
+	types printElementsOn: aStream.
 	aStream nextPut: $)
 ]
 
-{ #category : 'accessing' }
-TITTypeHolder >> type [
+{ #category : 'adding' }
+TITTypeHolder >> replaceFrom: anotherHolder [
 
-	^ type
+	types := anotherHolder types
 ]
 
 { #category : 'accessing' }
-TITTypeHolder >> type: aClass [
+TITTypeHolder >> types [
 
-	type := aClass
+	^ types
+]
+
+{ #category : 'instance creation' }
+TITTypeHolder >> withValue: aValue [
+
+	(self class acceptsClass: aValue class) ifFalse: [
+		^ self class superclass newFrom: self andValue: aValue ].
+	self addValue: aValue.
+	^ self
 ]

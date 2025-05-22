@@ -2,74 +2,186 @@ Class {
 	#name : 'TITMetaLinksRealTimeTypeInferer',
 	#superclass : 'Object',
 	#instVars : [
-		'typeCollectionsByNodes',
-		'returnLinkBlock',
-		'assignmentLinkBlock',
-		'argumentsLinkBlock',
-		'returnSelfLinkBlock',
-		'links',
-		'linkedPackages'
+		'package',
+		'packagesPattern',
+		'insertionVisitor',
+		'types'
 	],
 	#category : 'TypeInfoTools-Core-RealTime',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'RealTime'
 }
 
-{ #category : 'adding' }
-TITMetaLinksRealTimeTypeInferer >> addLinksToArgumentsOfMethodNode: aMethodNode [
+{ #category : 'examples' }
+TITMetaLinksRealTimeTypeInferer class >> example [
 
-	MetaLink new
-		metaObject: [ :arguments |
-			arguments do: [ :each |
-					self addTypeOf: each asPossibleTypeOf: each ] ];
-		selector: #value:;
-		arguments: #( arguments )
+	| package inferer types |
+	package := self packageOrganizer packageNamed: 'TITMyClass'.
+	inferer := TITMetaLinksRealTimeTypeInferer new.
+
+	inferer package: package.
+	inferer installLinks.
+	inferer runTestsAndExamples.
+	inferer uninstallLinks.
+	types := inferer gatherTypes.
+	types inspect
 ]
 
 { #category : 'adding' }
 TITMetaLinksRealTimeTypeInferer >> addLinksToMethod: aMethod [
 
-	| class |
-	class := aMethod methodClass ifNil: [ ^ self ].
-	aMethod ast link: (links add: (argumentsLinkBlock value: aMethod)).
-	aMethod ast assignmentNodes
-		select: [ :eachNode | eachNode variable isInstanceVariable ]
-		thenDo: [ :eachNode |
-			eachNode link: (links add: (assignmentLinkBlock value: class)) ].
-	aMethod ast allChildren
-		select: [ :eachNode | eachNode isReturn ]
-		thenDo: [ :eachNode |
-				eachNode link:
-					(links add:
-						 (returnLinkBlock value: aMethod selector value: class)) ].
-	aMethod ast lastIsReturn ifFalse: [
-			aMethod ast link:
-				(links add:
-					 (returnSelfLinkBlock value: aMethod selector value: class)) ]
+	insertionVisitor visit: aMethod ast
 ]
 
-{ #category : 'adding' }
-TITMetaLinksRealTimeTypeInferer >> addLinksToPackageNamed: aPackageName [
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> ensurePackagesPattern [
 
-	| package definedClasses |
-	package := aPackageName asPackage.
-	(linkedPackages includes: package) ifTrue: [ ^ self ].
-
-	definedClasses := package definedClasses.
-	definedClasses , (definedClasses collect: #class) do: [ :eachClass |
-			eachClass methods do: [ :eachMethod |
-				self addLinksToMethod: eachMethod ] ]
+	packagesPattern ifNotNil: [ ^ self ].
+	packagesPattern := '.*' , (package name copyUpTo: $-) , '.*'
 ]
 
-{ #category : 'adding' }
-TITMetaLinksRealTimeTypeInferer >> addTypeOf: aValue asPossibleTypeOf: aNode [
+{ #category : 'as yet unclassified' }
+TITMetaLinksRealTimeTypeInferer >> gatherTypes [
 
-	(self typeCollectorFor: aValue) addTypeOf: aValue to: aNode
+	^ types
 ]
 
 { #category : 'initialization' }
 TITMetaLinksRealTimeTypeInferer >> initialize [
 
 	super initialize.
-	typeCollectionsByNodes := IdentityDictionary new
+	types := Dictionary new
+]
+
+{ #category : 'adding' }
+TITMetaLinksRealTimeTypeInferer >> installLinks [
+
+	| definedClasses |
+	insertionVisitor ifNotNil: [ insertionVisitor uninstallAll ].
+	insertionVisitor := TITMetaLinksInsertionVisitor new.
+	insertionVisitor typeBlock: [ :node :value |
+		self saveTypeOf: value to: node ].
+
+	definedClasses := package definedClasses.
+	definedClasses , (definedClasses collect: #class) do: [ :eachClass |
+			eachClass methodsDo: [ :eachMethod |
+				insertionVisitor visit: eachMethod ast ] ]
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> package: aPackage [
+
+	package := aPackage.
+	packagesPattern := nil.
+	types := Dictionary new
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> packagesPattern [
+
+	^ packagesPattern ifNil: [ '.*' , (package name copyUpTo: $-) , '.*' ]
+]
+
+{ #category : 'as yet unclassified' }
+TITMetaLinksRealTimeTypeInferer >> runExamples [
+
+	| packages exampleMethods |
+	self ensurePackagesPattern.
+
+	packages := self packageOrganizer packages select: [ :eachPackage |
+		            eachPackage name matchesRegex: packagesPattern ].
+	packages ifEmpty: [
+		self error: 'There is no package matching ' , packagesPattern ].
+
+
+	exampleMethods := packages flatCollectAsSet: [ :eachPackage |
+			                  eachPackage classes flatCollect: [ :eachClass |
+					                  eachClass class methods select: [ :eachMethod |
+						                  ClyExampleScript isImplementedByMethod:
+							                  eachMethod ] ] ].
+
+	exampleMethods do: [ :each |
+			| originalWindows windowsToDelete |
+			originalWindows := Smalltalk currentWorld systemWindows asSet.
+			each
+				valueWithReceiver: each classBinding value instanceSide
+				arguments: #(  ).
+			windowsToDelete := Smalltalk currentWorld systemWindows asSet
+				                   difference: originalWindows.
+			[
+				10 seconds wait.
+				windowsToDelete do: #delete ]
+				forkAt: Processor userBackgroundPriority
+				named: 'Example windows deletion' ].
+
+	exampleMethods ifNotEmpty: [
+		self inform:
+			'Executed ' , exampleMethods size asString , ' examples' ]
+]
+
+{ #category : 'private' }
+TITMetaLinksRealTimeTypeInferer >> runTests [
+
+	| packages testClasses testResult |
+	TestCase defaultTimeLimit: 1 minute.
+	
+	self ensurePackagesPattern.
+	packages := self packageOrganizer packages select: [ :eachPackage |
+		            eachPackage name matchesRegex: packagesPattern ].
+	packages ifEmpty: [
+		self error: 'There is no package matching ' , packagesPattern ].
+
+	testClasses := packages flatCollectAsSet: [ :eachPackage |
+			               eachPackage classes select: [ :each |
+				               each isTestCase and: [ each isAbstract not ] ] ].
+
+testResult := 	testClasses
+		ifEmpty: [ TestAsserter classForTestResult new ]
+		ifNotEmpty: [
+		 testClasses anyOne classForTestResult new ].
+
+	testClasses do: [ :each |
+			each resetHistory.
+			each suite run: testResult ].
+	testResult updateResultsInHistory.
+
+	GrowlMorph
+		showTestResult: testResult
+		with: (String streamContents: [ :s |
+					 packages
+						 do: [ :each | s nextPutAll: each name ]
+						 separatedBy: [ s nextPutAll: ', ' ] ])
+]
+
+{ #category : 'as yet unclassified' }
+TITMetaLinksRealTimeTypeInferer >> runTestsAndExamples [
+
+	self
+		runTests;
+		runExamples
+]
+
+{ #category : 'visiting' }
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue to: aNode [
+
+	types
+		at: aNode
+		ifPresent: [ :currentHolder |
+			types at: aNode put: (currentHolder withValue: aValue) ]
+		ifAbsentPut: [ TITAbstractTypeHolder newBestForValue: aValue ]
+]
+
+{ #category : 'as yet unclassified' }
+TITMetaLinksRealTimeTypeInferer >> uninstallLinks [
+
+	insertionVisitor uninstallAll
+]
+
+{ #category : 'as yet unclassified' }
+TITMetaLinksRealTimeTypeInferer >> visitAllBy: aVisitor [
+
+	| definedClasses |
+	definedClasses := package definedClasses.
+	definedClasses , (definedClasses collect: #class) do: [ :eachClass |
+		eachClass methodsDo: [ :eachMethod | aVisitor visit: eachMethod ast ] ]
 ]

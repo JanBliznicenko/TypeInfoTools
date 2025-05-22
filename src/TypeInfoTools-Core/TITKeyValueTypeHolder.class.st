@@ -2,8 +2,8 @@ Class {
 	#name : 'TITKeyValueTypeHolder',
 	#superclass : 'TITTypeHolder',
 	#instVars : [
-		'keyType',
-		'valueType'
+		'keyTypes',
+		'valueTypes'
 	],
 	#category : 'TypeInfoTools-Core-RealTime',
 	#package : 'TypeInfoTools-Core',
@@ -16,45 +16,38 @@ TITKeyValueTypeHolder class >> acceptsClass: aClass [
 	^ aClass includesBehavior: Association
 ]
 
-{ #category : 'converting' }
-TITKeyValueTypeHolder >> asStringOn: aStream [
+{ #category : 'adding' }
+TITKeyValueTypeHolder >> addValue: aValue [
 
-	self type printOn: aStream.
-	aStream nextPut: $:.
-	self keyType printOn: aStream.
-	aStream nextPutAll: '->'.
-	self valueType printOn: aStream
+	super addValue: aValue.
+	keyTypes := keyTypes withValue: aValue.
+	valueTypes := valueTypes withValue: aValue
+]
+
+{ #category : 'initialization' }
+TITKeyValueTypeHolder >> initialize [
+
+	super initialize.
+	keyTypes := TITEmptyTypeHolder new.
+	valueTypes := TITEmptyTypeHolder new
 ]
 
 { #category : 'accessing' }
-TITKeyValueTypeHolder >> fillFromValue: anAssociationOrOtherPair [
+TITKeyValueTypeHolder >> keyTypes [
 
-	super fillFromValue: anAssociationOrOtherPair.
+	^ keyTypes
+]
 
-	keyType := anAssociationOrOtherPair key.
-	valueType := anAssociationOrOtherPair value
+{ #category : 'adding' }
+TITKeyValueTypeHolder >> replaceFrom: anotherHolder [
+
+	super replaceFrom: anotherHolder.
+	keyTypes replaceFrom: anotherHolder keyTypes.
+	valueTypes replaceFrom: anotherHolder valueTypes
 ]
 
 { #category : 'accessing' }
-TITKeyValueTypeHolder >> keyType [
+TITKeyValueTypeHolder >> valueTypes [
 
-	^ keyType
-]
-
-{ #category : 'accessing' }
-TITKeyValueTypeHolder >> keyType: aClass [
-
-	keyType := aClass
-]
-
-{ #category : 'accessing' }
-TITKeyValueTypeHolder >> valueType [
-
-	^ valueType
-]
-
-{ #category : 'accessing' }
-TITKeyValueTypeHolder >> valueType: aClass [
-
-	valueType := aClass
+	^ valueTypes
 ]

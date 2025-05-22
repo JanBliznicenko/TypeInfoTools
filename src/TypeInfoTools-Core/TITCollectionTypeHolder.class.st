@@ -2,7 +2,7 @@ Class {
 	#name : 'TITCollectionTypeHolder',
 	#superclass : 'TITTypeHolder',
 	#instVars : [
-		'elementType'
+		'elementTypes'
 	],
 	#classInstVars : [
 		'atomicCollectionTypes'
@@ -34,6 +34,7 @@ TITCollectionTypeHolder class >> atomicCollectionTypes [
 				                           Float64Array.
 				                           IntegerArray.
 				                           Interval.
+				                           MethodDictionary.
 				                           ProcessList.
 				                           RunArray.
 				                           Semaphore.
@@ -60,44 +61,30 @@ TITCollectionTypeHolder class >> reset [
 	atomicCollectionTypes := nil
 ]
 
-{ #category : 'converting' }
-TITCollectionTypeHolder >> asStringOn: aStream [
+{ #category : 'adding' }
+TITCollectionTypeHolder >> addValue: aValue [
 
-	self type printOn: aStream.
-	aStream nextPut: ${.
-	self elementType printOn: aStream.
-	aStream nextPut: $}
+	super addValue: aValue.
+	aValue ifEmpty: [ ^ self ].
+	elementTypes := elementTypes withValue: aValue anyOne
 ]
 
 { #category : 'accessing' }
-TITCollectionTypeHolder >> collectionType [
+TITCollectionTypeHolder >> elementTypes [
 
-	^ self type
+	^ elementTypes
 ]
 
-{ #category : 'accessing' }
-TITCollectionTypeHolder >> collectionType: aClass [
+{ #category : 'initialization' }
+TITCollectionTypeHolder >> initialize [
 
-	self type: aClass
+	super initialize.
+	elementTypes := TITEmptyTypeHolder new
 ]
 
-{ #category : 'accessing' }
-TITCollectionTypeHolder >> elementType [
+{ #category : 'adding' }
+TITCollectionTypeHolder >> replaceFrom: anotherHolder [
 
-	^ elementType
-]
-
-{ #category : 'accessing' }
-TITCollectionTypeHolder >> elementType: aClass [
-
-	elementType := aClass
-]
-
-{ #category : 'accessing' }
-TITCollectionTypeHolder >> fillFromValue: aCollection [
-
-	super fillFromValue: aCollection.
-	aCollection ifEmpty: [ ^ self ].
-	"we do not save every one as it could be incredibly slow"
-	elementType := aCollection anyOne class
+	super replaceFrom: anotherHolder.
+	elementTypes replaceFrom: anotherHolder elementTypes
 ]

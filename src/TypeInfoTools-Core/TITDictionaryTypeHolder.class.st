@@ -1,9 +1,8 @@
 Class {
 	#name : 'TITDictionaryTypeHolder',
-	#superclass : 'TITTypeHolder',
+	#superclass : 'TITCollectionTypeHolder',
 	#instVars : [
-		'keyType',
-		'valueType'
+		'keyTypes'
 	],
 	#category : 'TypeInfoTools-Core-RealTime',
 	#package : 'TypeInfoTools-Core',
@@ -17,60 +16,29 @@ TITDictionaryTypeHolder class >> acceptsClass: aClass [
 		  aClass = OrderedDictionary or: [ aClass = SmallDictionary ] ]
 ]
 
-{ #category : 'converting' }
-TITDictionaryTypeHolder >> asStringOn: aStream [
+{ #category : 'adding' }
+TITDictionaryTypeHolder >> addValue: aValue [
 
-	self type printOn: aStream.
-	aStream nextPut: ${.
-	self keyType printOn: aStream.
-	aStream nextPutAll: '->'.
-	self valueType printOn: aStream.
-	aStream nextPut: $}
+	super addValue: aValue.
+	aValue keysDo: [ :eachKey | ^ keyTypes := keyTypes withValue: eachKey ]
+]
+
+{ #category : 'initialization' }
+TITDictionaryTypeHolder >> initialize [
+
+	super initialize.
+	keyTypes := TITEmptyTypeHolder new
 ]
 
 { #category : 'accessing' }
-TITDictionaryTypeHolder >> collectionType [
+TITDictionaryTypeHolder >> keyTypes [
 
-	^ self type
+	^ keyTypes
 ]
 
-{ #category : 'accessing' }
-TITDictionaryTypeHolder >> collectionType: aClass [
+{ #category : 'adding' }
+TITDictionaryTypeHolder >> replaceFrom: anotherHolder [
 
-	self type: aClass
-]
-
-{ #category : 'accessing' }
-TITDictionaryTypeHolder >> fillFromValue: aDictionary [
-
-	super fillFromValue: aDictionary.
-	aDictionary associationsDo: [ :eachPair |
-			keyType := eachPair key.
-			valueType := eachPair value.
-			"we do not save every one as it could be incredibly slow"
-			^ self ]
-]
-
-{ #category : 'accessing' }
-TITDictionaryTypeHolder >> keyType [
-
-	^ keyType
-]
-
-{ #category : 'accessing' }
-TITDictionaryTypeHolder >> keyType: aClass [
-
-	keyType := aClass
-]
-
-{ #category : 'accessing' }
-TITDictionaryTypeHolder >> valueType [
-
-	^ valueType
-]
-
-{ #category : 'accessing' }
-TITDictionaryTypeHolder >> valueType: aClass [
-
-	valueType := aClass
+	super replaceFrom: anotherHolder.
+	keyTypes replaceFrom: anotherHolder keyTypes
 ]

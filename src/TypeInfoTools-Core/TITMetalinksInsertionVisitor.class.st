@@ -2,103 +2,32 @@ Class {
 	#name : 'TITMetaLinksInsertionVisitor',
 	#superclass : 'OCProgramNodeVisitor',
 	#instVars : [
-		'linksByPackages',
 		'links',
-		'typeHoldersForClasses'
+		'typeBlock'
 	],
 	#category : 'TypeInfoTools-Core-RealTime',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'RealTime'
 }
 
-{ #category : 'as yet unclassified' }
-TITMetaLinksInsertionVisitor class >> typeProperty [
-
-	^ #realTypes
-]
-
-{ #category : 'visiting' }
-TITMetaLinksInsertionVisitor >> addArgumentsLinkTo: aMethodNode [
-
-	"| argumentsLink |
-	argumentsLink := MetaLink new.
-	argumentsLink
-		metaObject: [ :arguments |
-				arguments withIndexDo: [ :eachArgument :index |
-							self halt.
-							self
-								saveTypeOf: eachArgument
-								to: (aMethodNode arguments at: index) ] ];
-		selector: #value:;
-		arguments: #( arguments );
-		control: #before.
-	links add: argumentsLink.
-	aMethodNode link: argumentsLink"
-]
-
-{ #category : 'adding' }
-TITMetaLinksInsertionVisitor >> addLinksToClass: aClass [
-
-	aClass methods do: [ :eachMethod | self addLinksToMethod: eachMethod ]
-]
-
-{ #category : 'adding' }
-TITMetaLinksInsertionVisitor >> addLinksToMethod: aMethod [
-
-	self visit: aMethod ast
-]
-
-{ #category : 'adding' }
-TITMetaLinksInsertionVisitor >> addLinksToPackageNamed: aPackageName [
-
-	| package definedClasses |
-	package := self packageOrganizer packageNamed: aPackageName.
-
-	definedClasses := package definedClasses.
-	definedClasses , (definedClasses collect: #class) do: [ :eachClass |
-		self addLinksToClass: eachClass ]
-]
-
-{ #category : 'visiting' }
-TITMetaLinksInsertionVisitor >> addReturnLinkTo: aMethodNode [
-
-	| link |
-	link := MetaLink new.
-	link
-		metaObject: [ :arguments :value |
-				self halt.
-				self saveTypeOf: value to: aMethodNode ];
-		selector: #value:value:;
-		arguments: #(arguments value  );
-		control: #before.
-	links add: link.
-	aMethodNode link: link
-]
-
 { #category : 'initialization' }
 TITMetaLinksInsertionVisitor >> initialize [
 
 	super initialize.
 	links := OrderedCollection new.
-	typeHoldersForClasses := IdentityDictionary new
-]
-
-{ #category : 'instance creation' }
-TITMetaLinksInsertionVisitor >> newTypeHolderFor: anObject [
-
-	^ typeHoldersForClasses at: anObject class ifAbsentPut: (({
-			    TITDictionaryTypeHolder.
-			    TITCollectionTypeHolder.
-			    TITKeyValueTypeHolder.
-			    TITTypeHolder } detect: [ :any |
-			    any acceptsClass: anObject class ]) newForValue: anObject)
+	typeBlock := [ :node :value | Transcript crShow: value asString ]
 ]
 
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> saveTypeOf: aValue to: aNode [
 
-	(aNode propertyAt: self class typeProperty ifAbsentPut: Bag new) add:
-		(self newTypeHolderFor: aValue)
+	typeBlock value: aNode value: aValue
+]
+
+{ #category : 'accessing' }
+TITMetaLinksInsertionVisitor >> typeBlock: aBlockClosure [
+
+	typeBlock := aBlockClosure
 ]
 
 { #category : 'cleanup' }
@@ -116,35 +45,50 @@ TITMetaLinksInsertionVisitor >> visitAssignmentNode: anAssignmentNode [
 	link := MetaLink new.
 	link
 		metaObject: [ :value :newValue |
-				self halt.
-				self saveTypeOf: value to: anAssignmentNode ];
+				self saveTypeOf: value to: anAssignmentNode receiver ];
 		selector: #value:value:;
 		arguments: #( value newValue );
 		control: #before.
 	links add: link.
-	anAssignmentNode link: link
+	anAssignmentNode link: link.
+
+	super visitAssignmentNode: anAssignmentNode
 ]
 
 { #category : 'visiting' }
-TITMetaLinksInsertionVisitor >> visitMessageNode: aNode [
+TITMetaLinksInsertionVisitor >> visitMessageNode: aMessageNode [
 
 	| link |
 	link := MetaLink new.
 	link
 		metaObject: [ :returnedValue |
-				self halt.
-				self saveTypeOf: returnedValue to: aNode ];
+				self saveTypeOf: returnedValue to: aMessageNode ];
 		selector: #value:;
 		arguments: #( value );
 		control: #after.
 	links add: link.
-	aNode link: link
+	aMessageNode link: link.
+
+	super visitMessageNode: aMessageNode
 ]
 
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
 
-	self addArgumentsLinkTo: aMethodNode.
-	self addReturnLinkTo: aMethodNode.
+	| link |
+	link := MetaLink new.
+	link
+		metaObject: [ :arguments :value |
+				arguments withIndexDo: [ :eachArgument :index |
+						self
+							saveTypeOf: eachArgument
+							to: (aMethodNode arguments at: index) ].
+				self saveTypeOf: value to: aMethodNode ];
+		selector: #value:value:value:;
+		arguments: #( arguments value );
+		control: #after.
+	links add: link.
+	aMethodNode link: link.
+
 	super visitMethodNode: aMethodNode
 ]
