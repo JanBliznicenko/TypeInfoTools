@@ -7,7 +7,6 @@ Class {
 		'insertionVisitor',
 		'variableTypes',
 		'messageTypes',
-		'parameterTypes',
 		'returnTypes'
 	],
 	#category : 'TypeInfoTools-Core-RealTime',
@@ -19,6 +18,8 @@ Class {
 TITMetaLinksRealTimeTypeInferer class >> example [
 
 	| package inferer |
+	
+	
 	package := self packageOrganizer packageNamed: 'Zinc-HTTP'.
 	inferer := TITMetaLinksRealTimeTypeInferer new.
 
@@ -46,10 +47,15 @@ TITMetaLinksRealTimeTypeInferer >> ensurePackagesPattern [
 TITMetaLinksRealTimeTypeInferer >> initialize [
 
 	super initialize.
-	variableTypes := IdentityDictionary new.
-	messageTypes := IdentityDictionary new.
-	parameterTypes := IdentityDictionary new.
-	returnTypes := IdentityDictionary new
+	self initializeTypeHolders
+]
+
+{ #category : 'initialization' }
+TITMetaLinksRealTimeTypeInferer >> initializeTypeHolders [
+
+	variableTypes := Dictionary new.
+	messageTypes := Dictionary new.
+	returnTypes := Dictionary new
 ]
 
 { #category : 'adding' }
@@ -93,18 +99,12 @@ TITMetaLinksRealTimeTypeInferer >> packagesPattern: aString [
 ]
 
 { #category : 'accessing' }
-TITMetaLinksRealTimeTypeInferer >> parameterTypes [
-
-	^ parameterTypes
-]
-
-{ #category : 'accessing' }
 TITMetaLinksRealTimeTypeInferer >> returnTypes [
 
 	^ returnTypes
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> runExamples [
 
 	| packages exampleMethods |
@@ -117,7 +117,7 @@ TITMetaLinksRealTimeTypeInferer >> runExamples [
 
 
 	exampleMethods := packages flatCollectAsSet: [ :eachPackage |
-			                  eachPackage classes flatCollect: [ :eachClass |
+			                  eachPackage definedClasses flatCollect: [ :eachClass |
 					                  eachClass class methods select: [ :eachMethod |
 						                  ClyExampleScript isImplementedByMethod:
 							                  eachMethod ] ] ].
@@ -141,7 +141,7 @@ TITMetaLinksRealTimeTypeInferer >> runExamples [
 			'Executed ' , exampleMethods size asString , ' examples' ]
 ]
 
-{ #category : 'private' }
+{ #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> runTests [
 
 	| packages testClasses testResult |
@@ -154,7 +154,7 @@ TITMetaLinksRealTimeTypeInferer >> runTests [
 		self error: 'There is no package matching ' , packagesPattern ].
 
 	testClasses := packages flatCollectAsSet: [ :eachPackage |
-			               eachPackage classes select: [ :each |
+			               eachPackage definedClasses select: [ :each |
 				               each isTestCase and: [ each isAbstract not ] ] ].
 
 testResult := 	testClasses
@@ -175,7 +175,7 @@ testResult := 	testClasses
 						 separatedBy: [ s nextPutAll: ', ' ] ])
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> runTestsAndExamples [
 
 	self
@@ -186,6 +186,7 @@ TITMetaLinksRealTimeTypeInferer >> runTestsAndExamples [
 { #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: aNode to: aDictionary [
 
+	aNode ifNil: [ self error: 'Node cannot be nil' ].
 	aDictionary
 		at: aNode
 		ifPresent: [ :currentHolder |
@@ -194,9 +195,9 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: aNode to: aDictionary 
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inMessage: aMessageSendNode [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inMessage: aMessageNode [
 
-	self saveTypeOf: aValue in: aMessageSendNode to: messageTypes
+	self saveTypeOf: aValue in: aMessageNode to: messageTypes
 ]
 
 { #category : 'visiting' }
@@ -208,10 +209,10 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfMethod: aMethodN
 { #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariable: aVariableNode [
 
-	self saveTypeOf: aValue in: aVariableNode to: variableTypes
+	self saveTypeOf: aValue in: aVariableNode variable definingNode to: variableTypes
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> uninstallLinks [
 
 	insertionVisitor uninstallAll
@@ -223,7 +224,7 @@ TITMetaLinksRealTimeTypeInferer >> variableTypes [
 	^ variableTypes
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TITMetaLinksRealTimeTypeInferer >> variableTypesByNames [
 
 	^ (((variableTypes associations collect: [ :eachPair |

@@ -69,7 +69,7 @@ TITStructureNodeVisitor >> visitMethodTemporaryVariable: aMethodTemporaryVariabl
 { #category : 'visiting' }
 TITStructureNodeVisitor >> visitPackage: aPackage [
 
-	aPackage classes do: [ :each | self visitClass: each ]
+	aPackage definedClasses do: [ :each | self visitClass: each ]
 ]
 
 { #category : 'visiting' }

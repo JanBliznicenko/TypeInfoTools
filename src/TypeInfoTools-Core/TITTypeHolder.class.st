@@ -50,7 +50,7 @@ TITTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 TITTypeHolder >> initialize [
 
 	super initialize.
-	types := Bag new
+	types := Set new
 ]
 
 { #category : 'inspecting' }
@@ -81,7 +81,7 @@ TITTypeHolder >> mergeTypes [
 
 	| merged |
 	merged := Bag new.
-	types doWithOccurrences: [ :type :occurences |
+	types asBag doWithOccurrences: [ :type :occurences |
 		self mergeType: type occurences: occurences into: merged ].
 	types := merged
 ]
@@ -90,7 +90,7 @@ TITTypeHolder >> mergeTypes [
 TITTypeHolder >> printOn: aStream [
 
 	| associations |
-	associations := types valuesAndCounts associations.
+	associations := types asBag valuesAndCounts associations.
 	associations sort: [ :c1 :c2 | c1 value > c2 value ].
 
 	super printOn: aStream.
