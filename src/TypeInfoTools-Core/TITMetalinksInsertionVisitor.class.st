@@ -84,7 +84,7 @@ TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
 							saveTypeOf: eachArgument
 							to: (aMethodNode arguments at: index) ].
 				self saveTypeOf: value to: aMethodNode ];
-		selector: #value:value:value:;
+		selector: #value:value:;
 		arguments: #( arguments value );
 		control: #after.
 	links add: link.
