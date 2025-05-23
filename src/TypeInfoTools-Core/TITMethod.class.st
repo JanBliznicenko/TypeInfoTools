@@ -85,6 +85,17 @@ TITMethod >> parent [
 	^ self ownerClass
 ]
 
+{ #category : 'printing' }
+TITMethod >> printOn: aStream [
+
+	super printOn: aStream.
+
+	aStream
+		nextPutAll: ' (';
+		nextPutAll: self name;
+		nextPut: $)
+]
+
 { #category : 'accessing' }
 TITMethod >> realClass [
 

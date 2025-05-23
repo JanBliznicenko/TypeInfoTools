@@ -140,12 +140,19 @@ TITTypesCollection >> commonSuperclassOfTopWeightClasses [
 { #category : 'hierarchy' }
 TITTypesCollection >> commonSuperclassOfTopWeightClassesOrAny [
 
+	^ self commonSuperclassOfTopWeightClassesOrNil ifNil: [
+		  self sortedClasses keyAtIndex: 1 ]
+]
+
+{ #category : 'hierarchy' }
+TITTypesCollection >> commonSuperclassOfTopWeightClassesOrNil [
+
 	| commonSuperclassOfTopWeightClasses |
 	commonSuperclassOfTopWeightClasses := self
 		                                      commonSuperclassOfTopWeightClasses.
 	(commonSuperclassOfTopWeightClasses = Object or: [
 		 commonSuperclassOfTopWeightClasses = ProtoObject ]) ifTrue: [
-		^ self sortedClasses keyAtIndex: 1 ].
+		^ nil ].
 	^ commonSuperclassOfTopWeightClasses
 ]
 

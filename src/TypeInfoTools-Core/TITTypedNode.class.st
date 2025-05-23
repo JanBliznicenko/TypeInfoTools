@@ -54,6 +54,16 @@ TITTypedNode >> ownerClass [
 	^ self parent ownerClass
 ]
 
+{ #category : 'printing' }
+TITTypedNode >> printOn: aStream [
+
+	super printOn: aStream.
+	self typeInfo ifEmpty: [ ^ self ].
+	aStream nextPut: $[.
+	self typeInfo types size printOn: aStream.
+	aStream nextPut: $]
+]
+
 { #category : 'testing' }
 TITTypedNode >> processedByAnyCollector [
 
