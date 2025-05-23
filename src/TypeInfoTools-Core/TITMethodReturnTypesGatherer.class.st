@@ -44,9 +44,10 @@ TITMethodReturnTypesGatherer class >> compareFile: file1 and: file2 [
 	results2 := self arraysFromFile: file2.
 
 	{
-		(results1 intersection: results2).
-		(results1 difference: results2).
-		(results2 difference: results1) } inspect
+		('In both files' -> (results1 intersection: results2)).
+		('Only in ' , file1 asString -> (results1 difference: results2)).
+		('Only in ' , file2 asString -> (results2 difference: results1)) }
+		asDictionary inspect
 ]
 
 { #category : 'as yet unclassified' }
