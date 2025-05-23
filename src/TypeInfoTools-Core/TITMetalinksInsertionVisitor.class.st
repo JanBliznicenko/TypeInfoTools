@@ -60,7 +60,7 @@ TITMetaLinksInsertionVisitor >> visitMessageNode: aMessageNode [
 				typeGatherer saveTypeOf: returnedValue inMessage: aMessageNode  ];
 		selector: #value:;
 		arguments: #( value );
-		control: #before.
+		control: #after.
 	links add: link.
 	aMessageNode link: link."
 
@@ -70,22 +70,46 @@ TITMetaLinksInsertionVisitor >> visitMessageNode: aMessageNode [
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
 
-	| link |
+	| link returnSelfBlock |
 	link := MetaLink new.
+	returnSelfBlock := aMethodNode lastIsReturn
+		                   ifTrue: [ [ :receiver |  ] ]
+		                   ifFalse: [
+				                   [ :receiver |
+				                   typeGatherer
+					                   saveTypeOf: receiver
+					                   inReturnOfMethod: aMethodNode ] ].
 	link
-		metaObject: [ :arguments |
-				arguments withIndexDo: [ :eachArgument :index | 
-					"typeGatherer
-					saveTypeOf: value
-					inReturnOfMethod: aMethodNode"
+		metaObject: [ :receiver :arguments |
+				returnSelfBlock value: receiver.
+				arguments withIndexDo: [ :eachArgument :index |
 							typeGatherer
 								saveTypeOf: eachArgument
 								inVariable: (aMethodNode arguments at: index) ] ];
-		selector: #value:;
-		arguments: #( arguments );
+		selector: #value:value:;
+		arguments: #( receiver arguments );
 		control: #before.
 	links add: link.
 	aMethodNode link: link.
 
 	super visitMethodNode: aMethodNode
+]
+
+{ #category : 'visiting' }
+TITMetaLinksInsertionVisitor >> visitReturnNode: aReturnNode [
+
+	| link |
+	link := MetaLink new.
+	link
+		metaObject: [ :value |
+				typeGatherer
+					saveTypeOf: value
+					inReturnOfMethod: aReturnNode methodNode ];
+		selector: #value:;
+		arguments: #( value );
+		control: #before.
+	links add: link.
+	aReturnNode link: link.
+
+	super visitReturnNode: aReturnNode
 ]
