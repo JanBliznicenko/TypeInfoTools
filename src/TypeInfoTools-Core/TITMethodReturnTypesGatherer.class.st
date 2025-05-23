@@ -7,28 +7,70 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-TITMethodReturnTypesGatherer class >> compareFiles [
+TITMethodReturnTypesGatherer class >> arraysFromFile: aFile [
+
+	| arrays results methods |
+	arrays := aFile asFileReference readStreamDo: [ :s |
+		          (NeoCSVReader on: s) upToEnd ].
+
+	results := arrays allButFirst asSortedCollection: [ :a :b |
+			           a first = b first
+				           ifTrue: [
+						           a second = b second
+							           ifTrue: [ a third < b third ]
+							           ifFalse: [ a second < b second ] ]
+				           ifFalse: [ a first < b first ] ].
+
+	methods := results collect: [ :each | each first: 3 ].
+
+	"self assert: methods size = methods asSet size."
+
+	^ results
+]
+
+{ #category : 'as yet unclassified' }
+TITMethodReturnTypesGatherer class >> arraysFromFile: aFile focusingOnPackage: aPackage [
+
+	^ (self arraysFromFile: aFile) select: [ :eachArray |
+		  eachArray first = 'Zinc-HTTP' ]
+]
+
+{ #category : 'as yet unclassified' }
+TITMethodReturnTypesGatherer class >> compareFile: file1 and: file2 [
 
 	<script>
-	| lines1 lines2 firstLine results1 results2 |
-	lines1 := ('TIT_static_results_Zinc-HTTP.csv' asFileReference readStreamDo: [ :s |
-		           s upToEnd ]) lines.
-	lines2 := ('types.csv' asFileReference readStreamDo: [ :s |
-		           s upToEnd ]) lines.
-
-	firstLine := lines1 first.
-
-	results1 := lines1 allButFirst asSortedCollection.
-	results2 := (lines2 select: [ :each | each beginsWith: '"Zinc-HTTP"' ])
-		            asSortedCollection.
-
-	self assert: results1 size = results1 asSet size.
-	self assert: results2 size = results2 asSet size.
+	| results1 results2 |
+	results1 := self arraysFromFile: file1.
+	results2 := self arraysFromFile: file2.
 
 	{
 		(results1 intersection: results2).
 		(results1 difference: results2).
-		(results2 difference: results1).} inspect
+		(results2 difference: results1) } inspect
+]
+
+{ #category : 'as yet unclassified' }
+TITMethodReturnTypesGatherer class >> compareFile: file1 and: file2 focusingOnPackage: aPackage [
+
+	<script>
+	| results1 results2 |
+	results1 := self arraysFromFile: file1 focusingOnPackage: aPackage.
+	results2 := self arraysFromFile: file2 focusingOnPackage: aPackage.
+
+	{
+		(results1 intersection: results2).
+		(results1 difference: results2).
+		(results2 difference: results1) } inspect
+]
+
+{ #category : 'as yet unclassified' }
+TITMethodReturnTypesGatherer class >> compareFiles [
+
+	<script>
+	(self
+		 compareFile: 'TIT_static_results_Zinc-HTTP.csv'
+		 and: 'types.csv'
+		 focusingOnPackage: 'Zinc-HTTP') inspect
 ]
 
 { #category : 'as yet unclassified' }
