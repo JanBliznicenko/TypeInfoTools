@@ -70,7 +70,7 @@ TITTypesCollection >> addClass: aClass by: aTypeCollector [
 	aClass = Object ifTrue: [ ^ self ].
 	aClass isTrait ifTrue: [ ^ self ].
 	(classesWithCollectors
-		 at: aClass
+		 at: (self class afterClassReplacement: aClass)
 		 ifAbsentPut: [ TITTypesCollectionSources new ]) add: aTypeCollector.
 	self resetCache
 ]

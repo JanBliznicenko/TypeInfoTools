@@ -1,9 +1,8 @@
 Class {
 	#name : 'TITMethodReturnTypesGatherer',
 	#superclass : 'Object',
-	#category : 'TypeInfoTools-Core-Inference',
-	#package : 'TypeInfoTools-Core',
-	#tag : 'Inference'
+	#category : 'TypeInfoTools-ReturnTypesGatherer',
+	#package : 'TypeInfoTools-ReturnTypesGatherer'
 }
 
 { #category : 'as yet unclassified' }
