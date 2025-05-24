@@ -32,8 +32,12 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				package: 'TypeInfoTools-ReturnTypesGatherer'
 				with: [ spec requires: #( 'TypeInfoTools-Core'
 				   'NeoCSV' ) ];
-				group: 'all'
+				package: 'TITMyClass';
+				group: 'ide'
 				with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser'
-					   'TypeInfoTools-Completion' 'TypeInfoTools-ReturnTypesGatherer' );
-				group: 'default' with: #( 'all' ) ]
+					   'TypeInfoTools-Completion' );
+				group: 'dev' with: #( 'ide' 'TypeInfoTools-Dev'
+				   'TITMyClass' );
+				group: 'all' with: #( 'dev' );
+				group: 'default' with: #( 'ide' ) ]
 ]

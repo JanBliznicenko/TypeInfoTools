@@ -1,8 +1,9 @@
 Class {
 	#name : 'TITMethodReturnTypesGatherer',
 	#superclass : 'Object',
-	#category : 'TypeInfoTools-ReturnTypesGatherer',
-	#package : 'TypeInfoTools-ReturnTypesGatherer'
+	#category : 'TypeInfoTools-Dev-MethodReturns',
+	#package : 'TypeInfoTools-Dev',
+	#tag : 'MethodReturns'
 }
 
 { #category : 'as yet unclassified' }

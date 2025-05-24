@@ -7,8 +7,8 @@ Class {
 	#classInstVars : [
 		'atomicCollectionTypes'
 	],
-	#category : 'TypeInfoTools-Core-RealTime',
-	#package : 'TypeInfoTools-Core',
+	#category : 'TypeInfoTools-Dev-RealTime',
+	#package : 'TypeInfoTools-Dev',
 	#tag : 'RealTime'
 }
 
