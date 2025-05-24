@@ -58,9 +58,10 @@ TITMethodReturnTypesGatherer class >> compareFile: file1 and: file2 focusingOnPa
 	results2 := self arraysFromFile: file2 focusingOnPackage: aPackage.
 
 	{
-		(results1 intersection: results2).
-		(results1 difference: results2).
-		(results2 difference: results1) } inspect
+		('In both files' -> (results1 intersection: results2)).
+		('Only in ' , file1 asString -> (results1 difference: results2)).
+		('Only in ' , file2 asString -> (results2 difference: results1)) }
+		asDictionary inspect
 ]
 
 { #category : 'as yet unclassified' }
@@ -82,13 +83,18 @@ TITMethodReturnTypesGatherer class >> example [
 { #category : 'as yet unclassified' }
 TITMethodReturnTypesGatherer class >> gatherPackage: packageName [
 
-	| collector package methods arrays csvContent |
+	| collector package classes methods arrays csvContent |
 	collector := TITSequentialAdaptorsTypeCollector new.
 
 	package := self packageOrganizer packageNamed: packageName.
 
-	methods := package definedClasses flatCollectAsSet: [ :eachClass |
-			           (eachClass methods, eachClass class methods) collect: [ :each |
+	classes := package definedClasses asArray.
+
+	methods := (classes , (classes collect: [ :each | each class ])
+		            sortedAs: [ :eachClass | eachClass name ]) flatCollect: [
+			           :eachClass |
+			           (eachClass methods sortedAs: [ :eachMethod |
+				            eachMethod selector ]) collect: [ :each |
 				           TITMethod forOCMethodNode: each ast ] ].
 
 	methods do: [ :each | collector addTypesTo: each ].
@@ -115,6 +121,7 @@ TITMethodReturnTypesGatherer class >> gatherPackage: packageName [
 					              s lf ] ].
 
 	('TIT_static_results_' , packageName , '.csv') asFileReference
+		ensureDeleteFile;
 		writeStreamDo: [ :stream | stream nextPutAll: csvContent ].
 
 	^ methods
