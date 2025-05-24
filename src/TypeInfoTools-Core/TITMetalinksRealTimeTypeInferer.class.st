@@ -18,15 +18,11 @@ Class {
 TITMetaLinksRealTimeTypeInferer class >> example [
 
 	| package inferer |
-	
-	
 	package := self packageOrganizer packageNamed: 'Zinc-HTTP'.
 	inferer := TITMetaLinksRealTimeTypeInferer new.
 
 	inferer package: package.
-	inferer installLinks.
-	inferer runTestsAndExamples.
-	inferer uninstallLinks.
+	inferer gatherTypes.
 	inferer variableTypesByNames inspect
 ]
 
@@ -41,6 +37,14 @@ TITMetaLinksRealTimeTypeInferer >> ensurePackagesPattern [
 
 	packagesPattern ifNotNil: [ ^ self ].
 	packagesPattern := '.*' , (package name copyUpTo: $-) , '.*'
+]
+
+{ #category : 'execution' }
+TITMetaLinksRealTimeTypeInferer >> gatherTypes [
+
+	[
+		self installLinks.
+		self runTestsAndExamples ] ensure: [ self uninstallLinks ]
 ]
 
 { #category : 'initialization' }
