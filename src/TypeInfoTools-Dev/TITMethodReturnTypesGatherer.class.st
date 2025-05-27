@@ -98,7 +98,14 @@ TITMethodReturnTypesGatherer class >> gatherPackage: packageName [
 				            eachMethod selector ]) collect: [ :each |
 				           TITMethod forOCMethodNode: each ast ] ].
 
-	methods do: [ :each | collector addTypesTo: each ].
+	[ :job |
+		job title: 'Collecting types'.
+		job max: methods size.
+		methods withIndexDo: [ :each :index | 
+			job title: 'Collecting types - ', each compiledMethod printString.
+			job currentValue: index.
+			collector addTypesTo: each ].
+	] asJob run.
 
 	arrays := methods
 		          select: [ :each |
