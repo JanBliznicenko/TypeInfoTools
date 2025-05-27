@@ -122,7 +122,7 @@ TITMethodReturnTypesGatherer class >> gatherPackage: packageName [
 					              s lf ] ].
 
 	('TIT_static_results_' , packageName , '.csv') asFileReference
-		ensureDeleteFile;
+		ensureDelete;
 		writeStreamDo: [ :stream | stream nextPutAll: csvContent ].
 
 	^ methods
