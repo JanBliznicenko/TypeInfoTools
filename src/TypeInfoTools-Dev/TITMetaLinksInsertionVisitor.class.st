@@ -71,6 +71,8 @@ TITMetaLinksInsertionVisitor >> visitMessageNode: aMessageNode [
 TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
 
 	| link returnSelfBlock |
+	aMethodNode addSelfReturn.
+	
 	link := MetaLink new.
 	returnSelfBlock := aMethodNode lastIsReturn
 		                   ifTrue: [ [ :receiver |  ] ]
