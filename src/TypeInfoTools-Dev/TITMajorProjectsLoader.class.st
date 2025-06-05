@@ -119,7 +119,7 @@ TITMajorProjectsLoader class >> Cryptography [
 	Metacello new
 		baseline: 'Cryptography';
 		repository: 'github://pharo-contributions/Cryptography';
-		load
+		load: #('Cryptography' 'ASN1-Tests' 'ASN1-Readers-Tests' 'X509-Tests' 'PBKDF2-Tests' 'Blowfish' 'OpenPGP' 'LayeredProtocol')
 ]
 
 { #category : 'as yet unclassified' }
@@ -339,13 +339,23 @@ TITMajorProjectsLoader class >> XPath [
 TITMajorProjectsLoader class >> loadProjects [
 
 	<script>
-	| methods |
+	| methods warnings |
 	methods := self projectLoaderMethods.
-	self halt.
+	warnings := OrderedCollection new.
+	IceLibgitRepository shareRepositoriesBetweenImages: false.
 	[
 		EpMonitor disableDuring: [
-			methods do: [ :each |
-				(Message selector: each selector) sendTo: self ] ] ]
+				[ :job |
+					job max: methods size.
+					methods withIndexDo: [ :each :index |
+							job title: 'Loading ' , each selector.
+							job value: index - 1.
+							[ (Message selector: each selector) sendTo: self ]
+								on: Warning
+								do: [ :warning |
+										warnings add: each selector -> warning messageText.
+										warning resume ] ] ] asJob run ].
+		warnings inspect ]
 		forkAt: Processor userBackgroundPriority
 		named: self name
 ]
@@ -353,6 +363,7 @@ TITMajorProjectsLoader class >> loadProjects [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> projectLoaderMethods [
 
-	^ self class methods select: [ :each |
-		  each pragmas anySatisfy: [ :any | any selector = #projectLoader ] ]
+	^ (self class methods select: [ :each |
+		   each pragmas anySatisfy: [ :any | any selector = #projectLoader ] ])
+		  sorted: [ :a :b | a selector < b selector ]
 ]

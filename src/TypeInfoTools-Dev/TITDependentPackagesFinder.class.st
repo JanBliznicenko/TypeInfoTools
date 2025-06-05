@@ -104,17 +104,6 @@ TITDependentPackagesFinder class >> allByPackages [
 ]
 
 { #category : 'examples' }
-TITDependentPackagesFinder class >> baseline: aBaselineClass [
-
-	^ self new
-		  includeInitialPackages;
-		  maxAmountOfPackages: 100;
-		  baseline: aBaselineClass;
-		  collect;
-		  packages
-]
-
-{ #category : 'examples' }
 TITDependentPackagesFinder class >> dependingPackagesOn: aPackageName [
 
 	^ self new
@@ -146,17 +135,28 @@ TITDependentPackagesFinder class >> exampleAllByPackages [
 { #category : 'examples' }
 TITDependentPackagesFinder class >> exampleSingleBaseline [
 
-	(self baseline: BaselineOfAthens) inspect
+	(self forBaseline: BaselineOfAthens) inspect
 ]
 
 { #category : 'examples' }
 TITDependentPackagesFinder class >> exampleSinglePackage [
 
-	(self package: 'Athens-Cairo') inspect
+	(self forPackage: 'Athens-Cairo') inspect
 ]
 
 { #category : 'examples' }
-TITDependentPackagesFinder class >> package: aPackageName [
+TITDependentPackagesFinder class >> forBaseline: aBaselineClass [
+
+	^ self new
+		  includeInitialPackages;
+		  maxAmountOfPackages: 100;
+		  baseline: aBaselineClass;
+		  collect;
+		  packages
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> forPackage: aPackageName [
 
 	^ self new
 		  includeInitialPackages;
