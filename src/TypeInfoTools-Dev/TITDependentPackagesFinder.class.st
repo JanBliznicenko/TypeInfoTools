@@ -15,57 +15,155 @@ Class {
 }
 
 { #category : 'examples' }
-TITDependentPackagesFinder class >> exampleAll [
+TITDependentPackagesFinder class >> allByBaselines [
+
+	| baselines excluded |
+	excluded := {
+		            BaselineOfTypeMe.
+		            BaselineOfTypeInfoTools.
+		            BaselineOfRoelTyper.
+		            BaselineOfJ2Inferer } asSet.
+	baselines := (BaselineOf allSubclasses copyWithoutAll: excluded)
+		             asSortedCollection: [ :a :b | a name < b name ].
+
+	^ [ :job |
+		  | finder |
+		  finder := self new
+			            includeInitialPackages;
+			            yourself.
+		  (baselines withIndexCollect: [ :each :index |
+				   job title: 'Finding dependent on ' , each name.
+				   job value: index - 1.
+				   each -> (finder
+					    maxAmountOfPackages: each version packages size * 3 + 50;
+					    baseline: each;
+					    collect;
+					    packages) ]) asOrderedDictionary ] asJob
+		  title: 'Finding dependent packages...';
+		  max: baselines size;
+		  run
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> allByBaselinesExcept: excluded [
+
+	| baselines  |
+	baselines := (BaselineOf allSubclasses copyWithoutAll: excluded)
+		             asSortedCollection: [ :a :b | a name < b name ].
+
+	^ [ :job |
+		  | finder |
+		  finder := self new
+			            includeInitialPackages;
+			            yourself.
+		  (baselines withIndexCollect: [ :each :index |
+				   job title: 'Finding dependent on ' , each name.
+				   job value: index - 1.
+				   each -> (finder
+					    maxAmountOfPackages: each version packages size * 3 + 50;
+					    baseline: each;
+					    collect;
+					    packages) ]) asOrderedDictionary ] asJob
+		  title: 'Finding dependent packages...';
+		  max: baselines size;
+		  run
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> allByBaselinesForTypes [
+
+	^ self allByBaselinesExcept: {
+			  BaselineOfTypeMe.
+			  BaselineOfTypeInfoTools.
+			  BaselineOfRoelTyper.
+			  BaselineOfJ2Inferer } asSet
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> allByPackages [
 
 	| packages |
 	packages := self packageOrganizer packages asSortedCollection.
-	[
-		[ :job |
-			| finder |
-			finder := self new
-				          includeInitialPackages;
-				          maxAmountOfPackages: 50;
-				          yourself.
-			(packages withIndexCollect: [ :each :index |
-					 job title: 'Finding dependent on ' , each name.
-					 job value: index - 1.
-					 each -> (finder
-						  package: each;
-						  collect;
-						  packages) ]) asOrderedDictionary inspect ] asJob
-			title: 'Finding dependent baselines...';
-			max: packages size;
-			run ]
-		forkAt: Processor userBackgroundPriority
-		named: 'TITDependentBaselinesFinder'
+
+	^ [ :job |
+		  | finder |
+		  finder := self new
+			            includeInitialPackages;
+			            maxAmountOfPackages: 100;
+			            yourself.
+		  (packages withIndexCollect: [ :each :index |
+				   job title: 'Finding dependent on ' , each name.
+				   job value: index - 1.
+				   each -> (finder
+					    package: each;
+					    collect;
+					    packages) ]) asOrderedDictionary ] asJob
+		  title: 'Finding dependent packages...';
+		  max: packages size;
+		  run
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> baseline: aBaselineClass [
+
+	^ self new
+		  includeInitialPackages;
+		  maxAmountOfPackages: 100;
+		  baseline: aBaselineClass;
+		  collect;
+		  packages
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> dependingPackagesOn: aPackageName [
+
+	^ self new
+		  includeInitialPackages;
+		  maxAmountOfPackages: 100;
+		  packageName: aPackageName;
+		  collect;
+		  packages
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> exampleAllByBaselines [
+
+	self allByBaselines inspect
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> exampleAllByBaselinesForTypes [
+
+	self allByBaselinesForTypes inspect
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> exampleAllByPackages [
+
+	self allByPackages inspect
 ]
 
 { #category : 'examples' }
 TITDependentPackagesFinder class >> exampleSingleBaseline [
 
-	[
-		(self new
-			 includeInitialPackages;
-			 maxAmountOfPackages: 50;
-			 baseline: BaselineOfEpicea;
-			 collect;
-			 packages) inspect ]
-		forkAt: Processor userBackgroundPriority
-		named: self name
+	(self baseline: BaselineOfAthens) inspect
 ]
 
 { #category : 'examples' }
 TITDependentPackagesFinder class >> exampleSinglePackage [
 
-	[
-		(self new
-			 includeInitialPackages;
-			 maxAmountOfPackages: 50;
-			 packageName: ('Athens-Cairo');
-			 collect;
-			 packages) inspect ]
-		forkAt: Processor userBackgroundPriority
-		named: 'TITDependentBaselinesFinder'
+	(self package: 'Athens-Cairo') inspect
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> package: aPackageName [
+
+	^ self new
+		  includeInitialPackages;
+		  maxAmountOfPackages: 100;
+		  packageName: aPackageName;
+		  collect;
+		  packages
 ]
 
 { #category : 'adding' }
