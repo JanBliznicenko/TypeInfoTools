@@ -25,6 +25,12 @@ TITTypedNodeCreationVisitor >> visitBlockNode: aBlockNode [
 ]
 
 { #category : 'visiting' }
+TITTypedNodeCreationVisitor >> visitCascadeNode: aCascadeNode [
+
+	^ self visit: aCascadeNode messages last
+]
+
+{ #category : 'visiting' }
 TITTypedNodeCreationVisitor >> visitInstanceVariableNode: anInstanceVariableNode [
 
 	^ TITInstanceVariable forOCVariableNode: anInstanceVariableNode
