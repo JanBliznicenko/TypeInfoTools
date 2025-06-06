@@ -26,8 +26,8 @@ TITKeyValueTypeHolder >> , anotherHolder [
 TITKeyValueTypeHolder >> addValue: aValue [
 
 	super addValue: aValue.
-	keyTypes := keyTypes withValue: aValue.
-	valueTypes := valueTypes withValue: aValue
+	keyTypes := keyTypes withValue: aValue key.
+	valueTypes := valueTypes withValue: aValue value
 ]
 
 { #category : 'converting' }

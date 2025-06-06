@@ -378,13 +378,14 @@ TITMajorProjectsLoader class >> Voyage [
 ]
 
 { #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> WodenEngine [
+TITMajorProjectsLoader class >> XMLParser [
 
 	<script>
-	<projectLoader>
+	<projectLoader: 10>
 	Metacello new
-		baseline: 'WodenEngine';
-		repository: 'github://woden-engine/woden';
+		baseline: 'XMLParser';
+		repository: 'github://pharo-contributions/XML-XMLParser';
+		lock;
 		load
 ]
 
@@ -392,11 +393,11 @@ TITMajorProjectsLoader class >> WodenEngine [
 TITMajorProjectsLoader class >> XMLParserHTML [
 
 	<script>
-	<projectLoader: 10>
+	<projectLoader>
 	Metacello new
 		baseline: 'XMLParserHTML';
 		repository: 'github://pharo-contributions/XML-XMLParserHTML/src';
-		lock;
+		onConflictUseLoaded;
 		load
 ]
 

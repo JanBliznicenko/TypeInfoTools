@@ -2,12 +2,14 @@ Class {
 	#name : 'TITMetaLinksRealTimeTypeInferer',
 	#superclass : 'Object',
 	#instVars : [
-		'package',
-		'packagesPattern',
+		'gatheredPackages',
+		'executedPackages',
 		'insertionVisitor',
 		'variableTypes',
-		'messageTypes',
-		'returnTypes'
+		'returnTypes',
+		'logStream',
+		'errorLogStream',
+		'name'
 	],
 	#category : 'TypeInfoTools-Dev-RealTime',
 	#package : 'TypeInfoTools-Dev',
@@ -17,13 +19,14 @@ Class {
 { #category : 'examples' }
 TITMetaLinksRealTimeTypeInferer class >> example [
 
-	| package inferer |
-	package := self packageOrganizer packageNamed: 'Zinc-HTTP'.
+	| inferer |
 	inferer := TITMetaLinksRealTimeTypeInferer new.
 
-	inferer package: package.
-	inferer gatherTypes.
-	inferer variableTypesByNames inspect
+	inferer gatheredBaseline: BaselineOfAthens.
+	inferer name: 'Athens'.
+	[ inferer gatherTypes ]
+		forkAt: Processor userBackgroundPriority
+		named: self name
 ]
 
 { #category : 'adding' }
@@ -32,11 +35,82 @@ TITMetaLinksRealTimeTypeInferer >> addLinksToMethod: aMethod [
 	insertionVisitor visit: aMethod ast
 ]
 
-{ #category : 'accessing' }
-TITMetaLinksRealTimeTypeInferer >> ensurePackagesPattern [
+{ #category : 'execution' }
+TITMetaLinksRealTimeTypeInferer >> deleteWindowsExcept: originalWindows [
 
-	packagesPattern ifNotNil: [ ^ self ].
-	packagesPattern := '.*' , (package name copyUpTo: $-) , '.*'
+	Smalltalk currentWorld systemWindows
+		reject: [ :eachWindow |
+				(originalWindows includes: eachWindow) or: [
+						| model |
+						model := eachWindow model.
+						model isNotNil and: [
+								(model isKindOf: ClyFullBrowserMorph) or: [
+										| presenter |
+										presenter := eachWindow model presenter.
+										(presenter isKindOf: StDebugger) or: [
+												(presenter isKindOf:
+													 StAbstractMessageCentricBrowserPresenter) or: [
+														(presenter isKindOf: StInspectorPresenter) and: [
+																(executedPackages includes:
+																	 presenter model inspectedObject class package) not ] ] ] ] ] ] ]
+		thenDo: [ :each | each delete ]
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> errorLog: anObject [
+
+	self log: anObject.
+	errorLogStream nextPutAll: anObject asString
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> errorLogCrlf: anObject [
+
+	self errorLog: anObject asString , String crlf.
+	logStream flush.
+	errorLogStream flush
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> errorLogEntry: aString [
+
+	self errorLogTime.
+	self errorLogCrlf: aString asString.
+	logStream flush.
+	errorLogStream flush
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> errorLogTime [
+
+	self errorLog: self timestamp
+]
+
+{ #category : 'execution' }
+TITMetaLinksRealTimeTypeInferer >> excludesTestClass: aTestClass [
+
+	^ aTestClass = MorphicWindowManagerTest
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> executedPackages [
+
+	^ executedPackages ifNil: [
+			  executedPackages := TITDependentPackagesFinder forTypingPackages:
+				                      gatheredPackages ]
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> executedPackages: aCollectionOfPackages [
+
+	executedPackages := aCollectionOfPackages
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> fileNameOfOfType: aString [
+
+	(aString , '_' , self name , '.txt') inspect.
+	^ aString , '_' , self name , '.txt'
 ]
 
 { #category : 'execution' }
@@ -44,13 +118,37 @@ TITMetaLinksRealTimeTypeInferer >> gatherTypes [
 
 	[
 		self installLinks.
-		self runTestsAndExamples ] ensure: [ self uninstallLinks ]
+		self runTestsAndExamples.
+		self logResults ] ensure: [ self uninstallLinks ]
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> gatheredBaseline: aBaselineClass [
+
+	self gatheredPackages: aBaselineClass version loadedSystemPackages
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> gatheredPackage: aPackage [
+
+	self gatheredPackages: { aPackage }
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> gatheredPackages: aPackagesCollection [
+
+	self initialize.
+	gatheredPackages := aPackagesCollection copyWithoutAll:
+		                    TITDependentPackagesFinder
+			                    excludedPackagesForTypes
 ]
 
 { #category : 'initialization' }
 TITMetaLinksRealTimeTypeInferer >> initialize [
 
 	super initialize.
+	logStream := NullStream new.
+	errorLogStream := NullStream new.
 	self initializeTypeHolders
 ]
 
@@ -58,48 +156,97 @@ TITMetaLinksRealTimeTypeInferer >> initialize [
 TITMetaLinksRealTimeTypeInferer >> initializeTypeHolders [
 
 	variableTypes := Dictionary new.
-	messageTypes := Dictionary new.
 	returnTypes := Dictionary new
 ]
 
 { #category : 'adding' }
 TITMetaLinksRealTimeTypeInferer >> installLinks [
 
-	| definedClasses |
+	| excludedSelectors |
 	insertionVisitor ifNotNil: [ insertionVisitor uninstallAll ].
 	insertionVisitor := TITMetaLinksInsertionVisitor new.
 	insertionVisitor typeGatherer: self.
 
-	definedClasses := package definedClasses.
-	definedClasses , (definedClasses collect: #class) do: [ :eachClass |
-			eachClass methodsDo: [ :eachMethod |
-				insertionVisitor visit: eachMethod ast ] ]
+	excludedSelectors := TraitedMetaclass selectors asSet
+	                     , TraitedClass selectors.
+
+	[ :packageJob |
+		packageJob max: gatheredPackages size.
+
+		gatheredPackages withIndexDo: [ :eachPackage :packageIndex |
+				packageJob title:
+					'Installing MetaLinks in package ' , eachPackage name asString
+					, ' ( ' , packageIndex asString , '/'
+					, gatheredPackages size asString , ' )'.
+				packageJob currentValue: packageIndex - 1.
+
+				eachPackage definedClasses do: [ :eachClass |
+						eachClass methods , eachClass class methods
+							reject: [ :any | excludedSelectors includes: any selector ]
+							thenDo: [ :eachMethod | insertionVisitor visit: eachMethod ast ] ] ] ]
+		asJob run
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> log: anObject [
+
+	logStream nextPutAll: anObject asString
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> logCrlf: anObject [
+
+	self log: anObject asString , String crlf.
+	logStream flush
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> logEntry: aString [
+
+	self logTime.
+	self logCrlf: aString asString.
+	logStream flush
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> logFileWithContent: aNameOfContent extension: anExtension [
+
+	^ (self name , '_' , aNameOfContent , '.' , anExtension)
+		  asFileReference
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> logResults [
+
+	self logResults: self variableTypesByNamesAsStrings as: 'VarTypes'.
+	self logResults: self returnTypesByNamesAsStrings as: 'RetTypes'
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> logResults: contents as: aContentTypeName [
+
+	Smalltalk image isInteractiveGraphic ifTrue: [ contents inspect ].
+	(self logFileWithContent: aContentTypeName extension: 'ston')
+		ensureDelete;
+		writeStreamDo: [ :s | STON put: contents onStreamPretty: s ]
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> logTime [
+
+	self log: self timestamp
 ]
 
 { #category : 'accessing' }
-TITMetaLinksRealTimeTypeInferer >> messageTypes [
+TITMetaLinksRealTimeTypeInferer >> name [
 
-	^ messageTypes
+	^ name ifNil: [ 'realtime' ]
 ]
 
 { #category : 'accessing' }
-TITMetaLinksRealTimeTypeInferer >> package: aPackage [
+TITMetaLinksRealTimeTypeInferer >> name: aString [
 
-	self initialize.
-	package := aPackage.
-	packagesPattern := nil
-]
-
-{ #category : 'accessing' }
-TITMetaLinksRealTimeTypeInferer >> packagesPattern [
-
-	^ packagesPattern ifNil: [ '.*' , (package name copyUpTo: $-) , '.*' ]
-]
-
-{ #category : 'accessing' }
-TITMetaLinksRealTimeTypeInferer >> packagesPattern: aString [
-
-	packagesPattern := aString
+	name := aString
 ]
 
 { #category : 'accessing' }
@@ -108,83 +255,166 @@ TITMetaLinksRealTimeTypeInferer >> returnTypes [
 	^ returnTypes
 ]
 
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> returnTypesByNames [
+
+	^ (((returnTypes associations collect: [ :eachPair |
+		     eachPair key selector -> eachPair value ]) groupedBy: [
+		    :eachPair | eachPair key ]) collect: [ :eachArray |
+			   eachArray
+				   inject: TITEmptyTypeHolder new
+				   into: [ :acc :each | acc , each value ] ]) collect: [ :each |
+		  each mergeTypes ]
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> returnTypesByNamesAsStrings [
+
+	^ self returnTypesByNames
+		  do: [ :eachClass | eachClass convertTypesToString ];
+		  yourself
+]
+
 { #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> runExamples [
 
-	| packages exampleMethods |
-	self ensurePackagesPattern.
+	| exampleMethods originalWindows |
+	exampleMethods := self executedPackages flatCollect: [ :eachPackage |
+			                  (eachPackage definedClasses sorted: [ :a :b |
+				                   a name < b name ]) flatCollect: [ :eachClass |
+					                  (eachClass class methods select: [ :eachMethod |
+							                   (ClyExampleScript canBeProvidedByMethod:
+								                    eachMethod) and: [
+								                   ClyExampleScript isImplementedByMethod:
+									                   eachMethod ] ]) sorted: [ :a :b |
+						                  a selector < b selector ] ] ].
 
-	packages := self packageOrganizer packages select: [ :eachPackage |
-		            eachPackage name matchesRegex: packagesPattern ].
-	packages ifEmpty: [
-		self error: 'There is no package matching ' , packagesPattern ].
+	exampleMethods ifEmpty: [ ^ self ].
 
+	self logEntry:
+		'Executing ' , exampleMethods size asString , ' examples'.
 
-	exampleMethods := packages flatCollectAsSet: [ :eachPackage |
-			                  eachPackage definedClasses flatCollect: [ :eachClass |
-					                  eachClass class methods select: [ :eachMethod |
-						                  ClyExampleScript isImplementedByMethod:
-							                  eachMethod ] ] ].
+	originalWindows := Smalltalk currentWorld systemWindows asSet.
 
-	exampleMethods do: [ :each |
-			| originalWindows windowsToDelete |
-			originalWindows := Smalltalk currentWorld systemWindows asSet.
-			each
-				valueWithReceiver: each classBinding value instanceSide
-				arguments: #(  ).
-			windowsToDelete := Smalltalk currentWorld systemWindows asSet
-				                   difference: originalWindows.
-			[
-				10 seconds wait.
-				windowsToDelete do: #delete ]
-				forkAt: Processor userBackgroundPriority
-				named: 'Example windows deletion' ].
+	[ :job |
+		job max: exampleMethods size.
+		exampleMethods withIndexDo: [ :each :index |
+				job title:
+					'Executing example ' , each printString , ' (' , index asString
+					, ' / ' , exampleMethods size asString , ')'.
+				job value: index - 1.
+				self logEntry:
+					'Executing example ' , each printString , ' (' , index asString
+					, ' / ' , exampleMethods size asString , ')'.
+				[
+					1 seconds wait.
 
-	exampleMethods ifNotEmpty: [
-		self inform:
-			'Executed ' , exampleMethods size asString , ' examples' ]
+					self deleteWindowsExcept: originalWindows ]
+					forkAt: Processor userSchedulingPriority
+					named: self class name , ' window deleting'.
+				[
+					each
+						valueWithReceiver: each classBinding value instanceSide
+						arguments: #(  ) ]
+					on: Error
+					do: [ :error |
+							self errorLogEntry:
+								'Failed to execute example ' , each printString
+								, ' because of error: ' , error description ].
+				2 seconds wait ] ] asJob run.
+
+	self deleteWindowsExcept: originalWindows.
+
+	self logEntry:
+		'Executed ' , exampleMethods size asString , ' examples'.
+
+	Smalltalk image isInteractiveGraphic ifFalse: [ ^ self ].
+	self inform: 'Executed ' , exampleMethods size asString , ' examples'
 ]
 
 { #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> runTests [
 
-	| packages testClasses testResult |
+	| testClasses testResult originalWindows |
 	TestCase defaultTimeLimit: 1 minute.
-	
-	self ensurePackagesPattern.
-	packages := self packageOrganizer packages select: [ :eachPackage |
-		            eachPackage name matchesRegex: packagesPattern ].
-	packages ifEmpty: [
-		self error: 'There is no package matching ' , packagesPattern ].
 
-	testClasses := packages flatCollectAsSet: [ :eachPackage |
-			               eachPackage definedClasses select: [ :each |
-				               each isTestCase and: [ each isAbstract not ] ] ].
+	testClasses := self executedPackages flatCollect: [ :eachPackage |
+			               (eachPackage definedClasses select: [ :each |
+					                each isTestCase and: [
+						                each isAbstract not and: [
+							                (self excludesTestClass: each) not ] ] ])
+				               sorted: [ :a :b | a name < b name ] ].
 
-testResult := 	testClasses
-		ifEmpty: [ TestAsserter classForTestResult new ]
-		ifNotEmpty: [
-		 testClasses anyOne classForTestResult new ].
+	testClasses ifEmpty: [ ^ self ].
 
-	testClasses do: [ :each |
-			each resetHistory.
-			each suite run: testResult ].
+	testResult := testClasses anyOne classForTestResult new.
+
+	self logEntry:
+		'Executing ' , testClasses size asString , ' test classes'.
+
+	originalWindows := Smalltalk currentWorld systemWindows asSet.
+
+	[ :job |
+		job max: testClasses size.
+		testClasses withIndexDo: [ :each :index |
+				job title:
+					'Executing tests in ' , each printString , ' (' , index asString
+					, ' / ' , testClasses size asString , ')'.
+				job value: index - 1.
+				self logEntry:
+					'Executing tests in ' , each printString , ' (' , index asString
+					, ' / ' , testClasses size asString , ')'.
+				each resetHistory.
+				[ each suite run: testResult ]
+					on: Error
+					do: [ :error |
+							self errorLogEntry:
+								'Failed to execute tests in ' , each name asString
+								, ' because of error: ' , error description asString ] ] ]
+		asJob run.
+
 	testResult updateResultsInHistory.
 
+	self deleteWindowsExcept: originalWindows.
+
+	self logEntry:
+		'Executed ' , testClasses size asString , ' test classes'.
+
+	Smalltalk image isInteractiveGraphic ifFalse: [ ^ self ].
+	testResult hasPassed ifTrue: [ ^ self ].
+
+	self errorLogEntry:
+		'Test errors: ' , testResult errorCount asString
+		, ', Test failures: ' , testResult failureCount asString.
 	GrowlMorph
 		showTestResult: testResult
 		with: (String streamContents: [ :s |
-					 packages
-						 do: [ :each | s nextPutAll: each name ]
-						 separatedBy: [ s nextPutAll: ', ' ] ])
+					 executedPackages size = 1
+						 ifTrue: [ s nextPutAll: executedPackages anyOne name ]
+						 ifFalse: [ executedPackages size asString , ' packages' ] ])
 ]
 
 { #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> runTestsAndExamples [
 
-	self
-		runTests;
-		runExamples
+	[
+		(self logFileWithContent: 'Log' extension: 'txt')
+			ensureDelete;
+			writeStreamDo: [ :s |
+					(self logFileWithContent: 'Errors' extension: 'txt')
+						ensureDelete;
+						writeStreamDo: [ :es |
+								logStream := s.
+								errorLogStream := es.
+								self
+									runTests;
+									runExamples ] ] ] ensure: [
+			logStream := NullStream new.
+			errorLogStream := NullStream new.
+			Smalltalk image isInteractiveGraphic ifTrue: [
+					(self logFileWithContent: 'Errors' extension: 'txt')
+						readStreamDo: [ :s |
+						s contents ifNotEmpty: [ :contents | contents inspect ] ] ] ]
 ]
 
 { #category : 'visiting' }
@@ -194,14 +424,12 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: aNode to: aDictionary 
 	aDictionary
 		at: aNode
 		ifPresent: [ :currentHolder |
-			aDictionary at: aNode put: (currentHolder withValue: aValue) ]
+				thisContext mayBeInRecursion ifTrue: [
+						^ self errorLogEntry:
+							  'Did not save type because of potential recursion in '
+							  , ((aNode method compiledMethod printString) ifEmpty: [ aNode asString ]) ].
+				aDictionary at: aNode put: (currentHolder withValue: aValue) ]
 		ifAbsentPut: [ TITAbstractTypeHolder newBestForValue: aValue ]
-]
-
-{ #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inMessage: aMessageNode [
-
-	self saveTypeOf: aValue in: aMessageNode to: messageTypes
 ]
 
 { #category : 'visiting' }
@@ -220,9 +448,16 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariable: aVariableNode 
 	self saveTypeOf: aValue in: originalVariable to: variableTypes
 ]
 
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> timestamp [
+
+	^ Time now print24 , ' | '
+]
+
 { #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> uninstallLinks [
 
+	insertionVisitor ifNil: [ ^ self ].
 	insertionVisitor uninstallAll
 ]
 
@@ -250,13 +485,4 @@ TITMetaLinksRealTimeTypeInferer >> variableTypesByNamesAsStrings [
 	^ self variableTypesByNames
 		  do: [ :eachClass | eachClass convertTypesToString ];
 		  yourself
-]
-
-{ #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> visitAllBy: aVisitor [
-
-	| definedClasses |
-	definedClasses := package definedClasses.
-	definedClasses , (definedClasses collect: #class) do: [ :eachClass |
-		eachClass methodsDo: [ :eachMethod | aVisitor visit: eachMethod ast ] ]
 ]

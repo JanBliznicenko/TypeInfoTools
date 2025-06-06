@@ -30,18 +30,28 @@ TITTypeHolder >> , anotherHolder [
 ]
 
 { #category : 'adding' }
+TITTypeHolder >> addType: aClass [
+
+	aClass ifNil: [ self halt ].
+	types add: aClass
+]
+
+{ #category : 'adding' }
 TITTypeHolder >> addValue: aValue [
 
+	| class |
 	aValue ifNil: [ ^ self ].
-	aValue class = Object ifTrue: [ ^ self ].
-	aValue class = ProtoObject ifTrue: [ ^ self ].
-	types add: (TITTypesCollection afterClassReplacement: aValue class)
+	class := aValue class.
+	class ifNil: [ ^ self ].
+	class = Object ifTrue: [ ^ self ].
+	class = ProtoObject ifTrue: [ ^ self ].
+	self addType: (TITTypesCollection afterClassReplacement: class)
 ]
 
 { #category : 'converting' }
 TITTypeHolder >> convertTypesToString [
 
-	types := types collect: [ :each | each name ]
+	self types: (types collect: [ :each | each name ])
 ]
 
 { #category : 'adding' }
@@ -72,13 +82,15 @@ TITTypeHolder >> mergeType: type occurences: occurences into: merged [
 	| commonSuper |
 	merged doWithOccurrences: [ :mergedType :mergedOccurences |
 			commonSuper := type commonSuperclassSymmetricWith: mergedType.
-			(commonSuper ~= Object and: [ commonSuper ~= ProtoObject ])
+			(commonSuper ~= Object and: [
+				 commonSuper ~= ProtoObject and: [ commonSuper isNotNil ] ])
 				ifTrue: [
 						merged removeKey: mergedType ifAbsent: [ self error ].
 						merged
 							add: commonSuper
 							withOccurrences: occurences + mergedOccurences.
 						^ self ] ].
+
 	merged add: type withOccurrences: occurences
 ]
 
@@ -89,7 +101,8 @@ TITTypeHolder >> mergeTypes [
 	merged := Bag new.
 	types asBag doWithOccurrences: [ :type :occurences |
 		self mergeType: type occurences: occurences into: merged ].
-	types := merged
+
+	self types: merged
 ]
 
 { #category : 'printing' }
@@ -102,7 +115,7 @@ TITTypeHolder >> printOn: aStream [
 	super printOn: aStream.
 	aStream nextPutAll: ' ('.
 	associations
-		do: [ :pair | aStream nextPutAll: pair key name ]
+		do: [ :pair | aStream nextPutAll: pair key asString ]
 		separatedBy: [ aStream space ].
 	aStream nextPut: $)
 ]
@@ -110,7 +123,7 @@ TITTypeHolder >> printOn: aStream [
 { #category : 'adding' }
 TITTypeHolder >> replaceFrom: anotherHolder [
 
-	types := anotherHolder types
+	self types: anotherHolder types
 ]
 
 { #category : 'comparing' }
@@ -140,6 +153,7 @@ TITTypeHolder >> types [
 { #category : 'adding' }
 TITTypeHolder >> types: aCollection [
 
+	aCollection do: [ :each | self haltIf: [ each isNil ] ].
 	types := aCollection
 ]
 

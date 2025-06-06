@@ -7,7 +7,8 @@ Class {
 		'includesInitialPackages',
 		'maxAmountOfPackages',
 		'baselinesByPackages',
-		'dependentByPackages'
+		'dependentByPackages',
+		'excludesReflectionPackages'
 	],
 	#category : 'TypeInfoTools-Dev-Dependencies',
 	#package : 'TypeInfoTools-Dev',
@@ -17,13 +18,9 @@ Class {
 { #category : 'examples' }
 TITDependentPackagesFinder class >> allByBaselines [
 
-	| baselines excluded |
-	excluded := {
-		            BaselineOfTypeMe.
-		            BaselineOfTypeInfoTools.
-		            BaselineOfRoelTyper.
-		            BaselineOfJ2Inferer } asSet.
-	baselines := (BaselineOf allSubclasses copyWithoutAll: excluded)
+	| baselines |
+	baselines := (BaselineOf allSubclasses reject: [ :any |
+		              any version loadedSystemPackages isEmpty ])
 		             asSortedCollection: [ :a :b | a name < b name ].
 
 	^ [ :job |
@@ -35,7 +32,8 @@ TITDependentPackagesFinder class >> allByBaselines [
 				   job title: 'Finding dependent on ' , each name.
 				   job value: index - 1.
 				   each -> (finder
-					    maxAmountOfPackages: each version packages size * 3 + 50;
+					    maxAmountOfPackages:
+						    each version loadedSystemPackages size * 2 + 20;
 					    baseline: each;
 					    collect;
 					    packages) ]) asOrderedDictionary ] asJob
@@ -45,38 +43,29 @@ TITDependentPackagesFinder class >> allByBaselines [
 ]
 
 { #category : 'examples' }
-TITDependentPackagesFinder class >> allByBaselinesExcept: excluded [
+TITDependentPackagesFinder class >> allByBaselinesForTyping [
 
-	| baselines  |
-	baselines := (BaselineOf allSubclasses copyWithoutAll: excluded)
-		             asSortedCollection: [ :a :b | a name < b name ].
+	| baselines |
+	baselines := self baselinesForTyping.
 
 	^ [ :job |
 		  | finder |
 		  finder := self new
 			            includeInitialPackages;
+			            excludeReflectionPackages;
 			            yourself.
 		  (baselines withIndexCollect: [ :each :index |
 				   job title: 'Finding dependent on ' , each name.
 				   job value: index - 1.
 				   each -> (finder
-					    maxAmountOfPackages: each version packages size * 3 + 50;
+					    maxAmountOfPackages:
+						    each version loadedSystemPackages size * 2 + 20;
 					    baseline: each;
 					    collect;
 					    packages) ]) asOrderedDictionary ] asJob
 		  title: 'Finding dependent packages...';
 		  max: baselines size;
 		  run
-]
-
-{ #category : 'examples' }
-TITDependentPackagesFinder class >> allByBaselinesForTypes [
-
-	^ self allByBaselinesExcept: {
-			  BaselineOfTypeMe.
-			  BaselineOfTypeInfoTools.
-			  BaselineOfRoelTyper.
-			  BaselineOfJ2Inferer } asSet
 ]
 
 { #category : 'examples' }
@@ -89,7 +78,7 @@ TITDependentPackagesFinder class >> allByPackages [
 		  | finder |
 		  finder := self new
 			            includeInitialPackages;
-			            maxAmountOfPackages: 100;
+			            maxAmountOfPackages: (self maxAmountOfPackagesFor: 1);
 			            yourself.
 		  (packages withIndexCollect: [ :each :index |
 				   job title: 'Finding dependent on ' , each name.
@@ -104,11 +93,21 @@ TITDependentPackagesFinder class >> allByPackages [
 ]
 
 { #category : 'examples' }
+TITDependentPackagesFinder class >> baselinesForTyping [
+
+	^ ((BaselineOf allSubclasses copyWithoutAll:
+		    self excludedBaselinesForTypes) reject: [ :each |
+		   each version loadedSystemPackages isEmpty ]) asSortedCollection: [
+		  :a
+		  :b | a name < b name ]
+]
+
+{ #category : 'examples' }
 TITDependentPackagesFinder class >> dependingPackagesOn: aPackageName [
 
 	^ self new
 		  includeInitialPackages;
-		  maxAmountOfPackages: 100;
+		  maxAmountOfPackages: (self maxAmountOfPackagesFor: 1);
 		  packageName: aPackageName;
 		  collect;
 		  packages
@@ -121,9 +120,9 @@ TITDependentPackagesFinder class >> exampleAllByBaselines [
 ]
 
 { #category : 'examples' }
-TITDependentPackagesFinder class >> exampleAllByBaselinesForTypes [
+TITDependentPackagesFinder class >> exampleAllByBaselinesForTyping [
 
-	self allByBaselinesForTypes inspect
+	self allByBaselinesForTyping inspect
 ]
 
 { #category : 'examples' }
@@ -135,7 +134,7 @@ TITDependentPackagesFinder class >> exampleAllByPackages [
 { #category : 'examples' }
 TITDependentPackagesFinder class >> exampleSingleBaseline [
 
-	(self forBaseline: BaselineOfAthens) inspect
+	(self forBaseline: BaselineOfDrTests) inspect
 ]
 
 { #category : 'examples' }
@@ -145,25 +144,75 @@ TITDependentPackagesFinder class >> exampleSinglePackage [
 ]
 
 { #category : 'examples' }
+TITDependentPackagesFinder class >> excludedBaselinesForTypes [
+
+	^ {
+		  BaselineOfTypeInfoTools.
+		  BaselineOfReflectivity } asSet
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> excludedPackagesForTypes [
+
+	^ (self excludedBaselinesForTypes flatCollect: [ :each |
+		   each version loadedSystemPackages ])
+	  , (#( 'OpalCompiler-Core' 'Kernel-CodeModel' ) collect: [ :each |
+			   self packageOrganizer packageNamed: each ])
+]
+
+{ #category : 'examples' }
 TITDependentPackagesFinder class >> forBaseline: aBaselineClass [
 
 	^ self new
 		  includeInitialPackages;
-		  maxAmountOfPackages: 100;
+		  maxAmountOfPackages: (self maxAmountOfPackagesFor:
+					   aBaselineClass version loadedSystemPackages size);
 		  baseline: aBaselineClass;
 		  collect;
 		  packages
 ]
 
 { #category : 'examples' }
-TITDependentPackagesFinder class >> forPackage: aPackageName [
+TITDependentPackagesFinder class >> forPackage: aPackage [
+
+	^ self forPackages: { aPackage }
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> forPackageNamed: aPackageName [
+
+	^ self forPackage: (self packageOrganizer packageNamed: aPackageName)
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> forPackages: aCollectionOfPackages [
 
 	^ self new
 		  includeInitialPackages;
-		  maxAmountOfPackages: 100;
-		  packageName: aPackageName;
+		  maxAmountOfPackages:
+			  (self maxAmountOfPackagesFor: aCollectionOfPackages size);
+		  packages: aCollectionOfPackages;
 		  collect;
 		  packages
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> forTypingPackages: aCollectionOfPackages [
+
+	^ self new
+		  includeInitialPackages;
+		  maxAmountOfPackages:
+			  (self maxAmountOfPackagesFor: aCollectionOfPackages size);
+		  packages: aCollectionOfPackages;
+		  excludeReflectionPackages;
+		  collect;
+		  packages
+]
+
+{ #category : 'examples' }
+TITDependentPackagesFinder class >> maxAmountOfPackagesFor: anInteger [
+
+	^ anInteger * 3 + 30
 ]
 
 { #category : 'adding' }
@@ -180,12 +229,7 @@ TITDependentPackagesFinder >> addAndReportPackage: aPackage [
 { #category : 'accessing' }
 TITDependentPackagesFinder >> baseline: aBaselineClass [
 
-	| packagesInBaseline |
-	packagesInBaseline := Set new.
-	self
-		packagesInBaseline: aBaselineClass
-		do: [ :eachPackage | packagesInBaseline add: eachPackage ].
-	self packages: packagesInBaseline
+	self packages: aBaselineClass version loadedSystemPackages
 ]
 
 { #category : 'private - processing' }
@@ -230,9 +274,8 @@ TITDependentPackagesFinder >> dependenciesViaPackageDependencyOf: aPackage [
 
 	^ (StDependencyChecker new
 		   shouldComputeMessageSendDependencies: false;
-		   daPackageFor: aPackage name) dependencies
-		  collect: [ :each | each target systemPackage ]
-		  as: Set
+		   daPackageFor: aPackage name) dependencies flatCollectAsSet: [
+		  :each | each targetPackages ]
 ]
 
 { #category : 'private - processing' }
@@ -286,6 +329,18 @@ TITDependentPackagesFinder >> excludeInitialPackages [
 ]
 
 { #category : 'accessing' }
+TITDependentPackagesFinder >> excludeReflectionPackages [
+
+	excludesReflectionPackages := true
+]
+
+{ #category : 'accessing' }
+TITDependentPackagesFinder >> excludesReflectionPackages [ 
+
+	^ excludesReflectionPackages ifNil: [ false ]
+]
+
+{ #category : 'accessing' }
 TITDependentPackagesFinder >> includeInitialPackages [
 
 	includesInitialPackages := true
@@ -318,12 +373,6 @@ TITDependentPackagesFinder >> package: aPackage [
 ]
 
 { #category : 'accessing' }
-TITDependentPackagesFinder >> packageName: aPackageName [
-
-	self package: (self packageOrganizer packageNamed: aPackageName)
-]
-
-{ #category : 'accessing' }
 TITDependentPackagesFinder >> packages [
 
 	| results |
@@ -331,6 +380,8 @@ TITDependentPackagesFinder >> packages [
 		           ifTrue: [ packages ]
 		           ifFalse: [
 		           packages reject: [ :any | initialPackages includes: any ] ].
+	self excludesReflectionPackages ifTrue: [
+		results removeAllFoundIn: self class excludedPackagesForTypes ].
 	^ results sorted
 ]
 
@@ -344,10 +395,7 @@ TITDependentPackagesFinder >> packages: aCollectionOfPackages [
 { #category : 'private - processing' }
 TITDependentPackagesFinder >> packagesInBaseline: aBaseline do: aBlock [
 
-	aBaseline version packages do: [ :eachPackageSpec |
-			self packageOrganizer
-				packageNamed: eachPackageSpec name
-				ifPresent: aBlock ]
+	aBaseline version loadedSystemPackages do: aBlock
 ]
 
 { #category : 'private - processing' }
