@@ -9,6 +9,7 @@ Class {
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> AIDataFrameInspector [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'AIDataFrameInspector';
@@ -19,6 +20,7 @@ TITMajorProjectsLoader class >> AIDataFrameInspector [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> AIEditDistances [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		repository: 'github://pharo-ai/edit-distances/src';
@@ -29,6 +31,7 @@ TITMajorProjectsLoader class >> AIEditDistances [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> AIGraphAlgorithms [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		repository: 'github://pharo-ai/graph-algorithms';
@@ -39,6 +42,7 @@ TITMajorProjectsLoader class >> AIGraphAlgorithms [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Album [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'Album';
@@ -49,6 +53,7 @@ TITMajorProjectsLoader class >> Album [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Alexandrie [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'Alexandrie';
@@ -59,6 +64,7 @@ TITMajorProjectsLoader class >> Alexandrie [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Artefact [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		githubUser: 'pharo-contributions'
@@ -70,18 +76,9 @@ TITMajorProjectsLoader class >> Artefact [
 ]
 
 { #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> Bloc [
-
-	<projectLoader>
-	Metacello new
-		baseline: 'Bloc';
-		repository: 'github://pharo-graphics/Bloc:master/src';
-		load
-]
-
-{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> BlocTutorials [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'BlocTutorials';
@@ -92,6 +89,7 @@ TITMajorProjectsLoader class >> BlocTutorials [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Clap [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'Clap';
@@ -100,8 +98,20 @@ TITMajorProjectsLoader class >> Clap [
 ]
 
 { #category : 'as yet unclassified' }
+TITMajorProjectsLoader class >> Cormas [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		repository: 'github://cormas/cormas';
+		baseline: 'Cormas';
+		load
+]
+
+{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> CoypuIDE [
 
+	<script>
 	<projectLoader>
 	Metacello new
 	baseline: 'CoypuIDE';
@@ -112,6 +122,7 @@ TITMajorProjectsLoader class >> CoypuIDE [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Cryptography [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'Cryptography';
@@ -122,6 +133,7 @@ TITMajorProjectsLoader class >> Cryptography [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Glorp [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		repository: 'github://pharo-rdbms/glorp';
@@ -132,6 +144,7 @@ TITMajorProjectsLoader class >> Glorp [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> IconFactory [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: #IconFactory;
@@ -142,6 +155,7 @@ TITMajorProjectsLoader class >> IconFactory [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> MethodProxies [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'MethodProxies';
@@ -152,6 +166,7 @@ TITMajorProjectsLoader class >> MethodProxies [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> MooseIDE [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'MooseIDE';
@@ -163,6 +178,7 @@ TITMajorProjectsLoader class >> MooseIDE [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> MuTalk [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'MuTalk';
@@ -173,6 +189,7 @@ TITMajorProjectsLoader class >> MuTalk [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> NeoJSON [
 
+	<script>
 	<projectLoader: 10>
 	Metacello new
 		repository: 'github://svenvc/NeoJSON';
@@ -183,6 +200,7 @@ TITMajorProjectsLoader class >> NeoJSON [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> ODBC [
 
+	<script>
 	<projectLoader>
 	Metacello new
 	repository: 'github://pharo-rdbms/Pharo-ODBC/src';
@@ -193,6 +211,7 @@ TITMajorProjectsLoader class >> ODBC [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> OpenPonkPlugins [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'OpenPonkPlugins';
@@ -202,8 +221,31 @@ TITMajorProjectsLoader class >> OpenPonkPlugins [
 ]
 
 { #category : 'as yet unclassified' }
+TITMajorProjectsLoader class >> PharoJS [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'PharoJS';
+		repository: 'github://PharoJS/PharoJS:pharo12';
+		load
+]
+
+{ #category : 'as yet unclassified' }
+TITMajorProjectsLoader class >> PharoLauncher [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'PharoLauncher';
+		repository: 'github://pharo-project/pharo-launcher:dev/src';
+		load
+]
+
+{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Roassal [
 
+	<script>
 	<projectLoader: 10>
 	Metacello new
 		baseline: 'Roassal';
@@ -213,8 +255,21 @@ TITMajorProjectsLoader class >> Roassal [
 ]
 
 { #category : 'as yet unclassified' }
+TITMajorProjectsLoader class >> RoassalExporters [
+
+	<script>
+	<projectLoader: 10>
+	Metacello new
+		baseline: 'RoassalExporters';
+		repository: 'github://pharo-graphics/RoassalExporters';
+		lock;
+		load
+]
+
+{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> SDLExperiments [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'SDLExperiments';
@@ -225,6 +280,7 @@ TITMajorProjectsLoader class >> SDLExperiments [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> SQLite3 [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		repository: 'github://pharo-rdbms/Pharo-SQLite3/src';
@@ -235,6 +291,7 @@ TITMajorProjectsLoader class >> SQLite3 [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Seaside3 [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'Seaside3';
@@ -245,6 +302,7 @@ TITMajorProjectsLoader class >> Seaside3 [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> SimpleRene [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'SimpleRene';
@@ -255,6 +313,7 @@ TITMajorProjectsLoader class >> SimpleRene [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> SingularizePluralize [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'SingularizePluralize';
@@ -265,6 +324,7 @@ TITMajorProjectsLoader class >> SingularizePluralize [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Soup [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'Soup';
@@ -275,6 +335,7 @@ TITMajorProjectsLoader class >> Soup [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Talents [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'Talents';
@@ -285,6 +346,7 @@ TITMajorProjectsLoader class >> Talents [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Teapot [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		baseline: 'Teapot';
@@ -295,6 +357,7 @@ TITMajorProjectsLoader class >> Teapot [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Toplo [
 
+	<script>
 	<projectLoader: 10>
 	Metacello new
 		baseline: 'Toplo';
@@ -306,6 +369,7 @@ TITMajorProjectsLoader class >> Toplo [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Voyage [
 
+	<script>
 	<projectLoader>
 	Metacello new
 		repository: 'github://pharo-nosql/voyage/mc';
@@ -314,23 +378,25 @@ TITMajorProjectsLoader class >> Voyage [
 ]
 
 { #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> XMLParser [
+TITMajorProjectsLoader class >> WodenEngine [
 
-	<projectLoader: 10>
+	<script>
+	<projectLoader>
 	Metacello new
-		baseline: 'XMLParser';
-		repository: 'github://pharo-contributions/XML-XMLParser/src';
-		lock;
+		baseline: 'WodenEngine';
+		repository: 'github://woden-engine/woden';
 		load
 ]
 
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> XMLParserHTML [
 
-	<projectLoader>
+	<script>
+	<projectLoader: 10>
 	Metacello new
 		baseline: 'XMLParserHTML';
 		repository: 'github://pharo-contributions/XML-XMLParserHTML/src';
+		lock;
 		load
 ]
 
@@ -362,6 +428,7 @@ TITMajorProjectsLoader class >> loadProjects [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> projectLoaderMethods [
 
+	<script: 'self projectLoaderMethods inspect'>
 	^ ((self class methods
 		    collect: [ :each |
 				    each selector -> (each pragmas
