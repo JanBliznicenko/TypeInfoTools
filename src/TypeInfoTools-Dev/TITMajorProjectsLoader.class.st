@@ -13,7 +13,6 @@ TITMajorProjectsLoader class >> AIDataFrameInspector [
 	Metacello new
 		baseline: 'AIDataFrameInspector';
 		repository: 'github://pharo-ai/data-inspector/src';
-		onConflictUseIncoming;
 		load
 ]
 
@@ -107,8 +106,6 @@ TITMajorProjectsLoader class >> CoypuIDE [
 	Metacello new
 	baseline: 'CoypuIDE';
 	repository: 'github://pharo-graphics/CoypuIDE/';
-	onConflict: [ :ex | ex useIncoming ];
-	onUpgrade: [ :ex | ex useIncoming ];
 	load.
 ]
 
@@ -174,6 +171,16 @@ TITMajorProjectsLoader class >> MuTalk [
 ]
 
 { #category : 'as yet unclassified' }
+TITMajorProjectsLoader class >> NeoJSON [
+
+	<projectLoader: 10>
+	Metacello new
+		repository: 'github://svenvc/NeoJSON';
+		baseline: 'NeoJSON';
+		load
+]
+
+{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> ODBC [
 
 	<projectLoader>
@@ -190,18 +197,18 @@ TITMajorProjectsLoader class >> OpenPonkPlugins [
 	Metacello new
 		baseline: 'OpenPonkPlugins';
 		repository: 'github://openponk/plugins';
-		onConflictUseIncoming;
+		onConflictUseLoaded;
 		load: 'all'
 ]
 
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Roassal [
 
-	<projectLoader>
+	<projectLoader: 10>
 	Metacello new
 		baseline: 'Roassal';
 		repository: 'github://pharo-graphics/Roassal';
-		onConflictUseIncoming;
+		lock;
 		load
 ]
 
@@ -210,9 +217,9 @@ TITMajorProjectsLoader class >> SDLExperiments [
 
 	<projectLoader>
 	Metacello new
-	baseline: 'SDLExperiments';
-	repository: 'github://tinchodias/pharo-sdl-experiments:master/';
-	load
+		baseline: 'SDLExperiments';
+		repository: 'github://tinchodias/pharo-sdl-experiments:master/';
+		load
 ]
 
 { #category : 'as yet unclassified' }
@@ -220,9 +227,9 @@ TITMajorProjectsLoader class >> SQLite3 [
 
 	<projectLoader>
 	Metacello new
-  repository: 'github://pharo-rdbms/Pharo-SQLite3/src';
-  baseline: 'SQLite3';
-  load
+		repository: 'github://pharo-rdbms/Pharo-SQLite3/src';
+		baseline: 'SQLite3';
+		load
 ]
 
 { #category : 'as yet unclassified' }
@@ -276,16 +283,6 @@ TITMajorProjectsLoader class >> Talents [
 ]
 
 { #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> TaskIt [
-
-	<projectLoader>
-	Metacello new
-		baseline: 'TaskIt';
-		repository: 'github://pharo-contributions/taskit';
-		load
-]
-
-{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Teapot [
 
 	<projectLoader>
@@ -298,10 +295,11 @@ TITMajorProjectsLoader class >> Teapot [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Toplo [
 
-	<projectLoader>
+	<projectLoader: 10>
 	Metacello new
 		baseline: 'Toplo';
 		repository: 'github://pharo-graphics/Toplo:master/src';
+		lock;
 		load
 ]
 
@@ -316,6 +314,17 @@ TITMajorProjectsLoader class >> Voyage [
 ]
 
 { #category : 'as yet unclassified' }
+TITMajorProjectsLoader class >> XMLParser [
+
+	<projectLoader: 10>
+	Metacello new
+		baseline: 'XMLParser';
+		repository: 'github://pharo-contributions/XML-XMLParser/src';
+		lock;
+		load
+]
+
+{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> XMLParserHTML [
 
 	<projectLoader>
@@ -326,36 +335,26 @@ TITMajorProjectsLoader class >> XMLParserHTML [
 ]
 
 { #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> XPath [
-
-	<projectLoader>
-	Metacello new
-		baseline: 'XPath';
-		repository: 'github://pharo-contributions/XML-XPath/src';
-		load
-]
-
-{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> loadProjects [
 
 	<script>
-	| methods warnings |
-	methods := self projectLoaderMethods.
+	| selectors warnings |
+	selectors := self projectLoaderMethods.
 	warnings := OrderedCollection new.
 	IceLibgitRepository shareRepositoriesBetweenImages: false.
 	[
 		EpMonitor disableDuring: [
 				[ :job |
-					job max: methods size.
-					methods withIndexDo: [ :each :index |
-							job title: 'Loading ' , each selector.
+					job max: selectors size.
+					selectors withIndexDo: [ :each :index |
+							job title: 'Loading ' , each.
 							job value: index - 1.
-							[ (Message selector: each selector) sendTo: self ]
+							[ (Message selector: each) sendTo: self ]
 								on: Warning
 								do: [ :warning |
-										warnings add: each selector -> warning messageText.
+										warnings add: each -> warning messageText.
 										warning resume ] ] ] asJob run ].
-		warnings inspect ]
+		warnings ifNotEmpty: #inspect ]
 		forkAt: Processor userBackgroundPriority
 		named: self name
 ]
@@ -363,7 +362,15 @@ TITMajorProjectsLoader class >> loadProjects [
 { #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> projectLoaderMethods [
 
-	^ (self class methods select: [ :each |
-		   each pragmas anySatisfy: [ :any | any selector = #projectLoader ] ])
-		  sorted: [ :a :b | a selector < b selector ]
+	^ ((self class methods
+		    collect: [ :each |
+				    each selector -> (each pragmas
+					     detect: [ :any | any selector beginsWith: 'projectLoader' ]
+					     ifFound: [ :pragma |
+					     pragma argumentNamed: #projectLoader ifNone: [ 100 ] ]
+					     ifNone: [ 0 ]) ]
+		    thenSelect: [ :each | each value > 0 ]) sorted: [ :a :b |
+			   a value = b value
+				   ifTrue: [ a key < b key ]
+				   ifFalse: [ a value < b value ] ]) collect: #key
 ]
