@@ -13,7 +13,7 @@ BaselineOfTypeInfoTools >> baseline: spec [
 			spec
 				baseline: 'DependentsFinder'
 				with: [
-					spec repository: 'github://JanBliznicenko/DependentsFinder' ];
+					spec repository: 'github://JanBliznicenko/DependentsFinder:main' ];
 				baseline: 'RoelTyper' with: [
 						spec
 							repository: 'github://JanBliznicenko/RoelTyper';
