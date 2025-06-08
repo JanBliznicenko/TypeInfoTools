@@ -109,17 +109,6 @@ TITMajorProjectsLoader class >> Cormas [
 ]
 
 { #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> CoypuIDE [
-
-	<script>
-	<projectLoader>
-	Metacello new
-	baseline: 'CoypuIDE';
-	repository: 'github://pharo-graphics/CoypuIDE/';
-	load.
-]
-
-{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Cryptography [
 
 	<script>

@@ -11,6 +11,9 @@ BaselineOfTypeInfoTools >> baseline: spec [
 	<baseline>
 	spec for: #common do: [
 			spec
+				baseline: 'DependentsFinder'
+				with: [
+					spec repository: 'github://JanBliznicenko/DependentsFinder' ];
 				baseline: 'RoelTyper' with: [
 						spec
 							repository: 'github://JanBliznicenko/RoelTyper';
@@ -30,7 +33,8 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				package: 'TypeInfoTools-Completion'
 				with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
 				package: 'TypeInfoTools-Dev'
-				with: [ spec requires: #( 'TypeInfoTools-Core' 'NeoCSV' ) ];
+				with: [ spec requires: #( 'TypeInfoTools-Core'
+				   'NeoCSV' ) ];
 				package: 'TITMyClass';
 				group: 'ide'
 				with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser'
