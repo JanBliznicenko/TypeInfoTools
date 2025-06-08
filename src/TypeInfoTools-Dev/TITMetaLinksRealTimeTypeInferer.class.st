@@ -19,14 +19,24 @@ Class {
 { #category : 'examples' }
 TITMetaLinksRealTimeTypeInferer class >> example [
 
-	| inferer |
-	inferer := TITMetaLinksRealTimeTypeInferer new.
-
-	inferer gatheredBaseline: BaselineOfAthens.
-	inferer name: 'Athens'.
-	[ inferer gatherTypes ]
+	[ self gatherBaselineNamed: 'Athens' ]
 		forkAt: Processor userBackgroundPriority
 		named: self name
+]
+
+{ #category : 'examples' }
+TITMetaLinksRealTimeTypeInferer class >> gatherBaselineNamed: aNameOfBaseline [
+
+	| baselineClass inferer results |
+	baselineClass := Smalltalk at:
+		                 ('BaselineOf' , aNameOfBaseline) asSymbol.
+	inferer := self new.
+	results := inferer
+		           gatheredBaseline: baselineClass;
+		           name: aNameOfBaseline;
+		           gatherTypes.
+	results inspect.
+	inferer inspect
 ]
 
 { #category : 'adding' }
