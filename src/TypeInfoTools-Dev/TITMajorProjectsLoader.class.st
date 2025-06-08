@@ -1,9 +1,9 @@
 Class {
 	#name : 'TITMajorProjectsLoader',
 	#superclass : 'Object',
-	#category : 'TypeInfoTools-Dev-Dependencies',
+	#category : 'TypeInfoTools-Dev-RealTime',
 	#package : 'TypeInfoTools-Dev',
-	#tag : 'Dependencies'
+	#tag : 'RealTime'
 }
 
 { #category : 'as yet unclassified' }
