@@ -1,6 +1,10 @@
 Class {
 	#name : 'TITAbstractTypeHolder',
 	#superclass : 'Object',
+	#classInstVars : [
+		'withAllSubclassesByPriority',
+		'withMoreGeneralClasses'
+	],
 	#category : 'TypeInfoTools-Dev-RealTime',
 	#package : 'TypeInfoTools-Dev',
 	#tag : 'RealTime'
@@ -13,25 +17,63 @@ TITAbstractTypeHolder class >> acceptsClass: aClass [
 ]
 
 { #category : 'instance creation' }
-TITAbstractTypeHolder class >> newBestForValue: aValue [
+TITAbstractTypeHolder class >> newAccomodatingOwnInstanceAndClass: aClass [
 
-	| class |
-	class := {
-		         TITEmptyTypeHolder.
-		         TITKeyValueTypeHolder.
-		         TITDictionaryTypeHolder.
-		         TITCollectionTypeHolder.
-		         TITTypeHolder } detect: [ :any |
-		         any acceptsClass: aValue class ].
-	^ class newWithValue: aValue
+	^ (self withMoreGeneralClasses detect: [ :any |
+		   any acceptsClass: aClass ]) new
 ]
 
 { #category : 'instance creation' }
-TITAbstractTypeHolder class >> newWithValue: anObject [
+TITAbstractTypeHolder class >> newFrom: aHolder withValue: aValue [
 
-	^ self new
-		  addValue: anObject;
+	^ (self newAccomodatingOwnInstanceAndClass: aValue class)
+		  replaceFrom: aHolder;
+		  addValue: aValue;
 		  yourself
+]
+
+{ #category : 'instance creation' }
+TITAbstractTypeHolder class >> newMostPreciseForClass: aClass [
+
+	^ (self withAllSubclassesByPriority detect: [ :any |
+		   any acceptsClass: aClass ]) new
+]
+
+{ #category : 'instance creation' }
+TITAbstractTypeHolder class >> newMostPreciseForValue: aValue [
+
+	^ (self newMostPreciseForClass: aValue class)
+		  addValue: aValue;
+		  yourself
+]
+
+{ #category : 'accessing' }
+TITAbstractTypeHolder class >> priority [
+
+	^ -1
+]
+
+{ #category : 'instance creation' }
+TITAbstractTypeHolder class >> withAllSubclassesByPriority [
+
+	^ withAllSubclassesByPriority ifNil: [
+			  withAllSubclassesByPriority := (self withAllSubclasses select: [
+				                                  :any | any priority > 0 ])
+				                                 sortedAs: [ :each |
+				                                 each priority ] ]
+]
+
+{ #category : 'accessing' }
+TITAbstractTypeHolder class >> withMoreGeneralClasses [
+
+	| foundClasses nextSuperClass |
+	withMoreGeneralClasses ifNotNil: [ ^ withMoreGeneralClasses ].
+	foundClasses := OrderedCollection with: self.
+	[
+		nextSuperClass := foundClasses last superclass.
+		nextSuperClass = TITAbstractTypeHolder ] whileFalse: [
+		foundClasses add: nextSuperClass ].
+	^ withMoreGeneralClasses := foundClasses
 ]
 
 { #category : 'copying' }
@@ -44,6 +86,13 @@ TITAbstractTypeHolder >> , anotherHolder [
 TITAbstractTypeHolder >> addValue: aValue [
 
 	self subclassResponsibility
+]
+
+{ #category : 'converting' }
+TITAbstractTypeHolder >> convertTypesToClass [
+	"do nothing"
+
+	
 ]
 
 { #category : 'converting' }
@@ -81,6 +130,18 @@ TITAbstractTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 TITAbstractTypeHolder >> mergeTypes [
 
 	
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder >> replaceFrom: anotherHolder [
+
+	self subclassResponsibility
+]
+
+{ #category : 'private' }
+TITAbstractTypeHolder >> size [
+
+	^ self subclassResponsibility
 ]
 
 { #category : 'comparing' }

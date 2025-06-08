@@ -43,7 +43,8 @@ TITCollectionTypeHolder class >> atomicCollectionTypes [
 				                           String.
 				                           Text.
 				                           WideCharacterSet.
-				                           WordArray } flatCollectAsSet: [ :each |
+				                           WordArray.
+				                           BlChildren } flatCollectAsSet: [ :each |
 				                           each withAllSubclasses ] ]
 ]
 
@@ -52,6 +53,12 @@ TITCollectionTypeHolder class >> considersAsCollection: aClass [
 
 	^ aClass isCollectionClass and: [
 		  (self atomicCollectionTypes includes: aClass) not ]
+]
+
+{ #category : 'accessing' }
+TITCollectionTypeHolder class >> priority [
+
+	^ 40
 ]
 
 { #category : 'initialization' }
@@ -73,6 +80,13 @@ TITCollectionTypeHolder >> addValue: aValue [
 	super addValue: aValue.
 	aValue ifEmpty: [ ^ self ].
 	elementTypes := elementTypes withValue: aValue anyOne
+]
+
+{ #category : 'converting' }
+TITCollectionTypeHolder >> convertTypesToClass [
+
+	super convertTypesToClass.
+	elementTypes convertTypesToClass
 ]
 
 { #category : 'converting' }

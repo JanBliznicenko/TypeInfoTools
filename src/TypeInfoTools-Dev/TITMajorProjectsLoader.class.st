@@ -1,23 +1,12 @@
 Class {
 	#name : 'TITMajorProjectsLoader',
 	#superclass : 'Object',
-	#category : 'TypeInfoTools-Dev-Dependencies',
+	#category : 'TypeInfoTools-Dev-RealTime',
 	#package : 'TypeInfoTools-Dev',
-	#tag : 'Dependencies'
+	#tag : 'RealTime'
 }
 
-{ #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> AIDataFrameInspector [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		baseline: 'AIDataFrameInspector';
-		repository: 'github://pharo-ai/data-inspector/src';
-		load
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> AIEditDistances [
 
 	<script>
@@ -28,7 +17,7 @@ TITMajorProjectsLoader class >> AIEditDistances [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> AIGraphAlgorithms [
 
 	<script>
@@ -39,29 +28,7 @@ TITMajorProjectsLoader class >> AIGraphAlgorithms [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> Album [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		baseline: 'Album';
-		repository: 'github://pharo-graphics/Album:master/src';
-		load
-]
-
-{ #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> Alexandrie [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		baseline: 'Alexandrie';
-		repository: 'github://pharo-graphics/Alexandrie:master/src';
-		load
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Artefact [
 
 	<script>
@@ -75,7 +42,18 @@ TITMajorProjectsLoader class >> Artefact [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> BTree [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		repository: 'github://pharo-containers/BTree:5a2cc1c';
+		baseline: 'BTree';
+		load
+]
+
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> BlocTutorials [
 
 	<script>
@@ -86,7 +64,7 @@ TITMajorProjectsLoader class >> BlocTutorials [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Clap [
 
 	<script>
@@ -97,7 +75,7 @@ TITMajorProjectsLoader class >> Clap [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Cormas [
 
 	<script>
@@ -108,7 +86,7 @@ TITMajorProjectsLoader class >> Cormas [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Cryptography [
 
 	<script>
@@ -119,7 +97,7 @@ TITMajorProjectsLoader class >> Cryptography [
 		load: #('Cryptography' 'ASN1-Tests' 'ASN1-Readers-Tests' 'X509-Tests' 'PBKDF2-Tests' 'Blowfish' 'OpenPGP' 'LayeredProtocol')
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Glorp [
 
 	<script>
@@ -130,7 +108,7 @@ TITMajorProjectsLoader class >> Glorp [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> IconFactory [
 
 	<script>
@@ -141,7 +119,7 @@ TITMajorProjectsLoader class >> IconFactory [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> MethodProxies [
 
 	<script>
@@ -152,11 +130,11 @@ TITMajorProjectsLoader class >> MethodProxies [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> MooseIDE [
 
 	<script>
-	<projectLoader>
+	<projectLoader: 7>
 	Metacello new
 		baseline: 'MooseIDE';
 		repository: 'github://moosetechnology/MooseIDE:development/src';
@@ -164,18 +142,7 @@ TITMajorProjectsLoader class >> MooseIDE [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> MuTalk [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		baseline: 'MuTalk';
-		repository: 'github://pharo-contributions/mutalk/src';
-		load
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> NeoJSON [
 
 	<script>
@@ -186,7 +153,7 @@ TITMajorProjectsLoader class >> NeoJSON [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> ODBC [
 
 	<script>
@@ -197,7 +164,7 @@ TITMajorProjectsLoader class >> ODBC [
 	load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> OpenPonkPlugins [
 
 	<script>
@@ -209,18 +176,7 @@ TITMajorProjectsLoader class >> OpenPonkPlugins [
 		load: 'all'
 ]
 
-{ #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> PharoJS [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		baseline: 'PharoJS';
-		repository: 'github://PharoJS/PharoJS:pharo12';
-		load
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> PharoLauncher [
 
 	<script>
@@ -228,34 +184,64 @@ TITMajorProjectsLoader class >> PharoLauncher [
 	Metacello new
 		baseline: 'PharoLauncher';
 		repository: 'github://pharo-project/pharo-launcher:dev/src';
-		load
+		load.
+
+	WorldState class compile: 'quitSession
+	| response |
+	response := MorphicUIManager new
+						confirm: ''Save changes before quitting?''
+						trueChoice: ''Save''
+						falseChoice: ''Discard''
+						cancelChoice: ''Cancel''
+						default: nil.
+	response ifNil: [ ^self ].
+	response
+		ifTrue: [Smalltalk snapshot: true andQuit: true]
+		ifFalse: [Smalltalk snapshot: false andQuit: true]'.
+	(Smalltalk at: #PhLStartupManager) class compile:
+		'startUp: isANewSession
+	isANewSession ifFalse: [ ^ self ].	
+	PharoLauncherApplication reset.'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Roassal [
 
 	<script>
 	<projectLoader: 10>
 	Metacello new
 		baseline: 'Roassal';
-		repository: 'github://pharo-graphics/Roassal';
+		repository: 'github://pharo-graphics/Roassal:Pharo13';
+		onConflictUseLoaded;
 		lock;
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> RoassalExporters [
 
 	<script>
 	<projectLoader: 10>
 	Metacello new
 		baseline: 'RoassalExporters';
-		repository: 'github://pharo-graphics/RoassalExporters';
+		repository: 'github://pharo-graphics/RoassalExporters:Pharo13';
 		lock;
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> RoassalLayouts [
+
+	<script>
+	<projectLoader: 4>
+	Metacello new
+		baseline: 'RoassalLayouts';
+		repository: 'github://JanBliznicenko/RoassalLayouts';
+		lock;
+		load
+]
+
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> SDLExperiments [
 
 	<script>
@@ -266,18 +252,31 @@ TITMajorProjectsLoader class >> SDLExperiments [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> SQLite3 [
 
 	<script>
 	<projectLoader>
+	| repoPath dllsDir vmDir |
+	repoPath := 'pharo-rdbms/Pharo-SQLite3'.
+
 	Metacello new
-		repository: 'github://pharo-rdbms/Pharo-SQLite3/src';
+		repository: 'github://' , repoPath;
 		baseline: 'SQLite3';
-		load
+		load.
+
+	OSPlatform current isWindows ifFalse: [ ^ self ].
+
+	dllsDir := IceLibgitRepository localRepositoriesLocation / repoPath
+	           / 'bin/windows/64bit'.
+	vmDir := FileLocator vmDirectory.
+	dllsDir files do: [ :eachFile |
+			eachFile copyTo: ((vmDir / eachFile basename)
+					 ensureDelete;
+					 yourself) ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Seaside3 [
 
 	<script>
@@ -288,7 +287,7 @@ TITMajorProjectsLoader class >> Seaside3 [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> SimpleRene [
 
 	<script>
@@ -299,7 +298,7 @@ TITMajorProjectsLoader class >> SimpleRene [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> SingularizePluralize [
 
 	<script>
@@ -310,7 +309,7 @@ TITMajorProjectsLoader class >> SingularizePluralize [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Soup [
 
 	<script>
@@ -321,7 +320,7 @@ TITMajorProjectsLoader class >> Soup [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Talents [
 
 	<script>
@@ -332,7 +331,7 @@ TITMajorProjectsLoader class >> Talents [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Teapot [
 
 	<script>
@@ -343,7 +342,7 @@ TITMajorProjectsLoader class >> Teapot [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Toplo [
 
 	<script>
@@ -355,7 +354,7 @@ TITMajorProjectsLoader class >> Toplo [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Voyage [
 
 	<script>
@@ -366,7 +365,7 @@ TITMajorProjectsLoader class >> Voyage [
 		load: 'mongo tests'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> XMLParser [
 
 	<script>
@@ -378,7 +377,7 @@ TITMajorProjectsLoader class >> XMLParser [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> XMLParserHTML [
 
 	<script>
@@ -390,7 +389,7 @@ TITMajorProjectsLoader class >> XMLParserHTML [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'actions' }
 TITMajorProjectsLoader class >> loadProjects [
 
 	<script>
@@ -398,24 +397,22 @@ TITMajorProjectsLoader class >> loadProjects [
 	selectors := self projectLoaderMethods.
 	warnings := OrderedCollection new.
 	IceLibgitRepository shareRepositoriesBetweenImages: false.
-	[
-		EpMonitor disableDuring: [
-				[ :job |
-					job max: selectors size.
-					selectors withIndexDo: [ :each :index |
-							job title: 'Loading ' , each.
-							job value: index - 1.
-							[ (Message selector: each) sendTo: self ]
-								on: Warning
-								do: [ :warning |
-										warnings add: each -> warning messageText.
-										warning resume ] ] ] asJob run ].
-		warnings ifNotEmpty: #inspect ]
-		forkAt: Processor userBackgroundPriority
-		named: self name
+	EpMonitor disableDuring: [
+			[ :job |
+				job max: selectors size.
+				selectors withIndexDo: [ :each :index |
+						job title: 'Loading ' , each.
+						job value: index - 1.
+						[ (Message selector: each) sendTo: self ]
+							on: Warning
+							do: [ :warning |
+									warnings add: each -> warning messageText.
+									warning resume ] ] ] asJob run ].
+	warnings ifNotEmpty: #inspect.
+	Smalltalk garbageCollect
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'loading' }
 TITMajorProjectsLoader class >> projectLoaderMethods [
 
 	<script: 'self projectLoaderMethods inspect'>

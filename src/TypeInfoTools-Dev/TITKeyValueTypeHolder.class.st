@@ -16,6 +16,12 @@ TITKeyValueTypeHolder class >> acceptsClass: aClass [
 	^ aClass includesBehavior: Association
 ]
 
+{ #category : 'accessing' }
+TITKeyValueTypeHolder class >> priority [
+
+	^ 20
+]
+
 { #category : 'copying' }
 TITKeyValueTypeHolder >> , anotherHolder [
 
@@ -28,6 +34,14 @@ TITKeyValueTypeHolder >> addValue: aValue [
 	super addValue: aValue.
 	keyTypes := keyTypes withValue: aValue key.
 	valueTypes := valueTypes withValue: aValue value
+]
+
+{ #category : 'converting' }
+TITKeyValueTypeHolder >> convertTypesToClass [
+
+	super convertTypesToClass.
+	keyTypes convertTypesToClass.
+	valueTypes convertTypesToClass
 ]
 
 { #category : 'converting' }

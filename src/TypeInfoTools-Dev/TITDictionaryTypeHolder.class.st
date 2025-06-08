@@ -16,6 +16,12 @@ TITDictionaryTypeHolder class >> acceptsClass: aClass [
 		  aClass = OrderedDictionary or: [ aClass = SmallDictionary ] ]
 ]
 
+{ #category : 'accessing' }
+TITDictionaryTypeHolder class >> priority [
+
+	^ 30
+]
+
 { #category : 'copying' }
 TITDictionaryTypeHolder >> , anotherHolder [
 
@@ -27,6 +33,13 @@ TITDictionaryTypeHolder >> addValue: aValue [
 
 	super addValue: aValue.
 	aValue keysDo: [ :eachKey | ^ keyTypes := keyTypes withValue: eachKey ]
+]
+
+{ #category : 'converting' }
+TITDictionaryTypeHolder >> convertTypesToClass [
+
+	super convertTypesToClass.
+	keyTypes convertTypesToClass
 ]
 
 { #category : 'converting' }

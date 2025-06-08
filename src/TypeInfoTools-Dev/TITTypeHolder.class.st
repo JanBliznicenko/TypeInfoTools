@@ -15,12 +15,10 @@ TITTypeHolder class >> acceptsClass: aClass [
 	^ true
 ]
 
-{ #category : 'instance creation' }
-TITTypeHolder class >> newFrom: aTypeHolder [
+{ #category : 'accessing' }
+TITTypeHolder class >> priority [
 
-	^ self new
-		  replaceFrom: aTypeHolder;
-		  yourself
+	^ 50
 ]
 
 { #category : 'copying' }
@@ -32,7 +30,6 @@ TITTypeHolder >> , anotherHolder [
 { #category : 'adding' }
 TITTypeHolder >> addType: aClass [
 
-	aClass ifNil: [ self halt ].
 	types add: aClass
 ]
 
@@ -48,12 +45,6 @@ TITTypeHolder >> addValue: aValue [
 	self addType: (TITTypesCollection afterClassReplacement: class)
 ]
 
-{ #category : 'converting' }
-TITTypeHolder >> convertTypesToString [
-
-	self types: (types collect: [ :each | each name ])
-]
-
 { #category : 'adding' }
 TITTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 
@@ -62,11 +53,25 @@ TITTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 		  yourself
 ]
 
+{ #category : 'instance creation' }
+TITTypeHolder >> fromSton: stonReader [
+
+	stonReader parseMapDo: [ :instVarName :value |
+			| resolved |
+			resolved := value isStonReference
+				            ifTrue: [
+						            instVarName = #types
+							            ifTrue: [ stonReader resolveReference: value ]
+							            ifFalse: [ stonReader resolveReference: value ] ]
+				            ifFalse: [ value ].
+			self instVarNamed: instVarName asSymbol put: resolved ]
+]
+
 { #category : 'initialization' }
 TITTypeHolder >> initialize [
 
 	super initialize.
-	types := Set new
+	types := IdentitySet new
 ]
 
 { #category : 'inspecting' }
@@ -77,31 +82,12 @@ TITTypeHolder >> inspectionItems: aBuilder [
 ]
 
 { #category : 'private' }
-TITTypeHolder >> mergeType: type occurences: occurences into: merged [
-
-	| commonSuper |
-	merged doWithOccurrences: [ :mergedType :mergedOccurences |
-			commonSuper := type commonSuperclassSymmetricWith: mergedType.
-			(commonSuper ~= Object and: [
-				 commonSuper ~= ProtoObject and: [ commonSuper isNotNil ] ])
-				ifTrue: [
-						merged removeKey: mergedType ifAbsent: [ self error ].
-						merged
-							add: commonSuper
-							withOccurrences: occurences + mergedOccurences.
-						^ self ] ].
-
-	merged add: type withOccurrences: occurences
-]
-
-{ #category : 'private' }
 TITTypeHolder >> mergeTypes [
 
 	| merged |
-	merged := Bag new.
-	types asBag doWithOccurrences: [ :type :occurences |
-		self mergeType: type occurences: occurences into: merged ].
-
+	merged := IdentityBag new.
+	(IdentityBag withAll: types) doWithOccurrences: [ :type :occurences |
+		merged add: type withOccurrences: occurences ].
 	self types: merged
 ]
 
@@ -124,6 +110,12 @@ TITTypeHolder >> printOn: aStream [
 TITTypeHolder >> replaceFrom: anotherHolder [
 
 	self types: anotherHolder types
+]
+
+{ #category : 'private' }
+TITTypeHolder >> size [
+
+	^ types size
 ]
 
 { #category : 'comparing' }
@@ -153,17 +145,11 @@ TITTypeHolder >> types [
 { #category : 'adding' }
 TITTypeHolder >> types: aCollection [
 
-	aCollection do: [ :each | self haltIf: [ each isNil ] ].
 	types := aCollection
 ]
 
 { #category : 'instance creation' }
 TITTypeHolder >> withValue: aValue [
 
-	| holder |
-	holder := (self class acceptsClass: aValue class)
-		          ifTrue: [ self ]
-		          ifFalse: [ self class superclass newFrom: self ].
-	holder addValue: aValue.
-	^ holder
+	^ self class newFrom: self withValue: aValue
 ]

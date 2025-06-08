@@ -12,6 +12,12 @@ TITEmptyTypeHolder class >> acceptsClass: aClass [
 	^ aClass == UndefinedObject
 ]
 
+{ #category : 'accessing' }
+TITEmptyTypeHolder class >> priority [
+
+	^ 10
+]
+
 { #category : 'copying' }
 TITEmptyTypeHolder >> , anotherHolder [
 
@@ -29,6 +35,19 @@ TITEmptyTypeHolder >> addValue: aValue [
 TITEmptyTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 
 	^ anotherTypeHolder
+]
+
+{ #category : 'adding' }
+TITEmptyTypeHolder >> replaceFrom: anotherHolder [
+	"do nothing"
+
+	
+]
+
+{ #category : 'private' }
+TITEmptyTypeHolder >> size [
+
+	^ 0
 ]
 
 { #category : 'comparing' }
@@ -52,5 +71,5 @@ TITEmptyTypeHolder >> threeWayCompareToTypeHolder: aTypeHolder [
 { #category : 'instance creation' }
 TITEmptyTypeHolder >> withValue: aValue [
 
-	^ TITTypeHolder newBestForValue: aValue
+	^ TITAbstractTypeHolder newMostPreciseForValue: aValue
 ]
