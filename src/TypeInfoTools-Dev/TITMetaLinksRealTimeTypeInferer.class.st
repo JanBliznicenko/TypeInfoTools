@@ -413,11 +413,11 @@ TITMetaLinksRealTimeTypeInferer >> runExamples [
 								'Failed to execute example ' , each printString
 								, ' because of error: ' , error description ].
 				2 seconds wait ] ] asJob run.
-
-	self deleteWindowsExcept: originalWindows.
-
+		
 	self logEntry:
 		'Executed ' , exampleMethods size asString , ' examples'.
+
+	self deleteWindowsExcept: originalWindows.
 
 	Smalltalk image isInteractiveGraphic ifFalse: [ ^ self ].
 	self inform: 'Executed ' , exampleMethods size asString , ' examples'
@@ -438,7 +438,7 @@ TITMetaLinksRealTimeTypeInferer >> runTests [
 
 	self logEntry:
 		'Executing ' , testClasses size asString , ' test classes'.
-			
+
 	testClasses ifEmpty: [ ^ self ].
 
 	testResult := testClasses anyOne classForTestResult new.
@@ -469,20 +469,22 @@ TITMetaLinksRealTimeTypeInferer >> runTests [
 	self deleteWindowsExcept: originalWindows.
 
 	self logEntry:
-		'Executed ' , testClasses size asString , ' test classes'.
+		'Executed ' , testClasses size asString , ' test classes, '
+		, testResult passedCount asString , ' passed'.
 
-	Smalltalk image isInteractiveGraphic ifFalse: [ ^ self ].
+	Smalltalk image isInteractiveGraphic ifTrue: [
+			GrowlMorph
+				showTestResult: testResult
+				with: (String streamContents: [ :s |
+							 executedPackages size = 1
+								 ifTrue: [ s nextPutAll: executedPackages anyOne name ]
+								 ifFalse: [ executedPackages size asString , ' packages' ] ]) ].
+
 	testResult hasPassed ifTrue: [ ^ self ].
 
 	self errorLogEntry:
 		'Test errors: ' , testResult errorCount asString
-		, ', Test failures: ' , testResult failureCount asString.
-	GrowlMorph
-		showTestResult: testResult
-		with: (String streamContents: [ :s |
-					 executedPackages size = 1
-						 ifTrue: [ s nextPutAll: executedPackages anyOne name ]
-						 ifFalse: [ executedPackages size asString , ' packages' ] ])
+		, ', Test failures: ' , testResult failureCount asString
 ]
 
 { #category : 'execution' }
