@@ -42,13 +42,11 @@ TITMetaLinksRealTimeTypeInferer class >> gatherBaselineNamed: aNameOfBaseline [
 { #category : 'private' }
 TITMetaLinksRealTimeTypeInferer class >> prepareDirectoryForProjectNamed: projectName [
 
-	| sourceName sourceDirectory vmDirectory targetName targetDirectory |
+	| sourceName sourceDirectory targetName targetDirectory |
 	sourceName := FileLocator image basenameWithoutExtension.
 	sourceDirectory := FileLocator imageDirectory asFileReference.
-	vmDirectory := FileLocator vmDirectory asFileReference.
 	targetName := sourceName , '_' , projectName.
-	targetDirectory := (sourceDirectory parent
-	                    / (sourceName , '_' , projectName))
+	targetDirectory := (sourceDirectory parent / targetName)
 		                   asFileReference.
 	targetDirectory ensureDeleteAllChildren.
 	targetDirectory ensureCreateDirectory.
@@ -59,8 +57,28 @@ TITMetaLinksRealTimeTypeInferer class >> prepareDirectoryForProjectNamed: projec
 		thenDo: [ :each |
 				each copyTo: targetDirectory
 					/ (each basename copyReplaceAll: sourceName with: targetName) ].
-	vmDirectory copyAllTo: targetDirectory / 'vm'.
 	^ targetDirectory / (targetName , '.image')
+]
+
+{ #category : 'private' }
+TITMetaLinksRealTimeTypeInferer class >> prepareVmForThread: anIndex [
+
+	| sourceDirectory sourceDirectoryName targetDirectoryName targetDirectory originalTargetExe targetExeName targetExe |
+	sourceDirectory := FileLocator vmDirectory asFileReference.
+	sourceDirectoryName := sourceDirectory basename.
+	targetDirectoryName := sourceDirectoryName , '_' , anIndex asString.
+	targetDirectory := sourceDirectory parent / targetDirectoryName.
+	originalTargetExe := targetDirectory / 'PharoConsole.exe'.
+	targetExeName := 'PharoConsole_' , anIndex asString , '.exe'.
+	targetExe := targetDirectory / targetExeName.
+	targetExe exists ifTrue: [
+			originalTargetExe isWritable ifFalse: [ self notify: 'VM in use' ].
+			^ targetExe ].
+	targetDirectory ensureDeleteAllChildren.
+	targetDirectory ensureCreateDirectory.
+	sourceDirectory copyAllTo: targetDirectory.
+	originalTargetExe renameTo: targetExeName.
+	^ targetExe
 ]
 
 { #category : 'private' }
@@ -79,11 +97,13 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 	Smalltalk garbageCollect.
 	Smalltalk snapshot: true andQuit: false.
 	Transcript clear.
-	projectNames := self projectNames. 
+	projectNames := self projectNames.
 	mutex := Mutex new.
 	getNextProjectName := [ mutex critical: [ projectNames removeFirst ] ].
 
 	1 to: threads do: [ :threadIndex |
+			| vm |
+			vm := self prepareVmForThread: threadIndex.
 			[
 				[ mutex critical: [ projectNames isNotEmpty ] ] whileTrue: [
 						| projectName imageFile |
@@ -92,24 +112,21 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 						self
 							runProjectNamed: projectName
 							image: imageFile
+							vm: vm
 							threadIndex: threadIndex ] ]
 				forkAt: Processor userBackgroundPriority
 				named: self name , '-' , threadIndex asString ]
 ]
 
 { #category : 'examples' }
-TITMetaLinksRealTimeTypeInferer class >> runProjectNamed: projectName image: anImageFile threadIndex: threadIndex [
+TITMetaLinksRealTimeTypeInferer class >> runProjectNamed: projectName image: anImageFile vm: vm threadIndex: threadIndex [
 
-	| process exe |
+	| process |
 	Transcript crShow:
 		threadIndex asString , ': Processing ' , projectName.
-	exe := (((FileLocator imageDirectory / 'vm') exists
-		         ifTrue: [ FileLocator imageDirectory / 'vm' ]
-		         ifFalse: [ FileLocator vmDirectory ]) / 'PharoConsole.exe')
-		       asFileReference displayString.
 	process := OSWSWinProcess new.
 	process
-		command: exe;
+		command: vm displayString;
 		workingDirectory: anImageFile parent displayString;
 		arguments: {
 				'--headless'.
