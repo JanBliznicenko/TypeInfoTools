@@ -16,40 +16,6 @@ Class {
 	#tag : 'RealTime'
 }
 
-{ #category : 'private' }
-TITMetaLinksRealTimeTypeInferer class >> createImagesByNames [
-
-	| baselines sourceName sourceDirectory vmDirectory |
-	baselines := TITDependentPackagesFinder baselinesForTyping.
-	sourceName := FileLocator image basenameWithoutExtension.
-	sourceDirectory := FileLocator imageDirectory asFileReference.
-	vmDirectory := FileLocator vmDirectory asFileReference.
-	^ [ :job |
-		  job max: baselines size.
-		  baselines withIndexCollect: [ :eachBaseline :index |
-				  | projectName targetName targetDirectory targetImage |
-				  projectName := eachBaseline name asString allButFirst: 10.
-				  job title: 'Creating directory for ' , projectName.
-				  job value: index.
-				  targetName := sourceName , '_' , projectName.
-				  targetDirectory := (sourceDirectory parent
-				                      / (sourceName , '_' , projectName))
-					                     asFileReference.
-				  targetDirectory ensureDeleteAllChildren.
-				  targetDirectory ensureCreateDirectory.
-				  sourceDirectory files
-					  select: [ :each |
-							  each basename endsWithAnyOf:
-								  #( '.version' '.sources' '.changes' '.image' ) ]
-					  thenDo: [ :each |
-							  each copyTo: targetDirectory
-								  /
-								  (each basename copyReplaceAll: sourceName with: targetName) ].
-				  vmDirectory copyAllTo: targetDirectory / 'vm'.
-				  targetImage := targetDirectory / (targetName , '.image').
-				  projectName -> targetImage ] ] asJob run
-]
-
 { #category : 'examples' }
 TITMetaLinksRealTimeTypeInferer class >> example [
 
