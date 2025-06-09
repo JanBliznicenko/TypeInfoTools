@@ -75,8 +75,11 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 
 	<script>
 	| projectNames getNextProjectName mutex threads |
-	threads := 6.
-	projectNames := self projectNames.
+	threads := 8.
+	Smalltalk garbageCollect.
+	Smalltalk snapshot: true andQuit: false.
+	Transcript clear.
+	projectNames := self projectNames. 
 	mutex := Mutex new.
 	getNextProjectName := [ mutex critical: [ projectNames removeFirst ] ].
 
