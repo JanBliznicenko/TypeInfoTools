@@ -90,7 +90,7 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 				[ mutex critical: [ imagesByNames isNotEmpty ] ] whileTrue: [
 						| imageByName process |
 						imageByName := getImageByName value.
-						Transcript crShow: 'Processing ', imageByName key.
+						Transcript crShow: 'Processing ' , imageByName key.
 						process := OSWSWinProcess new.
 						process
 							command: exe;
@@ -98,11 +98,12 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 							arguments: {
 									'--headless'.
 									imageByName value displayString.
-									('eval TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
-									 , imageByName key , '''') };
+									('eval [TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
+									 , imageByName key
+									 , '''] on: Error do: [:e|]. Smalltalk snapshot: false andQuit: true') };
 							run.
-							[ process isRunning ] whileTrue: [ 10 seconds wait ].
-							 ] ]
+						[ process isRunning ] whileTrue: [ 10 seconds wait ].
+						Transcript crShow: 'Finished ' , imageByName key ] ]
 				forkAt: Processor userBackgroundPriority
 				named: self name , '-' , index asString ]
 ]
