@@ -31,6 +31,12 @@ TITEmptyTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 	^ anotherTypeHolder
 ]
 
+{ #category : 'private' }
+TITEmptyTypeHolder >> size [
+
+	^ 0
+]
+
 { #category : 'comparing' }
 TITEmptyTypeHolder >> threeWayCompareTo: aTypeHolder [
 

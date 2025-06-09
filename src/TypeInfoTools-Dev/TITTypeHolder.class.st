@@ -49,9 +49,33 @@ TITTypeHolder >> addValue: aValue [
 ]
 
 { #category : 'converting' }
+TITTypeHolder >> convertTypesToClass [
+
+	self types: (types
+			 collect: [ :each |
+					 each isString
+						 ifTrue: [
+								 [
+									 (each endsWith: ' class')
+										 ifTrue: [
+										 (Smalltalk at: (each allButLast: 6) asSymbol) class ]
+										 ifFalse: [ Smalltalk at: each asSymbol ] ]
+									 on: KeyNotFound
+									 do: [ :e | nil ] ]
+						 ifFalse: [ each ] ]
+			 thenSelect: [ :each | each isNotNil ])
+]
+
+{ #category : 'converting' }
 TITTypeHolder >> convertTypesToString [
 
-	self types: (types collect: [ :each | each name ])
+	self types: (types collect: [ :each |
+				 each isSymbol
+					 ifTrue: [ each ]
+					 ifFalse: [
+							 each isString
+								 ifTrue: [ each asSymbol ]
+								 ifFalse: [ each name asSymbol ] ] ])
 ]
 
 { #category : 'adding' }
@@ -124,6 +148,12 @@ TITTypeHolder >> printOn: aStream [
 TITTypeHolder >> replaceFrom: anotherHolder [
 
 	self types: anotherHolder types
+]
+
+{ #category : 'private' }
+TITTypeHolder >> size [
+
+	^ types size
 ]
 
 { #category : 'comparing' }

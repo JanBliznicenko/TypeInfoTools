@@ -31,6 +31,14 @@ TITKeyValueTypeHolder >> addValue: aValue [
 ]
 
 { #category : 'converting' }
+TITKeyValueTypeHolder >> convertTypesToClass [
+
+	super convertTypesToClass.
+	keyTypes convertTypesToClass.
+	valueTypes convertTypesToClass
+]
+
+{ #category : 'converting' }
 TITKeyValueTypeHolder >> convertTypesToString [
 
 	super convertTypesToString.

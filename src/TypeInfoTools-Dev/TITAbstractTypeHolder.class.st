@@ -47,6 +47,13 @@ TITAbstractTypeHolder >> addValue: aValue [
 ]
 
 { #category : 'converting' }
+TITAbstractTypeHolder >> convertTypesToClass [
+	"do nothing"
+
+	
+]
+
+{ #category : 'converting' }
 TITAbstractTypeHolder >> convertTypesToString [
 	"do nothing"
 
@@ -81,6 +88,12 @@ TITAbstractTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 TITAbstractTypeHolder >> mergeTypes [
 
 	
+]
+
+{ #category : 'private' }
+TITAbstractTypeHolder >> size [
+
+	^ self subclassResponsibility
 ]
 
 { #category : 'comparing' }

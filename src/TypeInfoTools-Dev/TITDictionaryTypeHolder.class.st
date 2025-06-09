@@ -30,6 +30,13 @@ TITDictionaryTypeHolder >> addValue: aValue [
 ]
 
 { #category : 'converting' }
+TITDictionaryTypeHolder >> convertTypesToClass [
+
+	super convertTypesToClass.
+	keyTypes convertTypesToClass
+]
+
+{ #category : 'converting' }
 TITDictionaryTypeHolder >> convertTypesToString [
 
 	super convertTypesToString.

@@ -76,6 +76,13 @@ TITCollectionTypeHolder >> addValue: aValue [
 ]
 
 { #category : 'converting' }
+TITCollectionTypeHolder >> convertTypesToClass [
+
+	super convertTypesToClass.
+	elementTypes convertTypesToClass
+]
+
+{ #category : 'converting' }
 TITCollectionTypeHolder >> convertTypesToString [
 
 	super convertTypesToString.
