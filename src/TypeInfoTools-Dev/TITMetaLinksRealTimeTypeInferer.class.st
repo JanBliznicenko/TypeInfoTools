@@ -380,10 +380,10 @@ TITMetaLinksRealTimeTypeInferer >> runExamples [
 									                   eachMethod ] ]) sorted: [ :a :b |
 						                  a selector < b selector ] ] ].
 
-	exampleMethods ifEmpty: [ ^ self ].
-
 	self logEntry:
 		'Executing ' , exampleMethods size asString , ' examples'.
+
+	exampleMethods ifEmpty: [ ^ self ].
 
 	originalWindows := Smalltalk currentWorld systemWindows asSet.
 
@@ -435,13 +435,13 @@ TITMetaLinksRealTimeTypeInferer >> runTests [
 						                each isAbstract not and: [
 							                (self excludesTestClass: each) not ] ] ])
 				               sorted: [ :a :b | a name < b name ] ].
+
+	self logEntry:
+		'Executing ' , testClasses size asString , ' test classes'.
 			
 	testClasses ifEmpty: [ ^ self ].
 
 	testResult := testClasses anyOne classForTestResult new.
-
-	self logEntry:
-		'Executing ' , testClasses size asString , ' test classes'.
 
 	originalWindows := Smalltalk currentWorld systemWindows asSet.
 
