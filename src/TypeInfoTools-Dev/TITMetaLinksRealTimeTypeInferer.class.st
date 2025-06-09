@@ -72,7 +72,7 @@ TITMetaLinksRealTimeTypeInferer class >> prepareVmForThread: anIndex [
 	targetExeName := 'PharoConsole_' , anIndex asString , '.exe'.
 	targetExe := targetDirectory / targetExeName.
 	targetExe exists ifTrue: [
-			originalTargetExe isWritable ifFalse: [ self notify: 'VM in use' ].
+			targetExe isWritable ifFalse: [ self notify: 'VM in use' ].
 			^ targetExe ].
 	targetDirectory ensureDeleteAllChildren.
 	targetDirectory ensureCreateDirectory.
@@ -93,7 +93,7 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 
 	<script>
 	| projectNames getNextProjectName mutex threads |
-	threads := 8.
+	threads := 20.
 	projectNames := self projectNames.
 	mutex := Mutex new.
 	getNextProjectName := [ mutex critical: [ projectNames removeFirst ] ].
