@@ -20,8 +20,7 @@ Class {
 TITMetaLinksRealTimeTypeInferer class >> createImagesByNames [
 
 	| baselines sourceName sourceDirectory |
-	baselines := TITDependentPackagesFinder baselinesForTyping
-		             takeFirst: 3.
+	baselines := TITDependentPackagesFinder baselinesForTyping.
 	sourceName := FileLocator image basenameWithoutExtension.
 	sourceDirectory := FileLocator image parent asFileReference.
 	^ [ :job |
@@ -78,38 +77,31 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 
 	<script>
 	| imagesByNames getImageByName exe mutex allImagesAmount threads |
-	threads := 3.
+	threads := 8.
 	imagesByNames := self createImagesByNames.
 	allImagesAmount := imagesByNames size.
 	mutex := Mutex new.
 	getImageByName := [ mutex critical: [ imagesByNames removeFirst ] ].
 	exe := (FileLocator vmDirectory asFileReference / 'PharoConsole.exe')
 		       displayString.
-	[ :job |
-		job max: allImagesAmount.
-		1 to: threads do: [ :index |
-				[
-					[ mutex critical: [ imagesByNames isNotEmpty ] ] whileTrue: [
-							| imageByName process |
-							imageByName := getImageByName value.
-							process := OSWSWinProcess new.
-							process
-								command: exe;
-								workingDirectory: imageByName value parent displayString;
-								arguments: {
-										'--headless'.
-										imageByName value displayString.
-										('eval TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
-										 , imageByName key , '''') };
-								run.
-							[ process isRunning ] whileTrue: [
-									index = 1 ifTrue: [
-											mutex critical: [
-												job currentValue:
-													allImagesAmount - imagesByNames size - threads ] ].
-									15 seconds wait ] ] ]
-					forkAt: Processor userBackgroundPriority
-					named: self name , '-' , index asString ] ] asJob run
+
+	1 to: threads do: [ :index |
+			[
+				[ mutex critical: [ imagesByNames isNotEmpty ] ] whileTrue: [
+						| imageByName process |
+						imageByName := getImageByName value.
+						process := OSWSWinProcess new.
+						process
+							command: exe;
+							workingDirectory: imageByName value parent displayString;
+							arguments: {
+									'--headless'.
+									imageByName value displayString.
+									('eval TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
+									 , imageByName key , '''') };
+							run ] ]
+				forkAt: Processor userBackgroundPriority
+				named: self name , '-' , index asString ]
 ]
 
 { #category : 'adding' }
