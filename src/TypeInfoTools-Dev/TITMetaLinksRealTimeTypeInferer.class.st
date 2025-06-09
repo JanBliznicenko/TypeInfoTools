@@ -539,7 +539,8 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: aNode to: aDictionary 
 				thisContext mayBeInRecursion ifTrue: [
 						^ self errorLogEntry:
 							  'Did not save type because of potential recursion in '
-							  , ((aNode method compiledMethod printString) ifEmpty: [ aNode asString ]) ].
+							  , (aNode methodNode compiledMethod printString ifEmpty: [
+									   aNode asString ]) ].
 				aDictionary at: aNode put: (currentHolder withValue: aValue) ]
 		ifAbsentPut: [ TITAbstractTypeHolder newBestForValue: aValue ]
 ]
