@@ -37,7 +37,7 @@ TITMetaLinksInsertionVisitor >> uninstallAll [
 			each methods do: [ :eachMethod |
 					| source |
 					source := eachMethod sourceCode.
-					eachMethod class compile:
+					eachMethod methodClass compile:
 						((source endsWith: self returnSelfCode)
 							 ifTrue: [ source allButLast: self returnSelfCode size ]
 							 ifFalse: [ source ]) ] ].

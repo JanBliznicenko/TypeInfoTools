@@ -69,7 +69,7 @@ TITDependentPackagesFinder class >> forTypingPackages: aSetOfPackages [
 	finder := self gather.
 	self debugMode ifTrue: [ finder inspect ].
 	^ finder query
-		  excludePackagesToProcess;
+		  includePackagesToProcess;
 		  packagesToProcess: aSetOfPackages;
 		  excludedPackages: self excludedPackagesForTypes;
 		  get

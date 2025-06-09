@@ -14,6 +14,9 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				baseline: 'DependentsFinder'
 				with: [
 					spec repository: 'github://JanBliznicenko/DependentsFinder:main' ];
+				baseline: 'OSWinSubprocess'
+				with: [
+					spec repository: 'github://pharo-contributions/OSWinSubprocess:v1.1.1' ];
 				baseline: 'RoelTyper' with: [
 						spec
 							repository: 'github://JanBliznicenko/RoelTyper';
@@ -34,7 +37,7 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
 				package: 'TypeInfoTools-Dev' with: [
 					spec requires:
-						#( 'DependentsFinder' 'TypeInfoTools-Core' 'NeoCSV' ) ];
+						#( 'DependentsFinder' 'OSWinSubprocess' 'TypeInfoTools-Core' 'NeoCSV' ) ];
 				package: 'TITMyClass';
 				group: 'ide'
 				with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser'

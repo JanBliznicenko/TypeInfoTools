@@ -16,10 +16,44 @@ Class {
 	#tag : 'RealTime'
 }
 
+{ #category : 'private' }
+TITMetaLinksRealTimeTypeInferer class >> createImagesByNames [
+
+	| baselines sourceName sourceDirectory |
+	baselines := TITDependentPackagesFinder baselinesForTyping
+		             takeFirst: 3.
+	sourceName := FileLocator image basenameWithoutExtension.
+	sourceDirectory := FileLocator image parent asFileReference.
+	^ [ :job |
+		  job max: baselines size.
+		  baselines withIndexCollect: [ :eachBaseline :index |
+				  | projectName targetName targetDirectory targetImage |
+				  projectName := eachBaseline name asString allButFirst: 10.
+				  job title: 'Creating directory for ' , projectName.
+				  job value: index.
+				  targetName := sourceName , '_' , projectName.
+				  targetDirectory := (FileLocator image parent parent
+				                      / (sourceName , '_' , projectName))
+					                     asFileReference.
+				  targetDirectory ensureDeleteAllChildren.
+				  targetDirectory ensureCreateDirectory.
+				  sourceDirectory := FileLocator image parent asFileReference.
+				  sourceDirectory files
+					  select: [ :each |
+							  each basename endsWithAnyOf:
+								  #( '.version' '.sources' '.changes' '.image' ) ]
+					  thenDo: [ :each |
+							  each copyTo: targetDirectory
+								  /
+								  (each basename copyReplaceAll: sourceName with: targetName) ].
+				  targetImage := targetDirectory / (targetName , '.image').
+				  projectName -> targetImage ] ] asJob run
+]
+
 { #category : 'examples' }
 TITMetaLinksRealTimeTypeInferer class >> example [
 
-	[ self gatherBaselineNamed: 'Athens' ]
+	[ self gatherBaselineNamed: 'AIEditDistances' ]
 		forkAt: Processor userBackgroundPriority
 		named: self name
 ]
@@ -37,6 +71,45 @@ TITMetaLinksRealTimeTypeInferer class >> gatherBaselineNamed: aNameOfBaseline [
 		           gatherTypes.
 	results inspect.
 	inferer inspect
+]
+
+{ #category : 'examples' }
+TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
+
+	<script>
+	| imagesByNames getImageByName exe mutex allImagesAmount threads |
+	threads := 3.
+	imagesByNames := self createImagesByNames.
+	allImagesAmount := imagesByNames size.
+	mutex := Mutex new.
+	getImageByName := [ mutex critical: [ imagesByNames removeFirst ] ].
+	exe := (FileLocator vmDirectory asFileReference / 'PharoConsole.exe')
+		       displayString.
+	[ :job |
+		job max: allImagesAmount.
+		1 to: threads do: [ :index |
+				[
+					[ mutex critical: [ imagesByNames isNotEmpty ] ] whileTrue: [
+							| imageByName process |
+							imageByName := getImageByName value.
+							process := OSWSWinProcess new.
+							process
+								command: exe;
+								workingDirectory: imageByName value parent displayString;
+								arguments: {
+										'--headless'.
+										imageByName value displayString.
+										('eval TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
+										 , imageByName key , '''') };
+								run.
+							[ process isRunning ] whileTrue: [
+									index = 1 ifTrue: [
+											mutex critical: [
+												job currentValue:
+													allImagesAmount - imagesByNames size - threads ] ].
+									15 seconds wait ] ] ]
+					forkAt: Processor userBackgroundPriority
+					named: self name , '-' , index asString ] ] asJob run
 ]
 
 { #category : 'adding' }
@@ -106,8 +179,8 @@ TITMetaLinksRealTimeTypeInferer >> excludesTestClass: aTestClass [
 TITMetaLinksRealTimeTypeInferer >> executedPackages [
 
 	^ executedPackages ifNil: [
-			  executedPackages := TITDependentPackagesFinder forTypingPackages:
-				                      gatheredPackages ]
+			  executedPackages := TITDependentPackagesFinder
+				                      forTypingPackages: gatheredPackages ]
 ]
 
 { #category : 'accessing' }
@@ -188,7 +261,7 @@ TITMetaLinksRealTimeTypeInferer >> installLinks [
 					'Installing MetaLinks in package ' , eachPackage name asString
 					, ' ( ' , packageIndex asString , '/'
 					, gatheredPackages size asString , ' )'.
-				packageJob currentValue: packageIndex - 1.
+				packageJob currentValue: packageIndex.
 
 				eachPackage definedClasses do: [ :eachClass |
 						eachClass methods , eachClass class methods
@@ -354,7 +427,7 @@ TITMetaLinksRealTimeTypeInferer >> runTests [
 						                each isAbstract not and: [
 							                (self excludesTestClass: each) not ] ] ])
 				               sorted: [ :a :b | a name < b name ] ].
-
+			
 	testClasses ifEmpty: [ ^ self ].
 
 	testResult := testClasses anyOne classForTestResult new.
