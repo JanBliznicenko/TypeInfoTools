@@ -119,7 +119,8 @@ TITMetaLinksRealTimeTypeInferer >> deleteWindowsExcept: originalWindows [
 
 	Smalltalk currentWorld systemWindows
 		reject: [ :eachWindow |
-				(originalWindows includes: eachWindow) or: [
+				(Smalltalk image isInteractiveGraphic and: [
+					 originalWindows includes: eachWindow ]) or: [
 						| model |
 						model := eachWindow model.
 						model isNotNil and: [
@@ -132,7 +133,8 @@ TITMetaLinksRealTimeTypeInferer >> deleteWindowsExcept: originalWindows [
 														(presenter isKindOf: StInspectorPresenter) and: [
 																(executedPackages includes:
 																	 presenter model inspectedObject class package) not ] ] ] ] ] ] ]
-		thenDo: [ :each | each delete ]
+		thenDo: [ :each | each delete ].
+	BlOSWindowSDL2HostSpace allInstances do: [ :each | each close ]
 ]
 
 { #category : 'logging' }
