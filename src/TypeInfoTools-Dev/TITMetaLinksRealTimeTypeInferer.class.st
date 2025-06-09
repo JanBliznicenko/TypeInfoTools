@@ -77,7 +77,7 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 
 	<script>
 	| imagesByNames getImageByName exe mutex allImagesAmount threads |
-	threads := 8.
+	threads := 6.
 	imagesByNames := self createImagesByNames.
 	allImagesAmount := imagesByNames size.
 	mutex := Mutex new.
@@ -90,6 +90,7 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 				[ mutex critical: [ imagesByNames isNotEmpty ] ] whileTrue: [
 						| imageByName process |
 						imageByName := getImageByName value.
+						Transcript crShow: 'Processing ', imageByName key.
 						process := OSWSWinProcess new.
 						process
 							command: exe;
@@ -99,7 +100,9 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 									imageByName value displayString.
 									('eval TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
 									 , imageByName key , '''') };
-							run ] ]
+							run.
+							[ process isRunning ] whileTrue: [ 10 seconds wait ].
+							 ] ]
 				forkAt: Processor userBackgroundPriority
 				named: self name , '-' , index asString ]
 ]
