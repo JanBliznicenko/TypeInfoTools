@@ -88,24 +88,34 @@ TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 	1 to: threads do: [ :index |
 			[
 				[ mutex critical: [ imagesByNames isNotEmpty ] ] whileTrue: [
-						| imageByName process |
+						| imageByName |
 						imageByName := getImageByName value.
-						Transcript crShow: 'Processing ' , imageByName key.
-						process := OSWSWinProcess new.
-						process
-							command: exe;
-							workingDirectory: imageByName value parent displayString;
-							arguments: {
-									'--headless'.
-									imageByName value displayString.
-									('eval [TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
-									 , imageByName key
-									 , '''] on: Error do: [:e|]. Smalltalk snapshot: false andQuit: true') };
-							run.
-						[ process isRunning ] whileTrue: [ 10 seconds wait ].
-						Transcript crShow: 'Finished ' , imageByName key ] ]
+						self runImageByName: imageByName index: index ] ]
 				forkAt: Processor userBackgroundPriority
 				named: self name , '-' , index asString ]
+]
+
+{ #category : 'examples' }
+TITMetaLinksRealTimeTypeInferer class >> runImageByName: imageByName index: index [
+
+	| process exe |
+	Transcript crShow: index asString , ': Processing ' , imageByName key.
+	exe := (FileLocator vmDirectory asFileReference / 'PharoConsole.exe')
+		       displayString.
+	process := OSWSWinProcess new.
+	process
+		command: exe;
+		workingDirectory: imageByName value parent displayString;
+		arguments: {
+				'--headless'.
+				imageByName value displayString.
+				('eval [TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
+				 , imageByName key
+				 ,
+					 '''] on: Error do: [:e|]. Smalltalk snapshot: false andQuit: true') };
+		run.
+	[ process isRunning ] whileTrue: [ 10 seconds wait ].
+	Transcript crShow: index asString , ': Finished ' , imageByName key
 ]
 
 { #category : 'adding' }
