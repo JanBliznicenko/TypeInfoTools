@@ -19,10 +19,11 @@ Class {
 { #category : 'private' }
 TITMetaLinksRealTimeTypeInferer class >> createImagesByNames [
 
-	| baselines sourceName sourceDirectory |
+	| baselines sourceName sourceDirectory vmDirectory |
 	baselines := TITDependentPackagesFinder baselinesForTyping.
 	sourceName := FileLocator image basenameWithoutExtension.
-	sourceDirectory := FileLocator image parent asFileReference.
+	sourceDirectory := FileLocator imageDirectory asFileReference.
+	vmDirectory := FileLocator vmDirectory asFileReference.
 	^ [ :job |
 		  job max: baselines size.
 		  baselines withIndexCollect: [ :eachBaseline :index |
@@ -31,12 +32,11 @@ TITMetaLinksRealTimeTypeInferer class >> createImagesByNames [
 				  job title: 'Creating directory for ' , projectName.
 				  job value: index.
 				  targetName := sourceName , '_' , projectName.
-				  targetDirectory := (FileLocator image parent parent
+				  targetDirectory := (sourceDirectory parent
 				                      / (sourceName , '_' , projectName))
 					                     asFileReference.
 				  targetDirectory ensureDeleteAllChildren.
 				  targetDirectory ensureCreateDirectory.
-				  sourceDirectory := FileLocator image parent asFileReference.
 				  sourceDirectory files
 					  select: [ :each |
 							  each basename endsWithAnyOf:
@@ -45,6 +45,7 @@ TITMetaLinksRealTimeTypeInferer class >> createImagesByNames [
 							  each copyTo: targetDirectory
 								  /
 								  (each basename copyReplaceAll: sourceName with: targetName) ].
+				  vmDirectory copyAllTo: targetDirectory / 'vm'.
 				  targetImage := targetDirectory / (targetName , '.image').
 				  projectName -> targetImage ] ] asJob run
 ]
@@ -76,14 +77,11 @@ TITMetaLinksRealTimeTypeInferer class >> gatherBaselineNamed: aNameOfBaseline [
 TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 
 	<script>
-	| imagesByNames getImageByName exe mutex allImagesAmount threads |
-	threads := 6.
+	| imagesByNames getImageByName mutex threads |
+	threads := 8.
 	imagesByNames := self createImagesByNames.
-	allImagesAmount := imagesByNames size.
 	mutex := Mutex new.
 	getImageByName := [ mutex critical: [ imagesByNames removeFirst ] ].
-	exe := (FileLocator vmDirectory asFileReference / 'PharoConsole.exe')
-		       displayString.
 
 	1 to: threads do: [ :index |
 			[
@@ -100,8 +98,10 @@ TITMetaLinksRealTimeTypeInferer class >> runImageByName: imageByName index: inde
 
 	| process exe |
 	Transcript crShow: index asString , ': Processing ' , imageByName key.
-	exe := (FileLocator vmDirectory asFileReference / 'PharoConsole.exe')
-		       displayString.
+	exe := (((FileLocator imageDirectory / 'vm') exists
+		         ifTrue: [ FileLocator imageDirectory / 'vm' ]
+		         ifFalse: [ FileLocator vmDirectory ]) / 'PharoConsole.exe')
+		       asFileReference displayString.
 	process := OSWSWinProcess new.
 	process
 		command: exe;
@@ -112,9 +112,9 @@ TITMetaLinksRealTimeTypeInferer class >> runImageByName: imageByName index: inde
 				('eval [TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
 				 , imageByName key
 				 ,
-					 '''] on: Error do: [:e|]. Smalltalk snapshot: false andQuit: true') };
+					 '''] on: Error do: [ :e |  ]. Smalltalk snapshot: false andQuit: true') };
 		run.
-	[ process isRunning ] whileTrue: [ 10 seconds wait ].
+	[ process isRunning ] whileTrue: [ 5 seconds wait ].
 	Transcript crShow: index asString , ': Finished ' , imageByName key
 ]
 
