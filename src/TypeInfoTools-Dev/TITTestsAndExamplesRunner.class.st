@@ -39,6 +39,7 @@ TITTestsAndExamplesRunner class >> exampleAll [
 					job currentValue: i.
 					self new
 						gatheredBaseline: each;
+						gatheredPackagesAsExecutedPackages;
 						name: (self nameOfBaseline: each);
 						execute ] ] asJob run ]
 		forkAt: Processor userBackgroundPriority
@@ -181,6 +182,12 @@ TITTestsAndExamplesRunner >> gatheredPackages: aPackagesCollection [
 	gatheredPackages := aPackagesCollection copyWithoutAll:
 		                    TITDependentPackagesFinder
 			                    excludedPackagesForTypes
+]
+
+{ #category : 'accessing' }
+TITTestsAndExamplesRunner >> gatheredPackagesAsExecutedPackages [
+
+	executedPackages := gatheredPackages copy
 ]
 
 { #category : 'initialization' }
