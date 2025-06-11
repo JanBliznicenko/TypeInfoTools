@@ -163,7 +163,10 @@ TITMetaLinksRealTimeTypeInferer >> deleteWindowsExcept: originalWindows [
 																(executedPackages includes:
 																	 presenter model inspectedObject class package) not ] ] ] ] ] ] ]
 		thenDo: [ :each | each delete ].
-	BlOSWindowSDL2HostSpace allInstances do: [ :each | each close ]
+	Smalltalk
+		at: #BlOSWindowSDL2HostSpace
+		ifPresent: [ :windowClass |
+		windowClass allInstancesDo: [ :each | each close ] ]
 ]
 
 { #category : 'logging' }
