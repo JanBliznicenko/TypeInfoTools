@@ -1,5 +1,5 @@
 Class {
-	#name : 'taskExecution',
+	#name : 'TITMetaLinksResultsProcessor',
 	#superclass : 'Object',
 	#category : 'TypeInfoTools-Dev-RealTime',
 	#package : 'TypeInfoTools-Dev',
@@ -7,7 +7,7 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-taskExecution class >> byNameParts: aDictionaryOfHolder [
+TITMetaLinksResultsProcessor class >> byNameParts: aDictionaryOfHolder [
 
 	| merged |
 	merged := Dictionary new.
@@ -24,14 +24,14 @@ taskExecution class >> byNameParts: aDictionaryOfHolder [
 ]
 
 { #category : 'as yet unclassified' }
-taskExecution class >> processRetTypes [
+TITMetaLinksResultsProcessor class >> processRetTypes [
 
 	<script>
 	^ self processTypes: '_RetTypes.ston'
 ]
 
 { #category : 'as yet unclassified' }
-taskExecution class >> processTypes: commonNamePart [
+TITMetaLinksResultsProcessor class >> processTypes: commonNamePart [
 
 	| imageDir basename baselines files typesByProjects mergedDictionary |
 	imageDir := FileLocator imageDirectory.
@@ -62,14 +62,14 @@ taskExecution class >> processTypes: commonNamePart [
 ]
 
 { #category : 'as yet unclassified' }
-taskExecution class >> processVarTypes [
+TITMetaLinksResultsProcessor class >> processVarTypes [
 
 	<script>
 	^ self processTypes: '_VarTypes.ston'
 ]
 
 { #category : 'as yet unclassified' }
-taskExecution class >> sortedBySizes: aDictionaryOfHolder [
+TITMetaLinksResultsProcessor class >> sortedBySizes: aDictionaryOfHolder [
 
 	^ (aDictionaryOfHolder associations sorted: [ :a :b |
 			   a value size = b value size
@@ -78,7 +78,7 @@ taskExecution class >> sortedBySizes: aDictionaryOfHolder [
 ]
 
 { #category : 'as yet unclassified' }
-taskExecution class >> unifyName: aString [
+TITMetaLinksResultsProcessor class >> unifyName: aString [
 
 	| simplified |
 	simplified := TITNameTyperAdaptor simplifyName: aString.
