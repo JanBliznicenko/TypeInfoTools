@@ -30,14 +30,17 @@ TITTestsAndExamplesRunner class >> example [
 { #category : 'examples' }
 TITTestsAndExamplesRunner class >> exampleAll [
 
-	| projectNames |
-	projectNames := self projectNames.
+	| baselines |
+	baselines := self baselines.
 	[
 		[ :job |
-			job max: projectNames size.
-			projectNames withIndexDo: [ :each :i |
+			job max: baselines size.
+			baselines withIndexDo: [ :each :i |
 					job currentValue: i.
-					self gatherBaselineNamed: each ] ] asJob run ]
+					self new
+						gatheredBaseline: each;
+						name: (self nameOfBaseline: each);
+						execute ] ] asJob run ]
 		forkAt: Processor userBackgroundPriority
 		named: self name
 ]
@@ -58,10 +61,16 @@ TITTestsAndExamplesRunner class >> gatherBaselineNamed: aNameOfBaseline [
 ]
 
 { #category : 'private' }
+TITTestsAndExamplesRunner class >> nameOfBaseline: aBaselineClass [
+
+	^ aBaselineClass name asString allButFirst: 10
+]
+
+{ #category : 'private' }
 TITTestsAndExamplesRunner class >> projectNames [
 
 	^ self baselines collect: [ :eachBaseline |
-		  eachBaseline name asString allButFirst: 10 ]
+		  self nameOfBaseline: eachBaseline ]
 ]
 
 { #category : 'execution' }
@@ -129,8 +138,7 @@ TITTestsAndExamplesRunner >> excludesTestClass: aTestClass [
 { #category : 'executing' }
 TITTestsAndExamplesRunner >> execute [
 
-	self runTestsAndExamples.
-	self logResults
+	self runTestsAndExamples
 ]
 
 { #category : 'accessing' }
