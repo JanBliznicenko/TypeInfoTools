@@ -238,7 +238,7 @@ TITMajorProjectsLoader class >> Roassal [
 	<projectLoader: 10>
 	Metacello new
 		baseline: 'Roassal';
-		repository: 'github://pharo-graphics/Roassal';
+		repository: 'github://pharo-graphics/Roassal:Pharo13';
 		lock;
 		load
 ]
@@ -250,7 +250,7 @@ TITMajorProjectsLoader class >> RoassalExporters [
 	<projectLoader: 10>
 	Metacello new
 		baseline: 'RoassalExporters';
-		repository: 'github://pharo-graphics/RoassalExporters';
+		repository: 'github://pharo-graphics/RoassalExporters:Pharo13';
 		lock;
 		load
 ]
