@@ -76,6 +76,17 @@ TITMajorProjectsLoader class >> Artefact [
 ]
 
 { #category : 'as yet unclassified' }
+TITMajorProjectsLoader class >> BTree [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		repository: 'github://pharo-containers/BTree';
+		baseline: 'BTree';
+		load
+]
+
+{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> BlocTutorials [
 
 	<script>
