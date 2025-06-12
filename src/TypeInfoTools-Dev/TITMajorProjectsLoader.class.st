@@ -81,7 +81,7 @@ TITMajorProjectsLoader class >> BTree [
 	<script>
 	<projectLoader>
 	Metacello new
-		repository: 'github://pharo-containers/BTree';
+		repository: 'github://pharo-containers/BTree:5a2cc1c';
 		baseline: 'BTree';
 		load
 ]
