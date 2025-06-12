@@ -17,95 +17,11 @@ TITMetaLinksRealTimeTypeInferer class >> example [
 	super example
 ]
 
-{ #category : 'private' }
-TITMetaLinksRealTimeTypeInferer class >> prepareDirectoryForProjectNamed: projectName [
-
-	| sourceName sourceDirectory targetName targetDirectory |
-	sourceName := FileLocator image basenameWithoutExtension.
-	sourceDirectory := FileLocator imageDirectory asFileReference.
-	targetName := sourceName , '_' , projectName.
-	targetDirectory := (sourceDirectory parent / targetName)
-		                   asFileReference.
-	targetDirectory ensureDeleteAllChildren.
-	targetDirectory ensureCreateDirectory.
-	sourceDirectory files
-		select: [ :each |
-				each basename endsWithAnyOf:
-					#( '.version' '.sources' '.changes' '.image' ) ]
-		thenDo: [ :each |
-				each copyTo: targetDirectory
-					/ (each basename copyReplaceAll: sourceName with: targetName) ].
-	^ targetDirectory / (targetName , '.image')
-]
-
-{ #category : 'private' }
-TITMetaLinksRealTimeTypeInferer class >> prepareVmForThread: anIndex [
-
-	| sourceDirectory sourceDirectoryName targetDirectoryName targetDirectory originalTargetExe targetExeName targetExe |
-	sourceDirectory := FileLocator vmDirectory asFileReference.
-	sourceDirectoryName := sourceDirectory basename.
-	targetDirectoryName := sourceDirectoryName , '_' , anIndex asString.
-	targetDirectory := sourceDirectory parent / targetDirectoryName.
-	originalTargetExe := targetDirectory / 'PharoConsole.exe'.
-	targetExeName := 'PharoConsole_' , anIndex asString , '.exe'.
-	targetExe := targetDirectory / targetExeName.
-	targetExe exists ifTrue: [
-			targetExe isWritable ifFalse: [ self notify: 'VM in use' ].
-			^ targetExe ].
-	targetDirectory ensureDeleteAllChildren.
-	targetDirectory ensureCreateDirectory.
-	sourceDirectory copyAllTo: targetDirectory.
-	originalTargetExe renameTo: targetExeName.
-	^ targetExe
-]
-
 { #category : 'examples' }
 TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 
 	<script>
-	| projectNames getNextProjectName mutex threads |
-	threads := 20.
-	projectNames := self projectNames.
-	mutex := Mutex new.
-	getNextProjectName := [ mutex critical: [ projectNames removeFirst ] ].
-
-	1 to: threads do: [ :threadIndex |
-			| vm |
-			vm := self prepareVmForThread: threadIndex.
-			[
-				[ mutex critical: [ projectNames isNotEmpty ] ] whileTrue: [
-						| projectName imageFile |
-						projectName := getNextProjectName value.
-						imageFile := self prepareDirectoryForProjectNamed: projectName.
-						self
-							runProjectNamed: projectName
-							image: imageFile
-							vm: vm
-							threadIndex: threadIndex ] ]
-				forkAt: Processor userBackgroundPriority
-				named: self name , '-' , threadIndex asString ]
-]
-
-{ #category : 'examples' }
-TITMetaLinksRealTimeTypeInferer class >> runProjectNamed: projectName image: anImageFile vm: vm threadIndex: threadIndex [
-
-	| process |
-	Transcript crShow:
-		threadIndex asString , ': Processing ' , projectName.
-	process := OSWSWinProcess new.
-	process
-		command: vm displayString;
-		workingDirectory: anImageFile parent displayString;
-		arguments: {
-				'--headless'.
-				anImageFile displayString.
-				('eval [TITMetaLinksRealTimeTypeInferer gatherBaselineNamed: '''
-				 , projectName
-				 ,
-					 '''] on: Error do: [ :e |  ]. Smalltalk snapshot: false andQuit: true') };
-		run.
-	[ process isRunning ] whileTrue: [ 5 seconds wait ].
-	Transcript crShow: threadIndex asString , ': Finished ' , projectName
+	super runBaselinesInSeparateProcesses
 ]
 
 { #category : 'adding' }
