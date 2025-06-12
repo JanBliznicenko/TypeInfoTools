@@ -228,7 +228,20 @@ TITMajorProjectsLoader class >> PharoLauncher [
 	Metacello new
 		baseline: 'PharoLauncher';
 		repository: 'github://pharo-project/pharo-launcher:dev/src';
-		load
+		load.
+
+	WorldState class compile: 'quitSession
+	| response |
+	response := MorphicUIManager new
+						confirm: ''Save changes before quitting?''
+						trueChoice: ''Save''
+						falseChoice: ''Discard''
+						cancelChoice: ''Cancel''
+						default: nil.
+	response ifNil: [ ^self ].
+	response
+		ifTrue: [Smalltalk snapshot: true andQuit: true]
+		ifFalse: [Smalltalk snapshot: false andQuit: true]'
 ]
 
 { #category : 'as yet unclassified' }
