@@ -148,7 +148,6 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfMethod: aMethodN
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariable: aVariableNode [
 
 	| key |
-	self haltIf: [ (aVariableNode isKindOf: OCVariableNode) not ].
 	key := aVariableNode methodNode compiledMethod methodClass
 	       -> aVariableNode name.
 	self saveTypeOf: aValue in: key to: variableTypes
