@@ -6,18 +6,29 @@ Class {
 	#tag : 'RealTime'
 }
 
-{ #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> AI [
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> AIEditDistances [
 
 	<script>
 	<projectLoader>
 	Metacello new
-		baseline: 'AIPharo';
-		repository: 'github://pharo-ai/ai/src';
+		repository: 'github://pharo-ai/edit-distances/src';
+		baseline: 'AIEditDistances';
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> AIGraphAlgorithms [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		repository: 'github://pharo-ai/graph-algorithms';
+		baseline: 'AIGraphAlgorithms';
+		load
+]
+
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Alexandrie [
 
 	<script>
@@ -28,7 +39,7 @@ TITMajorProjectsLoader class >> Alexandrie [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Artefact [
 
 	<script>
@@ -42,7 +53,7 @@ TITMajorProjectsLoader class >> Artefact [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> BTree [
 
 	<script>
@@ -53,7 +64,7 @@ TITMajorProjectsLoader class >> BTree [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> BlocTutorials [
 
 	<script>
@@ -64,7 +75,7 @@ TITMajorProjectsLoader class >> BlocTutorials [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Clap [
 
 	<script>
@@ -75,7 +86,7 @@ TITMajorProjectsLoader class >> Clap [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Cormas [
 
 	<script>
@@ -86,7 +97,7 @@ TITMajorProjectsLoader class >> Cormas [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Cryptography [
 
 	<script>
@@ -97,7 +108,7 @@ TITMajorProjectsLoader class >> Cryptography [
 		load: #('Cryptography' 'ASN1-Tests' 'ASN1-Readers-Tests' 'X509-Tests' 'PBKDF2-Tests' 'Blowfish' 'OpenPGP' 'LayeredProtocol')
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Glorp [
 
 	<script>
@@ -108,7 +119,7 @@ TITMajorProjectsLoader class >> Glorp [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> IconFactory [
 
 	<script>
@@ -119,7 +130,7 @@ TITMajorProjectsLoader class >> IconFactory [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> MethodProxies [
 
 	<script>
@@ -130,7 +141,7 @@ TITMajorProjectsLoader class >> MethodProxies [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> MooseIDE [
 
 	<script>
@@ -142,7 +153,7 @@ TITMajorProjectsLoader class >> MooseIDE [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> MuTalk [
 
 	<script>
@@ -153,7 +164,7 @@ TITMajorProjectsLoader class >> MuTalk [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> NeoJSON [
 
 	<script>
@@ -164,7 +175,7 @@ TITMajorProjectsLoader class >> NeoJSON [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> ODBC [
 
 	<script>
@@ -175,7 +186,7 @@ TITMajorProjectsLoader class >> ODBC [
 	load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> OpenPonkPlugins [
 
 	<script>
@@ -187,7 +198,7 @@ TITMajorProjectsLoader class >> OpenPonkPlugins [
 		load: 'all'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> PharoJS [
 
 	<script>
@@ -198,7 +209,7 @@ TITMajorProjectsLoader class >> PharoJS [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> PharoLauncher [
 
 	<script>
@@ -222,7 +233,7 @@ TITMajorProjectsLoader class >> PharoLauncher [
 		ifFalse: [Smalltalk snapshot: false andQuit: true]'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Roassal [
 
 	<script>
@@ -234,7 +245,7 @@ TITMajorProjectsLoader class >> Roassal [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> RoassalExporters [
 
 	<script>
@@ -246,7 +257,7 @@ TITMajorProjectsLoader class >> RoassalExporters [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> SDLExperiments [
 
 	<script>
@@ -257,7 +268,7 @@ TITMajorProjectsLoader class >> SDLExperiments [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> SQLite3 [
 
 	<script>
@@ -268,7 +279,7 @@ TITMajorProjectsLoader class >> SQLite3 [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Seaside3 [
 
 	<script>
@@ -279,7 +290,7 @@ TITMajorProjectsLoader class >> Seaside3 [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> SimpleRene [
 
 	<script>
@@ -290,7 +301,7 @@ TITMajorProjectsLoader class >> SimpleRene [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> SingularizePluralize [
 
 	<script>
@@ -301,7 +312,7 @@ TITMajorProjectsLoader class >> SingularizePluralize [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Soup [
 
 	<script>
@@ -312,7 +323,7 @@ TITMajorProjectsLoader class >> Soup [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Talents [
 
 	<script>
@@ -323,7 +334,7 @@ TITMajorProjectsLoader class >> Talents [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Teapot [
 
 	<script>
@@ -334,7 +345,7 @@ TITMajorProjectsLoader class >> Teapot [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Toplo [
 
 	<script>
@@ -346,7 +357,7 @@ TITMajorProjectsLoader class >> Toplo [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Voyage [
 
 	<script>
@@ -357,7 +368,7 @@ TITMajorProjectsLoader class >> Voyage [
 		load: 'mongo tests'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> XMLParser [
 
 	<script>
@@ -369,7 +380,7 @@ TITMajorProjectsLoader class >> XMLParser [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> XMLParserHTML [
 
 	<script>
@@ -381,7 +392,7 @@ TITMajorProjectsLoader class >> XMLParserHTML [
 		load
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'actions' }
 TITMajorProjectsLoader class >> loadProjects [
 
 	<script>
@@ -406,7 +417,7 @@ TITMajorProjectsLoader class >> loadProjects [
 		named: self name
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'loading' }
 TITMajorProjectsLoader class >> projectLoaderMethods [
 
 	<script: 'self projectLoaderMethods inspect'>
