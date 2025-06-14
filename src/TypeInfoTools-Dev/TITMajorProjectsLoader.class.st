@@ -400,21 +400,18 @@ TITMajorProjectsLoader class >> loadProjects [
 	selectors := self projectLoaderMethods.
 	warnings := OrderedCollection new.
 	IceLibgitRepository shareRepositoriesBetweenImages: false.
-	[
-		EpMonitor disableDuring: [
-				[ :job |
-					job max: selectors size.
-					selectors withIndexDo: [ :each :index |
-							job title: 'Loading ' , each.
-							job value: index - 1.
-							[ (Message selector: each) sendTo: self ]
-								on: Warning
-								do: [ :warning |
-										warnings add: each -> warning messageText.
-										warning resume ] ] ] asJob run ].
-		warnings ifNotEmpty: #inspect ]
-		forkAt: Processor userBackgroundPriority
-		named: self name
+	EpMonitor disableDuring: [
+			[ :job |
+				job max: selectors size.
+				selectors withIndexDo: [ :each :index |
+						job title: 'Loading ' , each.
+						job value: index - 1.
+						[ (Message selector: each) sendTo: self ]
+							on: Warning
+							do: [ :warning |
+									warnings add: each -> warning messageText.
+									warning resume ] ] ] asJob run ].
+	warnings ifNotEmpty: #inspect
 ]
 
 { #category : 'loading' }
