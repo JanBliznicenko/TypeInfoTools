@@ -81,6 +81,22 @@ TITMetaLinksRealTimeTypeInferer >> installLinks [
 		asJob run
 ]
 
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> logResults [
+
+	self logResults: self variableTypesByNamesAsStrings as: 'VarTypes'.
+	self logResults: self returnTypesByNamesAsStrings as: 'RetTypes'
+]
+
+{ #category : 'logging' }
+TITMetaLinksRealTimeTypeInferer >> logResults: contents as: aContentTypeName [
+
+	Smalltalk image isInteractiveGraphic ifTrue: [ contents inspect ].
+	(self logFileWithContent: aContentTypeName extension: 'ston')
+		ensureDelete;
+		writeStreamDo: [ :s | STON put: contents onStreamPretty: s ]
+]
+
 { #category : 'accessing' }
 TITMetaLinksRealTimeTypeInferer >> returnTypes [
 
@@ -90,9 +106,8 @@ TITMetaLinksRealTimeTypeInferer >> returnTypes [
 { #category : 'accessing' }
 TITMetaLinksRealTimeTypeInferer >> returnTypesByNames [
 
-	^ (((returnTypes associations collect: [ :eachPair |
-		     eachPair key selector -> eachPair value ]) groupedBy: [
-		    :eachPair | eachPair key ]) collect: [ :eachArray |
+	^ ((returnTypes associations groupedBy: [ :eachPair |
+		    eachPair key value ]) collect: [ :eachArray |
 			   eachArray
 				   inject: TITEmptyTypeHolder new
 				   into: [ :acc :each | acc , each value ] ]) collect: [ :each |
@@ -108,35 +123,35 @@ TITMetaLinksRealTimeTypeInferer >> returnTypesByNamesAsStrings [
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: aNode to: aDictionary [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary [
 
-	aNode ifNil: [ self error: 'Node cannot be nil' ].
 	aDictionary
-		at: aNode
+		at: anItem
 		ifPresent: [ :currentHolder |
 				thisContext mayBeInRecursion ifTrue: [
 						^ self errorLogEntry:
-							  'Did not save type because of potential recursion in '
-							  , (aNode methodNode compiledMethod printString ifEmpty: [
-									   aNode asString ]) ].
-				aDictionary at: aNode put: (currentHolder withValue: aValue) ]
+							  'Did not save type because of potential recursion related to '
+							  , (anItem printString ifEmpty: [ anItem asString ]) ].
+				aDictionary at: anItem put: (currentHolder withValue: aValue) ]
 		ifAbsentPut: [ TITAbstractTypeHolder newBestForValue: aValue ]
 ]
 
 { #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfMethod: aMethodNode [
 
-	self saveTypeOf: aValue in: aMethodNode to: returnTypes
+	| key |
+	key := aMethodNode compiledMethod methodClass -> aMethodNode selector.
+	self saveTypeOf: aValue in: key to: returnTypes
 ]
 
 { #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariable: aVariableNode [
 
-	| originalVariable |
-	originalVariable := aVariableNode variable definingNode ifNil: [
-			                    aVariableNode variable originalVar definingNode
-				                    ifNil: [ aVariableNode variable ] ].
-	self saveTypeOf: aValue in: originalVariable to: variableTypes
+	| key |
+	self haltIf: [ (aVariableNode isKindOf: OCVariableNode) not ].
+	key := aVariableNode methodNode compiledMethod methodClass
+	       -> aVariableNode name.
+	self saveTypeOf: aValue in: key to: variableTypes
 ]
 
 { #category : 'execution' }
@@ -155,9 +170,8 @@ TITMetaLinksRealTimeTypeInferer >> variableTypes [
 { #category : 'accessing' }
 TITMetaLinksRealTimeTypeInferer >> variableTypesByNames [
 
-	^ (((variableTypes associations collect: [ :eachPair |
-		     eachPair key name -> eachPair value ]) groupedBy: [ :eachPair |
-		    eachPair key ]) collect: [ :eachArray |
+	^ ((variableTypes associations groupedBy: [ :eachPair |
+		    eachPair key value ]) collect: [ :eachArray |
 			   eachArray
 				   inject: TITEmptyTypeHolder new
 				   into: [ :acc :each | acc , each value ] ]) collect: [ :each |

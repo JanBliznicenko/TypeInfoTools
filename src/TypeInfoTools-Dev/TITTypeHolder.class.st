@@ -125,7 +125,6 @@ TITTypeHolder >> mergeTypes [
 	merged := Bag new.
 	types asBag doWithOccurrences: [ :type :occurences |
 		self mergeType: type occurences: occurences into: merged ].
-
 	self types: merged
 ]
 

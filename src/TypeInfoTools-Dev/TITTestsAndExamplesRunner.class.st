@@ -22,7 +22,7 @@ TITTestsAndExamplesRunner class >> baselines [
 { #category : 'examples' }
 TITTestsAndExamplesRunner class >> example [
 
-	[ self gatherBaselineNamed: 'AIEditDistances' ]
+	[ self gatherBaselineNamed: 'BTree' ]
 		forkAt: Processor userBackgroundPriority
 		named: self name
 ]
@@ -315,22 +315,6 @@ TITTestsAndExamplesRunner >> logFileWithContent: aNameOfContent extension: anExt
 
 	^ (self name , '_' , aNameOfContent , '.' , anExtension)
 		  asFileReference
-]
-
-{ #category : 'logging' }
-TITTestsAndExamplesRunner >> logResults [
-
-	self logResults: self variableTypesByNamesAsStrings as: 'VarTypes'.
-	self logResults: self returnTypesByNamesAsStrings as: 'RetTypes'
-]
-
-{ #category : 'logging' }
-TITTestsAndExamplesRunner >> logResults: contents as: aContentTypeName [
-
-	Smalltalk image isInteractiveGraphic ifTrue: [ contents inspect ].
-	(self logFileWithContent: aContentTypeName extension: 'ston')
-		ensureDelete;
-		writeStreamDo: [ :s | STON put: contents onStreamPretty: s ]
 ]
 
 { #category : 'logging' }
