@@ -18,17 +18,6 @@ TITMajorProjectsLoader class >> AI [
 ]
 
 { #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> Album [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		baseline: 'Album';
-		repository: 'github://pharo-graphics/Album:master/src';
-		load
-]
-
-{ #category : 'as yet unclassified' }
 TITMajorProjectsLoader class >> Alexandrie [
 
 	<script>
