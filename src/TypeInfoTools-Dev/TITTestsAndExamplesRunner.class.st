@@ -37,6 +37,7 @@ TITTestsAndExamplesRunner class >> exampleAll [
 			job max: baselines size.
 			baselines withIndexDo: [ :each :i |
 					job currentValue: i.
+					job title: 'Executing examples in ' , each name.
 					self new
 						gatheredBaseline: each;
 						gatheredPackagesAsExecutedPackages;

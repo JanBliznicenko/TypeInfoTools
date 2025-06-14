@@ -7,35 +7,13 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> AIDataFrameInspector [
+TITMajorProjectsLoader class >> AI [
 
 	<script>
 	<projectLoader>
 	Metacello new
-		baseline: 'AIDataFrameInspector';
-		repository: 'github://pharo-ai/data-inspector/src';
-		load
-]
-
-{ #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> AIEditDistances [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		repository: 'github://pharo-ai/edit-distances/src';
-		baseline: 'AIEditDistances';
-		load
-]
-
-{ #category : 'as yet unclassified' }
-TITMajorProjectsLoader class >> AIGraphAlgorithms [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		repository: 'github://pharo-ai/graph-algorithms';
-		baseline: 'AIGraphAlgorithms';
+		baseline: 'AIPharo';
+		repository: 'github://pharo-ai/ai/src';
 		load
 ]
 
