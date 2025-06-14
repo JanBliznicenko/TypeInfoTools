@@ -145,7 +145,7 @@ TITMajorProjectsLoader class >> MethodProxies [
 TITMajorProjectsLoader class >> MooseIDE [
 
 	<script>
-	<projectLoader: 5>
+	<projectLoader: 7>
 	Metacello new
 		baseline: 'MooseIDE';
 		repository: 'github://moosetechnology/MooseIDE:development/src';
@@ -199,17 +199,6 @@ TITMajorProjectsLoader class >> OpenPonkPlugins [
 ]
 
 { #category : 'external projects' }
-TITMajorProjectsLoader class >> PharoJS [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		baseline: 'PharoJS';
-		repository: 'github://PharoJS/PharoJS:pharo12';
-		load
-]
-
-{ #category : 'external projects' }
 TITMajorProjectsLoader class >> PharoLauncher [
 
 	<script>
@@ -241,8 +230,8 @@ TITMajorProjectsLoader class >> Roassal [
 	Metacello new
 		baseline: 'Roassal';
 		repository: 'github://pharo-graphics/Roassal:Pharo13';
+		onConflictUseLoaded;
 		lock;
-		onConflictUseIncoming;
 		load
 ]
 
@@ -254,6 +243,18 @@ TITMajorProjectsLoader class >> RoassalExporters [
 	Metacello new
 		baseline: 'RoassalExporters';
 		repository: 'github://pharo-graphics/RoassalExporters:Pharo13';
+		lock;
+		load
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> RoassalLayouts [
+
+	<script>
+	<projectLoader: 4>
+	Metacello new
+		baseline: 'RoassalLayouts';
+		repository: 'github://JanBliznicenko/RoassalLayouts';
 		lock;
 		load
 ]
