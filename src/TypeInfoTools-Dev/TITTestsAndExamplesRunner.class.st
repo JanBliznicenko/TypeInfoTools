@@ -122,10 +122,11 @@ TITTestsAndExamplesRunner class >> runBaselinesInSeparateProcesses [
 
 	<script>
 	| projectNames getNextProjectName mutex threads |
-	threads := 12.
+	threads := 16.
 	projectNames := self projectNames.
 	mutex := Mutex new.
 	getNextProjectName := [ mutex critical: [ projectNames removeFirst ] ].
+	Transcript open.
 
 	1 to: threads do: [ :threadIndex |
 			| vm |
