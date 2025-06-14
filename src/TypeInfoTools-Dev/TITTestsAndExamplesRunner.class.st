@@ -174,8 +174,8 @@ TITTestsAndExamplesRunner >> deleteWindowsExcept: originalWindows [
 					 originalWindows includes: eachWindow ]) or: [
 						| model |
 						model := eachWindow model.
-						model isNotNil and: [
-								(model isKindOf: ClyFullBrowserMorph) or: [
+						(model isKindOf: ClyFullBrowserMorph) or: [
+								(model respondsTo: #presenter) and: [
 										| presenter |
 										presenter := eachWindow model presenter.
 										(presenter isKindOf: StDebugger) or: [
