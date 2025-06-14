@@ -417,7 +417,8 @@ TITMajorProjectsLoader class >> loadProjects [
 							do: [ :warning |
 									warnings add: each -> warning messageText.
 									warning resume ] ] ] asJob run ].
-	warnings ifNotEmpty: #inspect
+	warnings ifNotEmpty: #inspect.
+	Smalltalk garbageCollect
 ]
 
 { #category : 'loading' }
