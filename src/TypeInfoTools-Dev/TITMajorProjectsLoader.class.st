@@ -219,7 +219,11 @@ TITMajorProjectsLoader class >> PharoLauncher [
 	response ifNil: [ ^self ].
 	response
 		ifTrue: [Smalltalk snapshot: true andQuit: true]
-		ifFalse: [Smalltalk snapshot: false andQuit: true]'
+		ifFalse: [Smalltalk snapshot: false andQuit: true]'.
+	(Smalltalk at: #PhLStartupManager) class compile:
+		'startUp: isANewSession
+	isANewSession ifFalse: [ ^ self ].	
+	PharoLauncherApplication reset.'
 ]
 
 { #category : 'external projects' }
