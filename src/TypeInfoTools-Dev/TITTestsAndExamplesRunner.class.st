@@ -366,6 +366,7 @@ TITTestsAndExamplesRunner >> runExamples [
 				self logEntry:
 					'Executing example ' , each printString , ' (' , index asString
 					, ' / ' , exampleMethods size asString , ')'.
+				Smalltalk garbageCollect.
 				[
 					1 seconds wait.
 
@@ -382,7 +383,7 @@ TITTestsAndExamplesRunner >> runExamples [
 								'Failed to execute example ' , each printString
 								, ' because of error: ' , error description ].
 				2 seconds wait ] ] asJob run.
-		
+
 	self logEntry:
 		'Executed ' , exampleMethods size asString , ' examples'.
 
@@ -425,6 +426,7 @@ TITTestsAndExamplesRunner >> runTests [
 					'Executing tests in ' , each printString , ' (' , index asString
 					, ' / ' , testClasses size asString , ')'.
 				each resetHistory.
+				Smalltalk garbageCollect.
 				[ each suite run: testResult ]
 					on: Error
 					do: [ :error |

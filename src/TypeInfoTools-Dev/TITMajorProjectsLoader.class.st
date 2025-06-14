@@ -145,7 +145,7 @@ TITMajorProjectsLoader class >> MethodProxies [
 TITMajorProjectsLoader class >> MooseIDE [
 
 	<script>
-	<projectLoader>
+	<projectLoader: 5>
 	Metacello new
 		baseline: 'MooseIDE';
 		repository: 'github://moosetechnology/MooseIDE:development/src';
@@ -242,6 +242,7 @@ TITMajorProjectsLoader class >> Roassal [
 		baseline: 'Roassal';
 		repository: 'github://pharo-graphics/Roassal:Pharo13';
 		lock;
+		onConflictUseIncoming;
 		load
 ]
 
