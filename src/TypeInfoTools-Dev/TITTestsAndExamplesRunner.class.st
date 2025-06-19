@@ -122,7 +122,7 @@ TITTestsAndExamplesRunner class >> runBaselinesInSeparateProcesses [
 
 	<script>
 	| projectNames getNextProjectName mutex threads |
-	threads := 16.
+	threads := 18.
 	projectNames := self projectNames.
 	mutex := Mutex new.
 	getNextProjectName := [ mutex critical: [ projectNames removeFirst ] ].
@@ -473,7 +473,8 @@ TITTestsAndExamplesRunner >> runTestsAndExamples [
 								errorLogStream := es.
 								self
 									runTests;
-									runExamples ] ] ] ensure: [
+									runExamples.
+								self logEntry: 'Tests and examples executed' ] ] ] ensure: [
 			logStream := NullStream new.
 			errorLogStream := NullStream new.
 			Smalltalk image isInteractiveGraphic ifTrue: [
