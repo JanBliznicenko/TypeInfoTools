@@ -360,6 +360,8 @@ TITTestsAndExamplesRunner >> runExamples [
 	[ :job |
 		job max: exampleMethods size.
 		exampleMethods withIndexDo: [ :each :index |
+				| finished |
+				finished := false.
 				job title:
 					'Executing example ' , each printString , ' (' , index asString
 					, ' / ' , exampleMethods size asString , ')'.
@@ -369,8 +371,9 @@ TITTestsAndExamplesRunner >> runExamples [
 					, ' / ' , exampleMethods size asString , ')'.
 				Smalltalk garbageCollect.
 				[
-					1 seconds wait.
-
+					3 seconds wait.
+					finished ifFalse: [ 10 seconds wait ].
+					finished ifFalse: [ 300 seconds wait ].
 					self deleteWindowsExcept: originalWindows ]
 					forkAt: Processor userSchedulingPriority
 					named: self class name , ' window deleting'.
@@ -383,7 +386,8 @@ TITTestsAndExamplesRunner >> runExamples [
 							self errorLogEntry:
 								'Failed to execute example ' , each printString
 								, ' because of error: ' , error description ].
-				2 seconds wait ] ] asJob run.
+				2 second wait.
+				finished := true ] ] asJob run.
 
 	self logEntry:
 		'Executed ' , exampleMethods size asString , ' examples'.
