@@ -11,10 +11,33 @@ Class {
 	#tag : 'RealTime'
 }
 
+{ #category : 'private' }
+TITMetaLinksRealTimeTypeInferer class >> baselines [
+
+	<script: 'self baselines inspect'>
+	| thisDirName imagesDir |
+	thisDirName := FileLocator imageDirectory basename.
+	imagesDir := FileLocator imageDirectory parent asFileReference.
+	^ super baselines reject: [ :each |
+			  | baselineName baselineDir |
+			  baselineName := self nameOfBaseline: each.
+			  baselineDir := imagesDir / (thisDirName , '_' , baselineName).
+			  baselineDir exists and: [
+					  baselineDir files anySatisfy: [ :any |
+						  any basename endsWith: '_VarTypes.ston' ] ] ]
+]
+
 { #category : 'examples' }
 TITMetaLinksRealTimeTypeInferer class >> example [
 
 	super example
+]
+
+{ #category : 'private' }
+TITMetaLinksRealTimeTypeInferer class >> projectNames [
+
+	<script: 'self projectNames inspect'>
+	^ super projectNames
 ]
 
 { #category : 'examples' }

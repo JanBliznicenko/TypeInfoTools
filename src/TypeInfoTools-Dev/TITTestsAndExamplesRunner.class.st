@@ -13,9 +13,16 @@ Class {
 	#tag : 'RealTime'
 }
 
+{ #category : 'as yet unclassified' }
+TITTestsAndExamplesRunner class >> amountOfThreads [
+
+	^ 18
+]
+
 { #category : 'private' }
 TITTestsAndExamplesRunner class >> baselines [
 
+	<script: 'self baselines inspect'>
 	^ TITDependentPackagesFinder baselinesForTyping
 ]
 
@@ -113,6 +120,7 @@ TITTestsAndExamplesRunner class >> prepareVmForThread: anIndex [
 { #category : 'private' }
 TITTestsAndExamplesRunner class >> projectNames [
 
+	<script: 'self projectNames inspect'>
 	^ self baselines collect: [ :eachBaseline |
 		  self nameOfBaseline: eachBaseline ]
 ]
@@ -121,14 +129,13 @@ TITTestsAndExamplesRunner class >> projectNames [
 TITTestsAndExamplesRunner class >> runBaselinesInSeparateProcesses [
 
 	<script>
-	| projectNames getNextProjectName mutex threads |
-	threads := 18.
+	| projectNames getNextProjectName mutex |
 	projectNames := self projectNames.
 	mutex := Mutex new.
 	getNextProjectName := [ mutex critical: [ projectNames removeFirst ] ].
 	Transcript open.
 
-	1 to: threads do: [ :threadIndex |
+	1 to: self amountOfThreads do: [ :threadIndex |
 			| vm |
 			vm := self prepareVmForThread: threadIndex.
 			[
@@ -220,6 +227,12 @@ TITTestsAndExamplesRunner >> errorLogEntry: aString [
 TITTestsAndExamplesRunner >> errorLogTime [
 
 	self errorLog: self timestamp
+]
+
+{ #category : 'execution' }
+TITTestsAndExamplesRunner >> excludesExampleMethod: aMethod [
+
+	^ aMethod methodClass = SpMenuItemPresenter class
 ]
 
 { #category : 'execution' }
@@ -346,8 +359,10 @@ TITTestsAndExamplesRunner >> runExamples [
 					                  (eachClass class methods select: [ :eachMethod |
 							                   (ClyExampleScript canBeProvidedByMethod:
 								                    eachMethod) and: [
-								                   ClyExampleScript isImplementedByMethod:
-									                   eachMethod ] ]) sorted: [ :a :b |
+									                   (ClyExampleScript isImplementedByMethod:
+										                    eachMethod) and: [
+										                   (self excludesExampleMethod: eachMethod)
+											                   not ] ] ]) sorted: [ :a :b |
 						                  a selector < b selector ] ] ].
 
 	self logEntry:
