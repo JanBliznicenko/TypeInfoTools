@@ -51,7 +51,8 @@ TITDependentPackagesFinder class >> excludedBaselinesForTypes [
 		  BaselineOfTypeInfoTools.
 		  BaselineOfReflectivity.
 		  BaselineOfTraits.
-		  BaselineOfGhost } asSet
+		  BaselineOfGhost.
+		  BaselineOfSindarin } asSet
 ]
 
 { #category : '*TypeInfoTools-Dev' }
