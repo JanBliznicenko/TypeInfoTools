@@ -232,7 +232,10 @@ TITTestsAndExamplesRunner >> errorLogTime [
 { #category : 'execution' }
 TITTestsAndExamplesRunner >> excludesExampleMethod: aMethod [
 
-	^ aMethod methodClass = SpMenuItemPresenter class
+	^ {
+		  SpMenuItemPresenter.
+		  SpMenuPresenter } anySatisfy: [ :any |
+		  any class = aMethod methodClass ]
 ]
 
 { #category : 'execution' }
