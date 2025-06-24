@@ -64,7 +64,8 @@ TITDependentPackagesFinder class >> excludedPackagesForTypes [
 		                               flatCollect: [ :each |
 		                               each version loadedSystemPackages ].
 	packagesBrokenByMetaLinks := #( 'OpalCompiler-Core'
-	                                'Kernel-CodeModel' ) collect: [ :each |
+	                                'Kernel-CodeModel' 'StateSpecs-Specs' )
+		                             collect: [ :each |
 		                             self packageOrganizer packageNamed:
 			                             each ].
 	^ deprecatedPackages , packagesInExcludedBaselines
