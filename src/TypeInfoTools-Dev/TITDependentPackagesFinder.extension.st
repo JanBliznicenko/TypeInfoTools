@@ -56,10 +56,18 @@ TITDependentPackagesFinder class >> excludedBaselinesForTypes [
 { #category : '*TypeInfoTools-Dev' }
 TITDependentPackagesFinder class >> excludedPackagesForTypes [
 
-	^ (self excludedBaselinesForTypes flatCollect: [ :each |
-		   each version loadedSystemPackages ])
-	  , (#( 'OpalCompiler-Core' 'Kernel-CodeModel' ) collect: [ :each |
-			   self packageOrganizer packageNamed: each ])
+	| deprecatedPackages packagesInExcludedBaselines packagesBrokenByMetaLinks |
+	deprecatedPackages := self packageOrganizer packages select: [ :each |
+		                      each name includesSubstring: 'Deprecated' ].
+	packagesInExcludedBaselines := self excludedBaselinesForTypes
+		                               flatCollect: [ :each |
+		                               each version loadedSystemPackages ].
+	packagesBrokenByMetaLinks := #( 'OpalCompiler-Core'
+	                                'Kernel-CodeModel' ) collect: [ :each |
+		                             self packageOrganizer packageNamed:
+			                             each ].
+	^ deprecatedPackages , packagesInExcludedBaselines
+	  , packagesBrokenByMetaLinks
 ]
 
 { #category : '*TypeInfoTools-Dev' }
