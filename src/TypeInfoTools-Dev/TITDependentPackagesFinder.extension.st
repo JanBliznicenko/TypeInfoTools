@@ -57,8 +57,9 @@ TITDependentPackagesFinder class >> excludedBaselinesForTypes [
 TITDependentPackagesFinder class >> excludedPackagesForTypes [
 
 	| deprecatedPackages packagesInExcludedBaselines packagesBrokenByMetaLinks |
-	deprecatedPackages := self packageOrganizer packages select: [ :each |
-		                      each name includesSubstring: 'Deprecated' ].
+	deprecatedPackages := (self packageOrganizer packages select: [ :each |
+		                       each name includesSubstring: 'Deprecated' ])
+		                      asSet.
 	packagesInExcludedBaselines := self excludedBaselinesForTypes
 		                               flatCollect: [ :each |
 		                               each version loadedSystemPackages ].
