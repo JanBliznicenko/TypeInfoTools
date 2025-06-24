@@ -148,6 +148,10 @@ TITMetaLinksRealTimeTypeInferer >> returnTypesByNamesAsStrings [
 { #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary [
 
+	aValue class isClass ifFalse: [
+			^ self errorLogEntry: 'Value "' , aValue asString
+				  , '" class was not saved because it is not a class: '
+				  , aValue class asString ].
 	aDictionary
 		at: anItem
 		ifPresent: [ :currentHolder |
