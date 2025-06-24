@@ -90,6 +90,12 @@ TITAbstractTypeHolder >> mergeTypes [
 	
 ]
 
+{ #category : 'adding' }
+TITAbstractTypeHolder >> replaceFrom: anotherHolder [
+
+	self subclassResponsibility
+]
+
 { #category : 'private' }
 TITAbstractTypeHolder >> size [
 

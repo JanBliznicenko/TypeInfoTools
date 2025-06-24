@@ -31,6 +31,13 @@ TITEmptyTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 	^ anotherTypeHolder
 ]
 
+{ #category : 'adding' }
+TITEmptyTypeHolder >> replaceFrom: anotherHolder [
+	"do nothing"
+
+	
+]
+
 { #category : 'private' }
 TITEmptyTypeHolder >> size [
 
