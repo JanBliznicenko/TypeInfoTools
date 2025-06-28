@@ -23,6 +23,15 @@ TITMetaLinksResultsProcessor class >> byNameParts: aDictionaryOfHolder [
 	^ merged
 ]
 
+{ #category : 'prcessing' }
+TITMetaLinksResultsProcessor class >> processAll [
+
+	<script>
+	^ self
+		  processRetTypes;
+		  processVarTypes
+]
+
 { #category : 'as yet unclassified' }
 TITMetaLinksResultsProcessor class >> processRetTypes [
 
@@ -33,7 +42,7 @@ TITMetaLinksResultsProcessor class >> processRetTypes [
 { #category : 'as yet unclassified' }
 TITMetaLinksResultsProcessor class >> processTypes: commonNamePart [
 
-	| imageDir basename baselines files typesByProjects mergedDictionary |
+	| imageDir basename baselines files typesByProjects byNames byNameParts |
 	imageDir := FileLocator imageDirectory.
 	basename := imageDir basename.
 	baselines := TITDependentPackagesFinder baselinesForTyping.
@@ -48,17 +57,17 @@ TITMetaLinksResultsProcessor class >> processTypes: commonNamePart [
 		                   select: [ :each | each exists ]
 		                   thenCollect: [ :each |
 		                   each readStreamDo: [ :s | STON fromStream: s ] ].
-	mergedDictionary := Dictionary new.
+	byNames := Dictionary new.
 	typesByProjects do: [ :eachDictionary |
 			eachDictionary keysAndValuesDo: [ :eachName :eachTypes |
 					name := self unifyName: eachName.
-					mergedDictionary
+					byNames
 						at: name
-						ifPresent: [ :types |
-						mergedDictionary at: name put: types , eachTypes ]
-						ifAbsentPut: eachTypes convertTypesToClass ] ].
-	(self sortedBySizes: (self byNameParts: mergedDictionary)) inspect.
-	^ (self sortedBySizes: mergedDictionary) inspect
+						ifPresent: [ :types | byNames at: name put: types , eachTypes ]
+						ifAbsentPut: eachTypes ] ].
+	byNameParts := self byNameParts: byNames.
+	self save: byNameParts as: commonNamePart , '-byNameParts.ston'.
+	^ self save: byNames as: commonNamePart , '-byNames.ston'
 ]
 
 { #category : 'as yet unclassified' }
@@ -66,6 +75,18 @@ TITMetaLinksResultsProcessor class >> processVarTypes [
 
 	<script>
 	^ self processTypes: '_VarTypes.ston'
+]
+
+{ #category : 'prcessing' }
+TITMetaLinksResultsProcessor class >> save: aDictionaryOfTypes as: aFileName [
+
+	| dictionaryOfTypes |
+	dictionaryOfTypes := self sortedBySizes: aDictionaryOfTypes.
+	aFileName asFileReference
+		ensureDelete;
+		writeStreamDo: [ :s | dictionaryOfTypes ].
+	dictionaryOfTypes do: [ :each | each convertTypesToClass ].
+	^ dictionaryOfTypes
 ]
 
 { #category : 'as yet unclassified' }
