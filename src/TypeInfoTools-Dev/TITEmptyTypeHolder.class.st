@@ -71,5 +71,5 @@ TITEmptyTypeHolder >> threeWayCompareToTypeHolder: aTypeHolder [
 { #category : 'instance creation' }
 TITEmptyTypeHolder >> withValue: aValue [
 
-	^ TITTypeHolder newBestWithValue: aValue
+	^ TITAbstractTypeHolder newBestForValue: aValue
 ]

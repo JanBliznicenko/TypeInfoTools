@@ -10,6 +10,13 @@ Class {
 }
 
 { #category : 'code-critics' }
+ManifestTypeInfoToolsDev class >> ruleRefersToClassRuleV1FalsePositive [
+
+	<ignoreForCoverage>
+	^ #(#(#(#RGMethodDefinition #(#'TITAbstractTypeHolder class' #withMoreGeneralClasses #true)) #'2025-06-28T21:26:45.683+02:00') )
+]
+
+{ #category : 'code-critics' }
 ManifestTypeInfoToolsDev class >> ruleStringConcatenationRuleV1FalsePositive [
 
 	<ignoreForCoverage>

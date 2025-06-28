@@ -30,7 +30,6 @@ TITTypeHolder >> , anotherHolder [
 { #category : 'adding' }
 TITTypeHolder >> addType: aClass [
 
-	aClass ifNil: [ self halt ].
 	types add: aClass
 ]
 
@@ -187,7 +186,7 @@ TITTypeHolder >> types: aCollection [
 { #category : 'instance creation' }
 TITTypeHolder >> withValue: aValue [
 
-	^ (self class newBestForClasses: self types asSet , { aValue class })
+	^ (self class newBestWithClass: aValue class)
 		  replaceFrom: self;
 		  addValue: aValue;
 		  yourself

@@ -160,7 +160,7 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary
 							  'Did not save type because of potential recursion related to '
 							  , (anItem printString ifEmpty: [ anItem asString ]) ].
 				aDictionary at: anItem put: (currentHolder withValue: aValue) ]
-		ifAbsentPut: [ TITAbstractTypeHolder newBestWithValue: aValue ]
+		ifAbsentPut: [ TITAbstractTypeHolder newBestForValue: aValue ]
 ]
 
 { #category : 'visiting' }

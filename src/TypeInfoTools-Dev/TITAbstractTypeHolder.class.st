@@ -1,6 +1,10 @@
 Class {
 	#name : 'TITAbstractTypeHolder',
 	#superclass : 'Object',
+	#classInstVars : [
+		'withAllSubclassesByPriority',
+		'withMoreGeneralClasses'
+	],
 	#category : 'TypeInfoTools-Dev-RealTime',
 	#package : 'TypeInfoTools-Dev',
 	#tag : 'RealTime'
@@ -13,25 +17,31 @@ TITAbstractTypeHolder class >> acceptsClass: aClass [
 ]
 
 { #category : 'instance creation' }
-TITAbstractTypeHolder class >> newBestForClasses: aCollectionOfClasses [
+TITAbstractTypeHolder class >> newBestForClass: aClass [
 
-	^ ((self withAllSubclasses sortedAs: [ :each | each priority ])
-		   detect: [ :any |
-				   any priority > 0 and: [
-						   aCollectionOfClasses allSatisfy: [ :eachType |
-							   any acceptsClass: eachType ] ] ]) new
+	^ (self withAllSubclassesByPriority detect: [ :any |
+		   any acceptsClass: aClass ]) new
 ]
 
 { #category : 'instance creation' }
 TITAbstractTypeHolder class >> newBestForValue: aValue [
 
-	^ self newBestForClasses: { aValue class }
+	^ (self newBestForClass: aValue class)
+		  addValue: aValue;
+		  yourself
+]
+
+{ #category : 'instance creation' }
+TITAbstractTypeHolder class >> newBestWithClass: aClass [
+
+	^ (self withMoreGeneralClasses detect: [ :any |
+		   any acceptsClass: aClass ]) new
 ]
 
 { #category : 'instance creation' }
 TITAbstractTypeHolder class >> newBestWithValue: aValue [
 
-	^ (self newBestForValue: aValue)
+	^ (self newBestWithClass: aValue class)
 		  addValue: aValue;
 		  yourself
 ]
@@ -40,6 +50,29 @@ TITAbstractTypeHolder class >> newBestWithValue: aValue [
 TITAbstractTypeHolder class >> priority [
 
 	^ -1
+]
+
+{ #category : 'instance creation' }
+TITAbstractTypeHolder class >> withAllSubclassesByPriority [
+
+	^ withAllSubclassesByPriority ifNil: [
+			  withAllSubclassesByPriority := (self withAllSubclasses select: [
+				                                  :any | any priority > 0 ])
+				                                 sortedAs: [ :each |
+				                                 each priority ] ]
+]
+
+{ #category : 'accessing' }
+TITAbstractTypeHolder class >> withMoreGeneralClasses [
+
+	| foundClasses nextSuperClass |
+	withMoreGeneralClasses ifNotNil: [ ^ withMoreGeneralClasses ].
+	foundClasses := OrderedCollection with: self.
+	[
+		nextSuperClass := foundClasses last superclass.
+		nextSuperClass = TITAbstractTypeHolder ] whileFalse: [
+		foundClasses add: nextSuperClass ].
+	^ withMoreGeneralClasses := foundClasses
 ]
 
 { #category : 'copying' }
