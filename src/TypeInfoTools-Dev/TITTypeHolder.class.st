@@ -15,12 +15,10 @@ TITTypeHolder class >> acceptsClass: aClass [
 	^ true
 ]
 
-{ #category : 'instance creation' }
-TITTypeHolder class >> newFrom: aTypeHolder [
+{ #category : 'accessing' }
+TITTypeHolder class >> priority [
 
-	^ self new
-		  replaceFrom: aTypeHolder;
-		  yourself
+	^ 50
 ]
 
 { #category : 'copying' }
@@ -189,10 +187,8 @@ TITTypeHolder >> types: aCollection [
 { #category : 'instance creation' }
 TITTypeHolder >> withValue: aValue [
 
-	| holder |
-	holder := (self class acceptsClass: aValue class)
-		          ifTrue: [ self ]
-		          ifFalse: [ self class superclass newFrom: self ].
-	holder addValue: aValue.
-	^ holder
+	^ (self class newBestForClasses: self types asSet , { aValue class })
+		  replaceFrom: self;
+		  addValue: aValue;
+		  yourself
 ]

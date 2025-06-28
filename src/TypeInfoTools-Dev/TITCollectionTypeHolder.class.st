@@ -54,6 +54,12 @@ TITCollectionTypeHolder class >> considersAsCollection: aClass [
 		  (self atomicCollectionTypes includes: aClass) not ]
 ]
 
+{ #category : 'accessing' }
+TITCollectionTypeHolder class >> priority [
+
+	^ 40
+]
+
 { #category : 'initialization' }
 TITCollectionTypeHolder class >> reset [
 

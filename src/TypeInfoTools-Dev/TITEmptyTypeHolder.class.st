@@ -12,6 +12,12 @@ TITEmptyTypeHolder class >> acceptsClass: aClass [
 	^ aClass == UndefinedObject
 ]
 
+{ #category : 'accessing' }
+TITEmptyTypeHolder class >> priority [
+
+	^ 10
+]
+
 { #category : 'copying' }
 TITEmptyTypeHolder >> , anotherHolder [
 
@@ -65,5 +71,5 @@ TITEmptyTypeHolder >> threeWayCompareToTypeHolder: aTypeHolder [
 { #category : 'instance creation' }
 TITEmptyTypeHolder >> withValue: aValue [
 
-	^ TITTypeHolder newBestForValue: aValue
+	^ TITTypeHolder newBestWithValue: aValue
 ]

@@ -29,7 +29,7 @@ TITTestsAndExamplesRunner class >> baselines [
 { #category : 'examples' }
 TITTestsAndExamplesRunner class >> example [
 
-	[ self gatherBaselineNamed: 'BTree' ]
+	[ self gatherBaselineNamed: 'Metacello' ]
 		forkAt: Processor userBackgroundPriority
 		named: self name
 ]

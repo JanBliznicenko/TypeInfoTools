@@ -16,6 +16,12 @@ TITDictionaryTypeHolder class >> acceptsClass: aClass [
 		  aClass = OrderedDictionary or: [ aClass = SmallDictionary ] ]
 ]
 
+{ #category : 'accessing' }
+TITDictionaryTypeHolder class >> priority [
+
+	^ 30
+]
+
 { #category : 'copying' }
 TITDictionaryTypeHolder >> , anotherHolder [
 

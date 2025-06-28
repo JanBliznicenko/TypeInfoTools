@@ -13,25 +13,33 @@ TITAbstractTypeHolder class >> acceptsClass: aClass [
 ]
 
 { #category : 'instance creation' }
-TITAbstractTypeHolder class >> newBestForValue: aValue [
+TITAbstractTypeHolder class >> newBestForClasses: aCollectionOfClasses [
 
-	| class |
-	class := {
-		         TITEmptyTypeHolder.
-		         TITKeyValueTypeHolder.
-		         TITDictionaryTypeHolder.
-		         TITCollectionTypeHolder.
-		         TITTypeHolder } detect: [ :any |
-		         any acceptsClass: aValue class ].
-	^ class newWithValue: aValue
+	^ ((self withAllSubclasses sortedAs: [ :each | each priority ])
+		   detect: [ :any |
+				   any priority > 0 and: [
+						   aCollectionOfClasses allSatisfy: [ :eachType |
+							   any acceptsClass: eachType ] ] ]) new
 ]
 
 { #category : 'instance creation' }
-TITAbstractTypeHolder class >> newWithValue: anObject [
+TITAbstractTypeHolder class >> newBestForValue: aValue [
 
-	^ self new
-		  addValue: anObject;
+	^ self newBestForClasses: { aValue class }
+]
+
+{ #category : 'instance creation' }
+TITAbstractTypeHolder class >> newBestWithValue: aValue [
+
+	^ (self newBestForValue: aValue)
+		  addValue: aValue;
 		  yourself
+]
+
+{ #category : 'accessing' }
+TITAbstractTypeHolder class >> priority [
+
+	^ -1
 ]
 
 { #category : 'copying' }

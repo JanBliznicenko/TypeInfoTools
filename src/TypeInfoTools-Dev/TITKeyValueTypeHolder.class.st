@@ -16,6 +16,12 @@ TITKeyValueTypeHolder class >> acceptsClass: aClass [
 	^ aClass includesBehavior: Association
 ]
 
+{ #category : 'accessing' }
+TITKeyValueTypeHolder class >> priority [
+
+	^ 20
+]
+
 { #category : 'copying' }
 TITKeyValueTypeHolder >> , anotherHolder [
 
