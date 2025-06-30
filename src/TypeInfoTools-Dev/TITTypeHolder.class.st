@@ -87,7 +87,7 @@ TITTypeHolder >> copyWithTypeHolder: anotherTypeHolder [
 TITTypeHolder >> initialize [
 
 	super initialize.
-	types := Set new
+	types := IdentitySet new
 ]
 
 { #category : 'inspecting' }
@@ -119,8 +119,8 @@ TITTypeHolder >> mergeType: type occurences: occurences into: merged [
 TITTypeHolder >> mergeTypes [
 
 	| merged |
-	merged := Bag new.
-	types asBag doWithOccurrences: [ :type :occurences |
+	merged := IdentityBag new.
+	(IdentityBag withAll: types) doWithOccurrences: [ :type :occurences |
 		self mergeType: type occurences: occurences into: merged ].
 	self types: merged
 ]
@@ -179,7 +179,6 @@ TITTypeHolder >> types [
 { #category : 'adding' }
 TITTypeHolder >> types: aCollection [
 
-	aCollection do: [ :each | self haltIf: [ each isNil ] ].
 	types := aCollection
 ]
 
