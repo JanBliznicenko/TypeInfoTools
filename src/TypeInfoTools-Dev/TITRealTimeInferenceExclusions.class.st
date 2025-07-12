@@ -29,11 +29,12 @@ TITRealTimeInferenceExclusions class >> excludedBaselinesFromInfering [
 			   BaselineOfEmergencyDebugger.
 			   BaselineOfKernelTests.
 			   BaselineOfUI.
+			   BaselineOfNewToolsDebugger.
 			   BaselineOfPharoBootstrapCollections.
 			   BaselineOfPharoBootstrapKernel.
 			   BaselineOfPharoBootstrapTranscript.
-			   BaselineOfNewToolsDebugger.
-			   BaselineOfPharoBootstrapAST })
+			   BaselineOfPharoBootstrapAST.
+			   BaselineOfPharoBootstrapRandom })
 ]
 
 { #category : 'constants' }
