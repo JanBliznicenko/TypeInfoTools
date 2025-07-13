@@ -20,5 +20,5 @@ ManifestTypeInfoToolsDev class >> ruleRefersToClassRuleV1FalsePositive [
 ManifestTypeInfoToolsDev class >> ruleStringConcatenationRuleV1FalsePositive [
 
 	<ignoreForCoverage>
-	^ #(#(#(#RGMethodDefinition #(#'TITMetaLinksRealTimeTypeInferer class' #runBaselinesInSeparateProcesses #true)) #'2025-06-09T02:33:49.319+02:00') #(#(#RGMethodDefinition #(#'TITMetaLinksResultsProcessor class' #processTypes: #true)) #'2025-06-30T10:26:37.343+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#'TITMetaLinksRealTimeTypeInferer class' #runBaselinesInSeparateProcesses #true)) #'2025-06-09T02:33:49.319+02:00') #(#(#RGMethodDefinition #(#'TITMetaLinksResultsProcessor class' #processTypes: #true)) #'2025-06-30T10:26:37.343+02:00') #(#(#RGMethodDefinition #(#'TITRealTimeInferenceResultsUnifier class' #processTypes: #true)) #'2025-07-13T10:24:00.099+02:00') )
 ]

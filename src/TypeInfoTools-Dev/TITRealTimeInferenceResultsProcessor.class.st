@@ -6,23 +6,6 @@ Class {
 	#tag : 'RealTime'
 }
 
-{ #category : 'private - transforming' }
-TITRealTimeInferenceResultsProcessor class >> byNameParts: aDictionaryOfHolder [
-
-	| merged |
-	merged := Dictionary new.
-	aDictionaryOfHolder keysAndValuesDo: [ :key :holder |
-			key splitCamelCase do: [ :eachPart |
-					| newKey |
-					newKey := eachPart uncapitalized asSymbol.
-					merged
-						at: newKey
-						ifPresent: [ :foundHolder |
-						merged at: newKey put: foundHolder , holder ]
-						ifAbsentPut: [ holder ] ] ].
-	^ merged
-]
-
 { #category : 'processing' }
 TITRealTimeInferenceResultsProcessor class >> processAll [
 
@@ -36,44 +19,13 @@ TITRealTimeInferenceResultsProcessor class >> processAll [
 TITRealTimeInferenceResultsProcessor class >> processRetTypes [
 
 	<script>
-	^ self processTypes: '_RetTypes.ston'
+	^ self processTypes: self retTypesFilename 
 ]
 
 { #category : 'processing' }
-TITRealTimeInferenceResultsProcessor class >> processTypes: commonNamePart [
+TITRealTimeInferenceResultsProcessor class >> processTypes: aFilename [
 
-	| imageDir basename baselines files typesByProjects byNames byNameParts |
-	imageDir := FileLocator imageDirectory.
-	basename := imageDir basename.
-	baselines := TITDependentPackagesFinder baselinesForInference.
-	files := baselines collect: [ :each |
-			         | projectName projectDir |
-			         projectName := each name allButFirst: 10.
-			         projectDir := imageDir parent
-			                       / (basename , '_' , projectName).
-
-			         projectDir / (projectName , commonNamePart) ].
-	typesByProjects := files
-		                   select: [ :each | each exists ]
-		                   thenCollect: [ :each |
-				                   each readStreamDo: [ :s |
-					                   (TITRealTimeInferenceResultsSTONReader on: s)
-						                   next ] ].
-	byNames := Dictionary new.
-	typesByProjects do: [ :eachDictionary |
-			eachDictionary keysAndValuesDo: [
-					:eachContentReference
-					:eachTypeHolder |
-					| unifiedName |
-					unifiedName := self unifyName: eachContentReference name.
-					byNames
-						at: unifiedName
-						ifPresent: [ :typeHolder |
-							byNames at: unifiedName put: typeHolder , eachTypeHolder ]
-						ifAbsentPut: eachTypeHolder ] ].
-	byNameParts := self byNameParts: byNames.
-	self save: byNameParts as: commonNamePart , '-byNameParts.ston'.
-	^ self save: byNames as: commonNamePart , '-byNames.ston'
+	^ self subclassResponsibility
 ]
 
 { #category : 'processing' }
@@ -83,34 +35,14 @@ TITRealTimeInferenceResultsProcessor class >> processVarTypes [
 	^ self processTypes: '_VarTypes.ston'
 ]
 
-{ #category : 'private - transforming' }
-TITRealTimeInferenceResultsProcessor class >> save: aDictionaryOfTypes as: aFileName [
+{ #category : 'as yet unclassified' }
+TITRealTimeInferenceResultsProcessor class >> retTypesFilename [
 
-	| dictionaryOfTypes |
-	dictionaryOfTypes := self sortedBySizes: aDictionaryOfTypes.
-	aFileName asFileReference
-		ensureDelete;
-		writeStreamDo: [ :s | dictionaryOfTypes ].
-	dictionaryOfTypes do: [ :each | each convertTypesToClass ].
-	^ dictionaryOfTypes
+	^ '_RetTypes.ston'
 ]
 
-{ #category : 'private - transforming' }
-TITRealTimeInferenceResultsProcessor class >> sortedBySizes: aDictionaryOfHolder [
+{ #category : 'as yet unclassified' }
+TITRealTimeInferenceResultsProcessor class >> varTypesFilename [
 
-	^ (aDictionaryOfHolder associations sorted: [ :a :b |
-			   a value size = b value size
-				   ifTrue: [ a key < b key ]
-				   ifFalse: [ a value size > b value size ] ]) asOrderedDictionary
-]
-
-{ #category : 'private - transforming' }
-TITRealTimeInferenceResultsProcessor class >> unifyName: aString [
-
-	| simplified |
-	simplified := TITNameTyperAdaptor simplifyName: aString.
-	simplified size = 1 ifTrue: [ ^ aString asLowercase asSymbol ].
-	(simplified first isUppercase and: [ simplified second isLowercase ])
-		ifTrue: [ ^ simplified uncapitalized asSymbol ].
-	^ simplified asSymbol
+	^ '_VarTypes.ston'
 ]

@@ -88,20 +88,6 @@ TITAbstractTypeHolder >> addValue: aValue [
 	self subclassResponsibility
 ]
 
-{ #category : 'converting' }
-TITAbstractTypeHolder >> convertTypesToClass [
-	"do nothing"
-
-	
-]
-
-{ #category : 'converting' }
-TITAbstractTypeHolder >> convertTypesToString [
-	"do nothing"
-
-	
-]
-
 { #category : 'adding' }
 TITAbstractTypeHolder >> copyWithCollectionTypeHolder: anotherTypeHolder [
 

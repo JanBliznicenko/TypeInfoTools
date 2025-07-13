@@ -35,20 +35,6 @@ TITDictionaryTypeHolder >> addValue: aValue [
 	aValue keysDo: [ :eachKey | ^ keyTypes := keyTypes withValue: eachKey ]
 ]
 
-{ #category : 'converting' }
-TITDictionaryTypeHolder >> convertTypesToClass [
-
-	super convertTypesToClass.
-	keyTypes convertTypesToClass
-]
-
-{ #category : 'converting' }
-TITDictionaryTypeHolder >> convertTypesToString [
-
-	super convertTypesToString.
-	keyTypes convertTypesToString
-]
-
 { #category : 'adding' }
 TITDictionaryTypeHolder >> copyWithDictionaryTypeHolder: anotherTypeHolder [
 

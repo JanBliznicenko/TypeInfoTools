@@ -36,22 +36,6 @@ TITKeyValueTypeHolder >> addValue: aValue [
 	valueTypes := valueTypes withValue: aValue value
 ]
 
-{ #category : 'converting' }
-TITKeyValueTypeHolder >> convertTypesToClass [
-
-	super convertTypesToClass.
-	keyTypes convertTypesToClass.
-	valueTypes convertTypesToClass
-]
-
-{ #category : 'converting' }
-TITKeyValueTypeHolder >> convertTypesToString [
-
-	super convertTypesToString.
-	keyTypes convertTypesToString.
-	valueTypes convertTypesToString
-]
-
 { #category : 'adding' }
 TITKeyValueTypeHolder >> copyWithKeyValueTypeHolder: anotherTypeHolder [
 
