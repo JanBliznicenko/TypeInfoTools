@@ -5,3 +5,9 @@ Class {
 	#package : 'TypeInfoTools-Dev',
 	#tag : 'RealTime'
 }
+
+{ #category : 'accessing' }
+TITRealTimeInferenceResultsTrait class >> systemClass [
+
+	^ Trait
+]

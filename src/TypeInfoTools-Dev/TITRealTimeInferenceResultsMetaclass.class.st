@@ -6,16 +6,14 @@ Class {
 	#tag : 'RealTime'
 }
 
+{ #category : 'accessing' }
+TITRealTimeInferenceResultsMetaclass class >> systemClass [
+
+	^ Metaclass
+]
+
 { #category : 'instance creation' }
 TITRealTimeInferenceResultsMetaclass class >> systemClassFrom: systemClass [
 
 	^ systemClass class
-]
-
-{ #category : 'instance creation' }
-TITRealTimeInferenceResultsMetaclass >> fromSton: stonReader [
-
-	| theClass |
-	theClass := super fromSton: stonReader.
-	^ theClass class
 ]

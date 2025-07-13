@@ -7,6 +7,13 @@ Class {
 }
 
 { #category : 'processing' }
+TITRealTimeInferenceResultsUnifier class >> processAll [
+
+	<script>
+	^ super processAll
+]
+
+{ #category : 'processing' }
 TITRealTimeInferenceResultsUnifier class >> processTypes: commonNamePart [
 
 	| imageDir basename baselines files typesByProjects unified |

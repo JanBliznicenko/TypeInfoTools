@@ -28,6 +28,12 @@ TITRealTimeInferenceResultsBehavior class >> named: theClassName [
 		  yourself
 ]
 
+{ #category : 'accessing' }
+TITRealTimeInferenceResultsBehavior class >> systemClass [
+
+	^ Behavior
+]
+
 { #category : 'instance creation' }
 TITRealTimeInferenceResultsBehavior class >> systemClassFrom: systemClass [
 
@@ -56,4 +62,17 @@ TITRealTimeInferenceResultsBehavior >> name [
 TITRealTimeInferenceResultsBehavior >> name: aString [
 
 	name := aString
+]
+
+{ #category : 'ston persistence' }
+TITRealTimeInferenceResultsBehavior >> stonOn: stonWriter [
+
+	stonWriter
+		writeObject: self systemClass
+		listSingleton: self name asSymbol
+]
+
+{ #category : 'accessing' }
+TITRealTimeInferenceResultsBehavior >> systemClass [
+	^ self class systemClass
 ]

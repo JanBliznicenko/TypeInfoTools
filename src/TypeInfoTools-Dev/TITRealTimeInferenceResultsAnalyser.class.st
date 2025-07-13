@@ -23,6 +23,39 @@ TITRealTimeInferenceResultsAnalyser class >> byNameParts: aDictionaryOfHolder [
 	^ merged
 ]
 
+{ #category : 'processing' }
+TITRealTimeInferenceResultsAnalyser class >> processAll [
+
+	<script>
+	^ super processAll
+]
+
+{ #category : 'processing' }
+TITRealTimeInferenceResultsAnalyser class >> processTypes: commonNamePart [
+
+	| imageDir file typesDictionary byNames |
+	imageDir := FileLocator imageDirectory.
+	file := imageDir / commonNamePart.
+	typesDictionary := file readStreamDo: [ :s |
+		                   (TITRealTimeInferenceResultsSTONReader on: s)
+			                   next ].
+	byNames := Dictionary new.
+	typesDictionary keysAndValuesDo: [
+			:eachContentReference
+			:eachTypeHolder |
+			| unifiedName dictionaryOfSourcesByTypes |
+			unifiedName := self unifyName: eachContentReference name.
+			dictionaryOfSourcesByTypes := byNames
+				                              at: unifiedName
+				                              ifAbsentPut: Dictionary new.
+			eachTypeHolder types do: [ :eachType |
+					(dictionaryOfSourcesByTypes
+						 at: eachType
+						 ifAbsentPut: SortedCollection new) add:
+						eachContentReference contentClass ] ].
+	^ self save: byNames as: 'ByNames' , commonNamePart
+]
+
 { #category : 'private - transforming' }
 TITRealTimeInferenceResultsAnalyser class >> save: aDictionaryOfTypes as: aFileName [
 
