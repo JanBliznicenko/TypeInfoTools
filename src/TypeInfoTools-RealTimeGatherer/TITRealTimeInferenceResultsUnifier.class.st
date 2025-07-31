@@ -1,9 +1,9 @@
 Class {
 	#name : 'TITRealTimeInferenceResultsUnifier',
 	#superclass : 'TITRealTimeInferenceResultsProcessor',
-	#category : 'TypeInfoTools-Dev-RealTime',
-	#package : 'TypeInfoTools-Dev',
-	#tag : 'RealTime'
+	#category : 'TypeInfoTools-RealTimeGatherer-Processing',
+	#package : 'TypeInfoTools-RealTimeGatherer',
+	#tag : 'Processing'
 }
 
 { #category : 'processing' }

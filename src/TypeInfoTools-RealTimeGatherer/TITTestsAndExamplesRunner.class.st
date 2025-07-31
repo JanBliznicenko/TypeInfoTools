@@ -8,9 +8,9 @@ Class {
 		'errorLogStream',
 		'name'
 	],
-	#category : 'TypeInfoTools-Dev-RealTime',
-	#package : 'TypeInfoTools-Dev',
-	#tag : 'RealTime'
+	#category : 'TypeInfoTools-RealTimeGatherer-Gathering',
+	#package : 'TypeInfoTools-RealTimeGatherer',
+	#tag : 'Gathering'
 }
 
 { #category : 'constants' }

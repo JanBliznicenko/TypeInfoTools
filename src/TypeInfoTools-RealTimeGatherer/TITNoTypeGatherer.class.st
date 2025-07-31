@@ -1,9 +1,9 @@
 Class {
 	#name : 'TITNoTypeGatherer',
 	#superclass : 'Object',
-	#category : 'TypeInfoTools-Dev-RealTime',
-	#package : 'TypeInfoTools-Dev',
-	#tag : 'RealTime'
+	#category : 'TypeInfoTools-RealTimeGatherer-Gathering',
+	#package : 'TypeInfoTools-RealTimeGatherer',
+	#tag : 'Gathering'
 }
 
 { #category : 'visiting' }

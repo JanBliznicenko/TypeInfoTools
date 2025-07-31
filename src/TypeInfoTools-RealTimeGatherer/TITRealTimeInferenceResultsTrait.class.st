@@ -1,9 +1,9 @@
 Class {
 	#name : 'TITRealTimeInferenceResultsTrait',
 	#superclass : 'TITRealTimeInferenceResultsClass',
-	#category : 'TypeInfoTools-Dev-RealTime',
-	#package : 'TypeInfoTools-Dev',
-	#tag : 'RealTime'
+	#category : 'TypeInfoTools-RealTimeGatherer-Structure',
+	#package : 'TypeInfoTools-RealTimeGatherer',
+	#tag : 'Structure'
 }
 
 { #category : 'accessing' }

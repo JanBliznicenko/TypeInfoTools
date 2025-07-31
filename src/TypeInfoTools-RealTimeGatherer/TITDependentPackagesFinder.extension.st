@@ -1,6 +1,6 @@
 Extension { #name : 'TITDependentPackagesFinder' }
 
-{ #category : '*TypeInfoTools-Dev' }
+{ #category : '*TypeInfoTools-RealTimeGatherer' }
 TITDependentPackagesFinder class >> baselinesForInference [
 
 	^ ((BaselineOf allSubclasses copyWithoutAll:
@@ -10,7 +10,7 @@ TITDependentPackagesFinder class >> baselinesForInference [
 		  asSortedCollection: [ :a :b | a name < b name ]
 ]
 
-{ #category : '*TypeInfoTools-Dev' }
+{ #category : '*TypeInfoTools-RealTimeGatherer' }
 TITDependentPackagesFinder class >> forTypingPackages: aSetOfPackages [
 
 	| finder |

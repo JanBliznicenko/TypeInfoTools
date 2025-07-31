@@ -5,9 +5,9 @@ Class {
 		'withAllSubclassesByPriority',
 		'withMoreGeneralClasses'
 	],
-	#category : 'TypeInfoTools-Dev-RealTime',
-	#package : 'TypeInfoTools-Dev',
-	#tag : 'RealTime'
+	#category : 'TypeInfoTools-RealTimeGatherer-Structure',
+	#package : 'TypeInfoTools-RealTimeGatherer',
+	#tag : 'Structure'
 }
 
 { #category : 'testing' }
@@ -144,6 +144,12 @@ TITAbstractTypeHolder >> threeWayCompareToEmpty: anEmptyTypeHolder [
 
 { #category : 'comparing' }
 TITAbstractTypeHolder >> threeWayCompareToTypeHolder: aTypeHolder [
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'accessing' }
+TITAbstractTypeHolder >> types [
 
 	^ self subclassResponsibility
 ]

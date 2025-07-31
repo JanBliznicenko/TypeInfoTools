@@ -6,9 +6,8 @@ Class {
 		'timesToRun',
 		'methodsByPackages'
 	],
-	#category : 'TypeInfoTools-Dev-MethodReturns',
-	#package : 'TypeInfoTools-Dev',
-	#tag : 'MethodReturns'
+	#category : 'TypeInfoTools-ReturnTypesAnalyzer',
+	#package : 'TypeInfoTools-ReturnTypesAnalyzer'
 }
 
 { #category : 'as yet unclassified' }

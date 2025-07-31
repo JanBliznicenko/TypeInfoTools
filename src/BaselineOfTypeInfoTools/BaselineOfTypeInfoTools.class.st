@@ -14,9 +14,9 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				baseline: 'DependentsFinder'
 				with: [
 					spec repository: 'github://JanBliznicenko/DependentsFinder:main' ];
-				baseline: 'OSWinSubprocess'
-				with: [
-					spec repository: 'github://pharo-contributions/OSWinSubprocess:v1.1.1' ];
+				baseline: 'OSWinSubprocess' with: [
+					spec repository:
+							'github://pharo-contributions/OSWinSubprocess:v1.1.1' ];
 				baseline: 'RoelTyper' with: [
 						spec
 							repository: 'github://JanBliznicenko/RoelTyper';
@@ -35,15 +35,22 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
 				package: 'TypeInfoTools-Completion'
 				with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
-				package: 'TypeInfoTools-Dev' with: [
+				package: 'TypeInfoTools-ReturnTypesAnalyzer'
+				with: [ spec requires: #( 'TypeInfoTools-Core'
+				   'NeoCSV' ) ];
+				package: 'TypeInfoTools-RealTimeGatherer' with: [
 					spec requires:
-						#( 'DependentsFinder' 'OSWinSubprocess' 'TypeInfoTools-Core' 'NeoCSV' ) ];
+						#( 'DependentsFinder' 'OSWinSubprocess' 'TypeInfoTools-Core' ) ];
 				package: 'TITMyClass';
 				group: 'ide'
-				with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser'
-					   'TypeInfoTools-Completion' );
-				group: 'dev' with: #( 'ide' 'TypeInfoTools-Dev'
-				   'TITMyClass' );
+				with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser' );
+				group: 'ide-experimental'
+				with: #( 'ide' 'TypeInfoTools-Completion' );
+				group: 'realtime' with: #( 'TypeInfoTools-ReturnTypesAnalyzer' );
+				group: 'returntypes' with: #( 'realtime' );
+				group: 'dev'
+				with:
+				#( 'ide-experimental' 'returntypes' 'realtime' 'TITMyClass' );
 				group: 'all' with: #( 'dev' );
 				group: 'default' with: #( 'ide' ) ]
 ]

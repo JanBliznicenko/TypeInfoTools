@@ -1,9 +1,9 @@
 Class {
 	#name : 'TITEmptyTypeHolder',
 	#superclass : 'TITAbstractTypeHolder',
-	#category : 'TypeInfoTools-Dev-RealTime',
-	#package : 'TypeInfoTools-Dev',
-	#tag : 'RealTime'
+	#category : 'TypeInfoTools-RealTimeGatherer-Structure',
+	#package : 'TypeInfoTools-RealTimeGatherer',
+	#tag : 'Structure'
 }
 
 { #category : 'testing' }
@@ -66,6 +66,12 @@ TITEmptyTypeHolder >> threeWayCompareToEmpty: anEmptyTypeHolder [
 TITEmptyTypeHolder >> threeWayCompareToTypeHolder: aTypeHolder [
 
 	^ -1
+]
+
+{ #category : 'accessing' }
+TITEmptyTypeHolder >> types [
+
+	^ IdentitySet new
 ]
 
 { #category : 'instance creation' }

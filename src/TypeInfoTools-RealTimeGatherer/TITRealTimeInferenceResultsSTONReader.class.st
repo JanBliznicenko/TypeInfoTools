@@ -1,9 +1,9 @@
 Class {
 	#name : 'TITRealTimeInferenceResultsSTONReader',
 	#superclass : 'STONReader',
-	#category : 'TypeInfoTools-Dev-RealTime',
-	#package : 'TypeInfoTools-Dev',
-	#tag : 'RealTime'
+	#category : 'TypeInfoTools-RealTimeGatherer-Processing',
+	#package : 'TypeInfoTools-RealTimeGatherer',
+	#tag : 'Processing'
 }
 
 { #category : 'parsing-internal' }
