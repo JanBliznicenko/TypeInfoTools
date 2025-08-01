@@ -9,6 +9,23 @@ Class {
 	#tag : 'Structure'
 }
 
+{ #category : 'as yet unclassified' }
+TITRealTimeInferenceResultsBehavior class >> forSystemClass: aClass [
+
+	^ (self forSystemMetaclass: aClass class) named: aClass name asSymbol
+]
+
+{ #category : 'as yet unclassified' }
+TITRealTimeInferenceResultsBehavior class >> forSystemMetaclass: aClass [
+
+	(aClass includesBehavior: Behavior) ifFalse: [ ^ aClass ].
+
+	(aClass includesBehavior: Metaclass) ifTrue: [
+		^ TITRealTimeInferenceResultsMetaclass forSystemMetaclass: aClass ].
+
+	^ TITRealTimeInferenceResultsClass forSystemMetaclass: aClass
+]
+
 { #category : 'instance creation' }
 TITRealTimeInferenceResultsBehavior class >> fromSton: stonReader [
 
@@ -52,6 +69,12 @@ TITRealTimeInferenceResultsBehavior >> hash [
 	^ self class hash bitXor: name hash
 ]
 
+{ #category : 'testing' }
+TITRealTimeInferenceResultsBehavior >> isMeta [
+
+	^ false
+]
+
 { #category : 'accessing' }
 TITRealTimeInferenceResultsBehavior >> name [
 
@@ -68,11 +91,24 @@ TITRealTimeInferenceResultsBehavior >> name: aString [
 TITRealTimeInferenceResultsBehavior >> stonOn: stonWriter [
 
 	stonWriter
-		writeObject: self systemClass
+		writeObject: self systemMetaclass
 		listSingleton: self name asSymbol
 ]
 
 { #category : 'accessing' }
-TITRealTimeInferenceResultsBehavior >> systemClass [
+TITRealTimeInferenceResultsBehavior >> systemClassIfAbsent: aBlock [
+
+	^ (self class environment classNamed: self name asSymbol) ifNil:
+		  aBlock
+]
+
+{ #category : 'accessing' }
+TITRealTimeInferenceResultsBehavior >> systemMetaclass [
 	^ self class systemClass
+]
+
+{ #category : 'accessing - class hierarchy' }
+TITRealTimeInferenceResultsBehavior >> withAllSuperclasses [
+
+	^ { self }
 ]

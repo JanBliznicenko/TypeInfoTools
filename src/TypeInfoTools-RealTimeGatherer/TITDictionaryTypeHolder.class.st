@@ -16,6 +16,14 @@ TITDictionaryTypeHolder class >> acceptsClass: aClass [
 		  aClass = OrderedDictionary or: [ aClass = SmallDictionary ] ]
 ]
 
+{ #category : 'adding' }
+TITDictionaryTypeHolder class >> allTypesCausingRecursion [
+
+	<script: 'self allTypesCausingRecursion inspect'>
+	^ self superclass allTypesCausingRecursion
+	  , self typesCausingRecursion
+]
+
 { #category : 'accessing' }
 TITDictionaryTypeHolder class >> priority [
 
@@ -29,9 +37,10 @@ TITDictionaryTypeHolder >> , anotherHolder [
 ]
 
 { #category : 'adding' }
-TITDictionaryTypeHolder >> addValue: aValue [
+TITDictionaryTypeHolder >> addValueUnchecked: aValue [
 
-	super addValue: aValue.
+	super addValueUnchecked: aValue.
+	(thisContext methodClass isCausingRecursion: aValue class) ifTrue: [ ^ self ].
 	aValue keysDo: [ :eachKey | ^ keyTypes := keyTypes withValue: eachKey ]
 ]
 

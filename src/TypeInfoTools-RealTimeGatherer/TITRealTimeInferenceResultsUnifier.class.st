@@ -26,7 +26,7 @@ TITRealTimeInferenceResultsUnifier class >> processTypes: commonNamePart [
 			         projectDir := imageDir parent
 			                       / (basename , '_' , projectName).
 
-			         projectDir / (projectName , commonNamePart) ].
+			         projectDir / (projectName , commonNamePart , '.ston') ].
 	typesByProjects := files
 		                   select: [ :each | each exists ]
 		                   thenCollect: [ :each |
@@ -53,9 +53,13 @@ TITRealTimeInferenceResultsUnifier class >> save: aDictionaryOfHolders as: aFile
 
 	| sortedDictionary |
 	sortedDictionary := self sorted: aDictionaryOfHolders.
-	aFileName asFileReference
+	(aFileName asFileReference , 'ston')
 		ensureDelete;
-		writeStreamDo: [ :s | STON put: sortedDictionary onStreamPretty: s ].
+		writeStreamDo: [ :s | 
+			(STON writer on: s)
+		prettyPrint: true;
+		referencePolicy: #ignore;
+		nextPut: sortedDictionary ].
 	^ sortedDictionary
 ]
 

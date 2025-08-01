@@ -3,7 +3,8 @@ Class {
 	#superclass : 'Object',
 	#classInstVars : [
 		'withAllSubclassesByPriority',
-		'withMoreGeneralClasses'
+		'withMoreGeneralClasses',
+		'typesCausingRecursion'
 	],
 	#category : 'TypeInfoTools-RealTimeGatherer-Structure',
 	#package : 'TypeInfoTools-RealTimeGatherer',
@@ -14,6 +15,25 @@ Class {
 TITAbstractTypeHolder class >> acceptsClass: aClass [
 
 	^ self subclassResponsibility
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder class >> addTypeCausingRecursion: aClass [
+
+	self typesCausingRecursion add: aClass
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder class >> allTypesCausingRecursion [
+
+	<script: 'self allTypesCausingRecursion inspect'>
+	^ self typesCausingRecursion
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder class >> isCausingRecursion: aClass [
+
+	^ self typesCausingRecursion includes: aClass
 ]
 
 { #category : 'instance creation' }
@@ -53,6 +73,12 @@ TITAbstractTypeHolder class >> priority [
 	^ -1
 ]
 
+{ #category : 'adding' }
+TITAbstractTypeHolder class >> typesCausingRecursion [
+
+	^ typesCausingRecursion ifNil: [ typesCausingRecursion := Set new ]
+]
+
 { #category : 'instance creation' }
 TITAbstractTypeHolder class >> withAllSubclassesByPriority [
 
@@ -84,6 +110,15 @@ TITAbstractTypeHolder >> , anotherHolder [
 
 { #category : 'adding' }
 TITAbstractTypeHolder >> addValue: aValue [
+
+	[
+		self addValueUnchecked: aValue ]
+		on: TITRecursionDetectedException
+		do: [ self class addTypeCausingRecursion: aValue class ]
+]
+
+{ #category : 'adding' }
+TITAbstractTypeHolder >> addValueUnchecked: aValue [
 
 	self subclassResponsibility
 ]

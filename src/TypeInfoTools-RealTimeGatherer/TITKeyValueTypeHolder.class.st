@@ -16,6 +16,14 @@ TITKeyValueTypeHolder class >> acceptsClass: aClass [
 	^ aClass includesBehavior: Association
 ]
 
+{ #category : 'adding' }
+TITKeyValueTypeHolder class >> allTypesCausingRecursion [
+
+	<script: 'self allTypesCausingRecursion inspect'>
+	^ self superclass allTypesCausingRecursion
+	  , self typesCausingRecursion
+]
+
 { #category : 'accessing' }
 TITKeyValueTypeHolder class >> priority [
 
@@ -29,9 +37,10 @@ TITKeyValueTypeHolder >> , anotherHolder [
 ]
 
 { #category : 'adding' }
-TITKeyValueTypeHolder >> addValue: aValue [
+TITKeyValueTypeHolder >> addValueUnchecked: aValue [
 
-	super addValue: aValue.
+	super addValueUnchecked: aValue.
+	(thisContext methodClass isCausingRecursion: aValue class) ifTrue: [ ^ self ].
 	keyTypes := keyTypes withValue: aValue key.
 	valueTypes := valueTypes withValue: aValue value
 ]

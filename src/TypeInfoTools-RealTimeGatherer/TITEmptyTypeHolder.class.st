@@ -12,6 +12,14 @@ TITEmptyTypeHolder class >> acceptsClass: aClass [
 	^ aClass == UndefinedObject
 ]
 
+{ #category : 'adding' }
+TITEmptyTypeHolder class >> allTypesCausingRecursion [
+
+	<script: 'self allTypesCausingRecursion inspect'>
+	^ self superclass allTypesCausingRecursion
+	  , self typesCausingRecursion
+]
+
 { #category : 'accessing' }
 TITEmptyTypeHolder class >> priority [
 
@@ -25,7 +33,7 @@ TITEmptyTypeHolder >> , anotherHolder [
 ]
 
 { #category : 'adding' }
-TITEmptyTypeHolder >> addValue: aValue [
+TITEmptyTypeHolder >> addValueUnchecked: aValue [
 
 	aValue ifNotNil: [
 		self error: self className , ' cannot hold any value' ]

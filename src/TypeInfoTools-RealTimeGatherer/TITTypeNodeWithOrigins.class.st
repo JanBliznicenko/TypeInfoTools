@@ -2,83 +2,50 @@ Class {
 	#name : 'TITTypeNodeWithOrigins',
 	#superclass : 'Object',
 	#instVars : [
-		'type',
-		'origins',
-		'subclassNodes'
+		'childNodes'
 	],
-	#category : 'TypeInfoTools-RealTimeGatherer-Structure',
+	#category : 'TypeInfoTools-RealTimeGatherer-Processing',
 	#package : 'TypeInfoTools-RealTimeGatherer',
-	#tag : 'Structure'
+	#tag : 'Processing'
 }
 
-{ #category : 'as yet unclassified' }
-TITTypeNodeWithOrigins class >> withType: aClass [
+{ #category : 'enumerating' }
+TITTypeNodeWithOrigins >> allReferencingClasses [
 
-	^ self new
-		  type: aClass;
-		  yourself
-]
-
-{ #category : 'comparing' }
-TITTypeNodeWithOrigins >> = otherNode [
-
-	^ self type = otherNode type
+	^ self subclassResponsibility 
 ]
 
 { #category : 'accessing' }
-TITTypeNodeWithOrigins >> addOrigins: aCollectionOfClasses [
+TITTypeNodeWithOrigins >> childNodes [
 
-	self haltIf: [ origins includesAnyOf: aCollectionOfClasses ].
-	origins addAll: aCollectionOfClasses
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> atTypeHierarchy: aClassHierarchy addOrigins: aCollectionOfClasses [
-
-	| directSubclass subclassNode |
-	aClassHierarchy ifEmpty: [ ^ self addOrigins: aCollectionOfClasses ].
-	directSubclass := aClassHierarchy first.
-	subclassNode := subclassNodes
-		                at: directSubclass
-		                ifAbsentPut: [ self class withType: directSubclass ].
-	^ subclassNode
-		  atTypeHierarchy: aClassHierarchy allButFirst
-		  addOrigins: aCollectionOfClasses
-]
-
-{ #category : 'comparing' }
-TITTypeNodeWithOrigins >> hash [
-
-	^ self type hash
+	^ childNodes
 ]
 
 { #category : 'initialization' }
 TITTypeNodeWithOrigins >> initialize [
 
 	super initialize.
-	subclassNodes := Dictionary new
+	childNodes := Array empty
 ]
 
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> origins [
+{ #category : 'as yet unclassified' }
+TITTypeNodeWithOrigins >> inspectionTreeIn: specBuilder [
 
-	^ origins
+	<inspectorPresentationOrder: 910 title: 'Tree'>
+	^ specBuilder newTree
+		  roots: { self };
+		  children: [ :aNode | aNode childNodes ];
+		  expandRoots
 ]
 
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> subclassNodes [
+{ #category : 'testing' }
+TITTypeNodeWithOrigins >> isAcceptableMostPreciseNode [
 
-	^ subclassNodes
+	^ false
 ]
 
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> type [
+{ #category : 'querying' }
+TITTypeNodeWithOrigins >> mostPreciseNode [
 
-	^ type
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> type: anObject [
-
-	type := anObject
+	^ self subclassResponsibility
 ]

@@ -10,6 +10,58 @@ Class {
 	#tag : 'Gathering'
 }
 
+{ #category : 'visiting' }
+TITMetaLinksInsertionVisitor >> executedAssignmentToClasswideVariableNamed: aSymbol value: anObject receiverClass: receiverClass executedMethodClass: executedMethodClass executedMethodSelector: aSelector originalImplementorClass: originalImplementorClass [
+
+	typeGatherer
+		saveTypeOf: anObject
+		inVariableReference: (TITClasswideVariableReference
+				 toOriginImplementorClass: originalImplementorClass
+				 executedMethodClass: executedMethodClass
+				 executedMethodSelector: aSelector
+				 receiverClass: receiverClass
+				 name: aSymbol)
+]
+
+{ #category : 'visiting' }
+TITMetaLinksInsertionVisitor >> executedAssignmentToLocalVariableNamed: aSymbol value: anObject receiverClass: receiverClass executedMethodClass: executedMethodClass executedMethodSelector: aSelector originalImplementorClass: originalImplementorClass [
+
+	typeGatherer
+		saveTypeOf: anObject
+		inVariableReference: (TITLocalVariableReference
+				 toOriginImplementorClass: originalImplementorClass
+				 executedMethodClass: executedMethodClass
+				 executedMethodSelector: aSelector
+				 receiverClass: receiverClass
+				 name: aSymbol)
+]
+
+{ #category : 'visiting' }
+TITMetaLinksInsertionVisitor >> executedMethodArguments: arguments names: argumentNames receiverClass: receiverClass executedMethodClass: executedMethodClass executedMethodSelector: aSelector [
+
+	arguments withIndexDo: [ :eachArgument :index |
+			self
+				executedAssignmentToLocalVariableNamed: (argumentNames at: index)
+				value: eachArgument
+				receiverClass: receiverClass
+				executedMethodClass: executedMethodClass
+				executedMethodSelector: aSelector
+				originalImplementorClass: executedMethodClass ]
+]
+
+{ #category : 'visiting' }
+TITMetaLinksInsertionVisitor >> executedReturnFromSelector: aSymbol value: anObject receiverClass: receiverClass senderClass: aSenderClass executedMethodClass: executedMethodClass originalImplementorClass: originalImplementorClass [
+
+	typeGatherer
+		saveTypeOf: anObject
+		inReturnReference: (TITMethodReference
+				 toOriginImplementorClass: originalImplementorClass
+				 executedMethodClass: executedMethodClass
+				 receiverClass: receiverClass
+				 senderClass: aSenderClass
+				 name: aSymbol)
+]
+
 { #category : 'initialization' }
 TITMetaLinksInsertionVisitor >> initialize [
 
@@ -21,7 +73,7 @@ TITMetaLinksInsertionVisitor >> initialize [
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> returnSelfCode [
 
-	^ String cr , ' ...^self'
+	^ String cr , '	...^self'
 ]
 
 { #category : 'accessing' }
@@ -47,15 +99,31 @@ TITMetaLinksInsertionVisitor >> uninstallAll [
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitAssignmentNode: anAssignmentNode [
 
-	| link |
+	| varName link methodNode selector methodClass variableNode originalImplementorClass |
+	methodNode := anAssignmentNode methodNode.
+	selector := methodNode selector.
+	methodClass := methodNode methodClass.
+	variableNode := anAssignmentNode variable.
+	varName := variableNode name asSymbol.
+	originalImplementorClass := variableNode isGlobalVariable
+		                            ifTrue: [ SystemEnvironment ]
+		                            ifFalse: [
+				                            variableNode isClassVariable
+					                            ifTrue: [
+					                            variableNode variable owningClass ]
+					                            ifFalse: [ methodClass ] ].
 	link := MetaLink new.
 	link
-		metaObject: [ :newValue |
-				typeGatherer
-					saveTypeOf: newValue
-					inVariable: anAssignmentNode variable ];
-		selector: #value:;
-		arguments: #( newValue );
+		metaObject: [ :newValue :class |
+				self
+					executedAssignmentToClasswideVariableNamed: varName
+					value: newValue
+					receiverClass: class
+					executedMethodClass: methodClass
+					executedMethodSelector: selector
+					originalImplementorClass: originalImplementorClass ];
+		selector: #value:value:;
+		arguments: #( newValue class );
 		control: #before.
 	links add: link.
 	anAssignmentNode link: link.
@@ -66,54 +134,59 @@ TITMetaLinksInsertionVisitor >> visitAssignmentNode: anAssignmentNode [
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
 
-	| link returnSelfBlock updatedNode |
-	updatedNode := aMethodNode.
-	aMethodNode lastIsReturn ifFalse: [
-			| selector class |
-			selector := aMethodNode selector.
-			class := aMethodNode methodClass.
-			class compile: aMethodNode sourceCode , self returnSelfCode.
-			updatedNode := (class >> selector) ast ].
-
+	| link methodClass selector updatedMethodNode argumentNames |
 	link := MetaLink new.
-	returnSelfBlock := updatedNode lastIsReturn
-		                   ifTrue: [ [ :receiver |  ] ]
-		                   ifFalse: [
-				                   [ :receiver |
-				                   typeGatherer
-					                   saveTypeOf: receiver
-					                   inReturnOfMethod: updatedNode ] ].
+	methodClass := aMethodNode methodClass.
+	selector := aMethodNode selector.
+	updatedMethodNode := aMethodNode.
+	aMethodNode lastIsReturn ifFalse: [
+			methodClass compile: aMethodNode sourceCode , self returnSelfCode.
+			updatedMethodNode := (methodClass >> selector) ast ].
+	argumentNames := updatedMethodNode arguments collect: [ :each |
+		                 each name asSymbol ].
+
 	link
 		metaObject: [ :receiver :arguments |
-				returnSelfBlock value: receiver.
-				arguments withIndexDo: [ :eachArgument :index |
-							typeGatherer
-								saveTypeOf: eachArgument
-								inVariable: (updatedNode arguments at: index) ] ];
+				self
+					executedMethodArguments: arguments
+					names: argumentNames
+					receiverClass: receiver class
+					executedMethodClass: methodClass
+					executedMethodSelector: selector ];
 		selector: #value:value:;
 		arguments: #( receiver arguments );
 		control: #before.
-	links add: link.
-	updatedNode link: link.
 
-	super visitMethodNode: aMethodNode
+	links add: link.
+	updatedMethodNode link: link.
+
+	super visitMethodNode: updatedMethodNode
 ]
 
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitReturnNode: aReturnNode [
 
-	| link |
+	| link methodNode methodClass selector originalImplementorClass |
+	methodNode := aReturnNode methodNode.
+	selector := methodNode selector.
+	methodClass := methodNode methodClass.
+	originalImplementorClass := methodClass withAllSuperclasses reversed
+		                            detect: [ :any |
+		                            any includesSelector: selector ].
 	link := MetaLink new.
 	link
-		metaObject: [ :value |
-				typeGatherer
-					saveTypeOf: value
-					inReturnOfMethod: aReturnNode methodNode ];
-		selector: #value:;
-		arguments: #( value );
+		metaObject: [ :value :class :context | 
+				self
+					executedReturnFromSelector: selector
+					value: value
+					receiverClass: class
+					senderClass: context sender methodClass
+					executedMethodClass: methodClass
+					originalImplementorClass: originalImplementorClass ];
+		selector: #value:value:value:;
+		arguments: #( value class context );
 		control: #before.
 	links add: link.
 	aReturnNode link: link.
-
 	super visitReturnNode: aReturnNode
 ]

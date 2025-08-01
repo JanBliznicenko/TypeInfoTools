@@ -13,7 +13,7 @@ Class {
 ManifestTypeInfoToolsRealTimeGatherer class >> ruleRefersToClassRuleV1FalsePositive [
 
 	<ignoreForCoverage>
-	^ #(#(#(#RGMethodDefinition #(#'TITAbstractTypeHolder class' #withMoreGeneralClasses #true)) #'2025-06-28T21:26:45.683+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#'TITAbstractTypeHolder class' #withMoreGeneralClasses #true)) #'2025-06-28T21:26:45.683+02:00') #(#(#RGMethodDefinition #(#TITRealTimeInferenceResultsBehavior #withAllSuperclasses #false)) #'2025-08-01T17:27:40.525+02:00') )
 ]
 
 { #category : 'code-critics' }

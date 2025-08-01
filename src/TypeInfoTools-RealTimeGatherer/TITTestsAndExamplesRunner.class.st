@@ -59,7 +59,7 @@ TITTestsAndExamplesRunner class >> exampleBaselineName [
 
 	<script: 'self exampleBaselineName inspect'>
 	| imageNameParts imageTypeAndDate imageBaseline defaultName |
-	defaultName := 'RTree'.
+	defaultName := 'OpenPonk'.
 	imageNameParts := Smalltalk image imageFile basenameWithoutExtension
 		                  splitOn: $_.
 	imageNameParts size = 2 ifFalse: [ ^ defaultName ].
@@ -424,7 +424,7 @@ TITTestsAndExamplesRunner >> runExamples [
 TITTestsAndExamplesRunner >> runTests [
 
 	| testClasses testResult originalWindows |
-	TestCase defaultTimeLimit: 1 minute.
+	TestCase defaultTimeLimit: 5 minutes.
 
 	testClasses := self executedPackages flatCollect: [ :eachPackage |
 			               ((eachPackage definedClasses select: [ :each |
@@ -433,6 +433,12 @@ TITTestsAndExamplesRunner >> runTests [
 				                TITRealTimeInferenceExclusions
 					                excludedClassesFromRunningTests) asArray
 				               sortedAs: [ :each | each name ] ].
+
+	testClasses
+		select: [ :eachClass |
+		eachClass class includesSelector: #defaultTimeLimit ]
+		thenDo: [ :eachClass |
+			eachClass class compile: 'defaultTimeLimit ...^ 10 minutes' ].
 
 	self logEntry:
 		'Executing ' , testClasses size asString , ' test classes'.

@@ -32,17 +32,17 @@ TITRealTimeInferenceResultsProcessor class >> processTypes: aFilename [
 TITRealTimeInferenceResultsProcessor class >> processVarTypes [
 
 	<script>
-	^ self processTypes: '_VarTypes.ston'
+	^ self processTypes: self varTypesFilename
 ]
 
 { #category : 'as yet unclassified' }
 TITRealTimeInferenceResultsProcessor class >> retTypesFilename [
 
-	^ '_RetTypes.ston'
+	^ TITMetaLinksRealTimeTypeInferer retTypesFilename
 ]
 
 { #category : 'as yet unclassified' }
 TITRealTimeInferenceResultsProcessor class >> varTypesFilename [
 
-	^ '_VarTypes.ston'
+	^ TITMetaLinksRealTimeTypeInferer varTypesFilename
 ]

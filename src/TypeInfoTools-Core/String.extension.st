@@ -130,3 +130,33 @@ String >> singularize [
 
 	^ self
 ]
+
+{ #category : '*TypeInfoTools-Core' }
+String >> splitSymbolsAndCamelCase [
+
+	| results accum previousIsLower previousIsAlphaNumeric |
+	results := OrderedCollection new.
+	accum := self first asString.
+	previousIsLower := self first isLowercase.
+	previousIsAlphaNumeric := self first isAlphaNumeric.
+
+	2 to: self size do: [ :index |
+			| currentCharacter currentIsAlphaNumeric |
+			currentCharacter := self at: index.
+			currentIsAlphaNumeric := currentCharacter isAlphaNumeric.
+
+			((currentCharacter isUppercase and: [ previousIsLower ]) or: [
+					 (previousIsAlphaNumeric and: [ currentIsAlphaNumeric not ]) or: [
+						 previousIsAlphaNumeric not and: [ currentIsAlphaNumeric ] ] ])
+				ifTrue: [
+						results add: accum.
+						accum := '' ].
+
+			accum := accum copyWith: currentCharacter.
+			previousIsLower := currentCharacter isLowercase.
+			previousIsAlphaNumeric := currentIsAlphaNumeric ].
+
+	results add: accum.
+
+	^ results
+]

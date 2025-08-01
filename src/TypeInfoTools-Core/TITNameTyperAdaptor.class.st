@@ -171,7 +171,7 @@ TITNameTyperAdaptor >> processTypedNode: aTypedNode [
 
 	wordClusters := OrderedCollection new.
 	wordClusters add: OrderedCollection new.
-	simplifiedName splitCamelCase do: [ :each |
+	simplifiedName splitSymbolsAndCamelCase do: [ :each |
 			each = 'Or'
 				ifTrue: [
 						wordClusters last ifNotEmpty: [

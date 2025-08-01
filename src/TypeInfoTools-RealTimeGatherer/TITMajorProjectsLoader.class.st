@@ -54,6 +54,17 @@ TITMajorProjectsLoader class >> BTree [
 ]
 
 { #category : 'external projects' }
+TITMajorProjectsLoader class >> Beacon [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		repository: 'github://pharo-project/pharo-beacon';
+		baseline: 'Beacon';
+		load
+]
+
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> BlocTutorials [
 
 	<script>
@@ -98,14 +109,36 @@ TITMajorProjectsLoader class >> Cryptography [
 ]
 
 { #category : 'external projects' }
-TITMajorProjectsLoader class >> Glorp [
+TITMajorProjectsLoader class >> Hashtable [
 
 	<script>
 	<projectLoader>
 	Metacello new
-		repository: 'github://pharo-rdbms/glorp';
-		baseline: 'Glorp';
-		load
+		baseline: 'Hashtable';
+		repository: 'github://pharo-contributions/Hashtable:v1.x.x';
+		load: 'Tests'
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> I18N [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'I18N';
+		repository: 'github://astares/Pharo-I18N/src';
+		load: 'CI'
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> Iceberg [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'Iceberg';
+		repository: 'github://pharo-vcs/iceberg:Pharo13';
+		load: 'allTests'
 ]
 
 { #category : 'external projects' }
@@ -120,6 +153,40 @@ TITMajorProjectsLoader class >> IconFactory [
 ]
 
 { #category : 'external projects' }
+TITMajorProjectsLoader class >> Iterators [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'Iterators';
+		repository: 'github://juliendelplanque/Iterators:v1.x.x';
+		load
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> Magritte [
+
+	<script>
+	<projectLoader: 10>
+	Metacello new
+		baseline: 'Magritte';
+		repository: 'github://JanBliznicenko/Magritte';
+		lock;
+		load
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> MaterialColors [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'MaterialColors';
+		repository: 'github://DuneSt/MaterialColors:v2.x.x';
+		load: 'Tests'
+]
+
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> MethodProxies [
 
 	<script>
@@ -128,6 +195,17 @@ TITMajorProjectsLoader class >> MethodProxies [
 		baseline: 'MethodProxies';
 		repository: 'github://pharo-contributions/MethodProxies/src';
 		load
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> Microdown [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'Microdown';
+		repository: 'github://pillar-markup/Microdown:Pharo13';
+		load: 'All'
 ]
 
 { #category : 'external projects' }
@@ -177,6 +255,17 @@ TITMajorProjectsLoader class >> OpenPonkPlugins [
 ]
 
 { #category : 'external projects' }
+TITMajorProjectsLoader class >> P3 [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'P3';
+		repository: 'github://svenvc/P3';
+		load
+]
+
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> PharoLauncher [
 
 	<script>
@@ -202,6 +291,18 @@ TITMajorProjectsLoader class >> PharoLauncher [
 		'startUp: isANewSession
 	isANewSession ifFalse: [ ^ self ].	
 	PharoLauncherApplication reset.'
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> PolyMath [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		repository: 'github://PolyMathOrg/PolyMath';
+		baseline: 'PolyMath';
+		onConflictUseLoaded;
+		load
 ]
 
 { #category : 'external projects' }
@@ -257,23 +358,20 @@ TITMajorProjectsLoader class >> SQLite3 [
 
 	<script>
 	<projectLoader>
-	| repoPath dllsDir vmDir |
-	repoPath := 'pharo-rdbms/Pharo-SQLite3'.
-
 	Metacello new
-		repository: 'github://' , repoPath;
+		repository: 'github://pharo-rdbms/Pharo-SQLite3/src';
 		baseline: 'SQLite3';
-		load.
-
-	OSPlatform current isWindows ifFalse: [ ^ self ].
-
-	dllsDir := IceLibgitRepository localRepositoriesLocation / repoPath
-	           / 'bin/windows/64bit'.
-	vmDir := FileLocator vmDirectory.
-	dllsDir files do: [ :eachFile |
-			eachFile copyTo: ((vmDir / eachFile basename)
-					 ensureDelete;
-					 yourself) ]
+		load: #( all ).
+	(FileLocator vmDirectory / 'sqlite3.dll') asFileReference
+		binaryWriteStreamDo: [ :s |
+				(ZnClient new get:
+					 'https://raw.githubusercontent.com/pharo-rdbms/Pharo-SQLite3/refs/heads/master/bin/windows/64bit/sqlite3.dll')
+					writeOn: s ].
+	(FileLocator vmDirectory / 'sqlite3.def') asFileReference
+		binaryWriteStreamDo: [ :s |
+				(ZnClient new get:
+					 'https://raw.githubusercontent.com/pharo-rdbms/Pharo-SQLite3/refs/heads/master/bin/windows/64bit/sqlite3.def')
+					writeOn: s ]
 ]
 
 { #category : 'external projects' }
@@ -283,8 +381,20 @@ TITMajorProjectsLoader class >> Seaside3 [
 	<projectLoader>
 	Metacello new
 		baseline: 'Seaside3';
-		repository: 'github://SeasideSt/Seaside:master/repository';
-		load
+		repository: 'github://SeasideSt/Seaside';
+		load: #( 'Examples' 'Tests' )
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> SimplePersistence [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'SimplePersistence';
+		repository: 'github://seandenigris/Simple-Persistence';
+		onConflictUseLoaded;
+		load: 'CI'
 ]
 
 { #category : 'external projects' }
@@ -328,7 +438,7 @@ TITMajorProjectsLoader class >> Talents [
 	Metacello new
 		baseline: 'Talents';
 		repository: 'github://tesonep/pharo-talents/src';
-		load
+		load: 'test'
 ]
 
 { #category : 'external projects' }
@@ -340,6 +450,18 @@ TITMajorProjectsLoader class >> Teapot [
 		baseline: 'Teapot';
 		repository: 'github://zeroflag/Teapot/source';
 		load
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> TinyLogger [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'TinyLogger';
+		repository: 'github://jecisc/TinyLogger:v1.x.x';
+		onConflictUseLoaded;
+		load: 'Tests'
 ]
 
 { #category : 'external projects' }
@@ -355,6 +477,17 @@ TITMajorProjectsLoader class >> Toplo [
 ]
 
 { #category : 'external projects' }
+TITMajorProjectsLoader class >> TreeQuery [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'TreeQuery';
+		repository: 'github://juliendelplanque/TreeQuery:v1.x.x/src';
+		load
+]
+
+{ #category : 'external projects' }
 TITMajorProjectsLoader class >> Voyage [
 
 	<script>
@@ -362,7 +495,7 @@ TITMajorProjectsLoader class >> Voyage [
 	Metacello new
 		repository: 'github://pharo-nosql/voyage/mc';
 		baseline: 'Voyage';
-		load: 'mongo tests'
+		load: #( 'mongo tests' 'ejdb tests' )
 ]
 
 { #category : 'external projects' }
@@ -412,7 +545,7 @@ TITMajorProjectsLoader class >> loadProjects [
 	Smalltalk garbageCollect
 ]
 
-{ #category : 'loading' }
+{ #category : 'actions' }
 TITMajorProjectsLoader class >> projectLoaderMethods [
 
 	<script: 'self projectLoaderMethods inspect'>

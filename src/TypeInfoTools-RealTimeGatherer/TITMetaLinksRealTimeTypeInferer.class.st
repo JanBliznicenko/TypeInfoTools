@@ -23,8 +23,16 @@ TITMetaLinksRealTimeTypeInferer class >> baselines [
 			  baselineName := self nameOfBaseline: each.
 			  baselineDir := imagesDir / (thisDirName , '_' , baselineName).
 			  baselineDir exists and: [
-					  baselineDir files anySatisfy: [ :any |
-						  any basename endsWith: '_VarTypes.ston' ] ] ]
+					  ((baselineDir files select: [ :any |
+						    any basename endsWith: self retTypesFilename , '.ston' ])
+						   anySatisfy: [ :any | any size > 20 ]) or: [
+							  (baselineDir files select: [ :any |
+								   any basename endsWith: '_Log.txt' ]) anySatisfy: [ :any |
+									  any readStreamDo: [ :s |
+											  | log |
+											  log := s upToEnd.
+											  (log includesSubstring: '0 test classes') and: [
+												  log includesSubstring: '0 examples' ] ] ] ] ] ]
 ]
 
 { #category : 'examples' }
@@ -33,30 +41,69 @@ TITMetaLinksRealTimeTypeInferer class >> example [
 	super example
 ]
 
+{ #category : 'debugging' }
+TITMetaLinksRealTimeTypeInferer class >> findPackagesInMultipleBaselines [
+
+	<script: 'self findPackagesInMultipleBaselines inspect'>
+	| packageNamesOfBaselines |
+	packageNamesOfBaselines := TITDependentPackagesFinder
+		                           baselinesForInference collect: [ :each |
+		                           each
+		                           -> (each version packages collect: #name) ].
+	^ ((self packageOrganizer packages
+		    collect: [ :eachPackage |
+				    eachPackage -> (packageNamesOfBaselines
+					     select: [ :baselineWithPackageNames |
+						     baselineWithPackageNames value includes: eachPackage name ]
+					     thenCollect: [ :baselineWithPackageNames |
+						     baselineWithPackageNames key name asString ]) sorted ]
+		    thenSelect: [ :baselineWithPackageNames |
+		    baselineWithPackageNames value size > 1 ]) sorted: [ :a :b |
+			   a value first = b value first
+				   ifTrue: [ a value second < b value second ]
+				   ifFalse: [ a value first < b value first ] ])
+		  asOrderedDictionary
+]
+
 { #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer class >> generateSplitBaselines [
 
 	<script>
-	self
-		generateSplitBaselinesFrom: BaselineOfIceberg;
-		generateSplitBaselinesFrom: BaselineOfNewTools;
-		generateSplitBaselinesFrom: BaselineOfBloc;
-		generateSplitPharoBootstrapBaselines
+	self splitBaselines do: [ :each |
+		self generateSplitBaselinesFrom: each ]
 ]
 
 { #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer class >> generateSplitBaselinesFrom: originalBaseline [
 
-	| packagesByNames |
-	packagesByNames := (originalBaseline version loadedSystemPackages
-		                    collect: [ :each | each name ]) groupedBy: [
-			                   :each |
-			                   | parts |
-			                   parts := each splitOn: '-'.
-			                   parts size < 2
-				                   ifTrue: [ 'CoreRoot' ]
-				                   ifFalse: [ parts second ] ].
-	packagesByNames keysAndValuesDo: [ :basename :packageNames |
+	| packageNamesWithParts firstParts splitPartIndex packagesWithPartsByNames originalBaselineName commonPrefixLength |
+	originalBaselineName := originalBaseline name allButFirst: 10.
+	packageNamesWithParts := originalBaseline version
+		                         loadedSystemPackages collect: [ :each |
+		                         each name -> (each name splitOn: '-') ].
+	firstParts := Set new.
+	splitPartIndex := packageNamesWithParts
+		                  detect: [ :eachPackageNameWithParts |
+				                  firstParts add:
+					                  eachPackageNameWithParts value first.
+				                  firstParts size > 5 ]
+		                  ifFound: [ 1 ]
+		                  ifNone: [ 2 ].
+	commonPrefixLength := (packageNamesWithParts allSatisfy: [ :each |
+		                       each key beginsWith: originalBaselineName ])
+		                      ifTrue: [ originalBaselineName size ]
+		                      ifFalse: [ 0 ].
+	packagesWithPartsByNames := packageNamesWithParts groupedBy: [ :each |
+			                            each value size < splitPartIndex
+				                            ifTrue: [ 'CoreRoot' ]
+				                            ifFalse: [
+						                            (String streamContents: [ :s |
+							                             1 to: splitPartIndex do: [ :i |
+							                             s << (each value at: i) ] ])
+							                            allButFirst: commonPrefixLength ] ].
+	packagesWithPartsByNames keysAndValuesDo: [
+			:basename
+			:eachPackageNamesWithParts |
 			| baselineClass |
 			baselineClass := (BaselineOf
 			                  << (originalBaseline name , basename) asSymbol)
@@ -68,37 +115,9 @@ TITMetaLinksRealTimeTypeInferer class >> generateSplitBaselinesFrom: originalBas
 
 	spec for: #common do: [
 '.
-						 packageNames do: [ :eachPackageName |
-								 s << '			spec package: ''' << eachPackageName << '''.
-' ].
-						 s << '	]' ]) ]
-]
-
-{ #category : 'execution' }
-TITMetaLinksRealTimeTypeInferer class >> generateSplitPharoBootstrapBaselines [
-
-	| packagesByNames |
-	packagesByNames := (BaselineOfPharoBootstrap version
-		                    loadedSystemPackages
-		                    collect: [ :each | each name ]
-		                    thenReject: [ :each |
-		                    each beginsWith: 'Reflection' ]) groupedBy: [
-		                   :each | (each splitOn: $-) first asSymbol ].
-	packagesByNames keysAndValuesDo: [ :basename :packageNames |
-			| baselineClass |
-			baselineClass := (BaselineOf
-			                  <<
-				                  ('BaselineOfPharoBootstrap' , basename) asSymbol)
-				                 package: 'BaselineOfPharoBootstrap' , basename;
-				                 install.
-			baselineClass compile: (String streamContents: [ :s |
-						 s << 'baseline: spec
-	<baseline>
-
-	spec for: #common do: [
-'.
-						 packageNames do: [ :eachPackageName |
-								 s << '			spec package: ''' << eachPackageName << '''.
+						 eachPackageNamesWithParts do: [ :eachPackageNameWithParts |
+								 s << '			spec package: ''' << eachPackageNameWithParts key
+								 << '''.
 ' ].
 						 s << '	]' ]) ]
 ]
@@ -126,6 +145,12 @@ TITMetaLinksRealTimeTypeInferer class >> projectNames [
 	^ super projectNames
 ]
 
+{ #category : 'constants' }
+TITMetaLinksRealTimeTypeInferer class >> retTypesFilename [
+
+	^ '_RetTypes'
+]
+
 { #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer class >> runBaselinesInSeparateProcesses [
 
@@ -140,13 +165,38 @@ TITMetaLinksRealTimeTypeInferer class >> splitBaselines [
 		  BaselineOfIceberg.
 		  BaselineOfNewTools.
 		  BaselineOfBloc.
+		  BaselineOfMonticello.
+		  BaselineOfMorphic.
 		  BaselineOfPharoBootstrap }
+]
+
+{ #category : 'constants' }
+TITMetaLinksRealTimeTypeInferer class >> varTypesFilename [
+
+	^ '_VarTypes'
 ]
 
 { #category : 'adding' }
 TITMetaLinksRealTimeTypeInferer >> addLinksToMethod: aMethod [
 
 	insertionVisitor visit: aMethod ast
+]
+
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> detectRecursion [
+
+	| checkedContext method |
+	^ false "temporarily disabled".
+	checkedContext := thisContext sender.
+	method := checkedContext method.
+	[
+		checkedContext := checkedContext sender.
+		checkedContext isNotNil ] whileTrue: [
+			method = checkedContext method ifTrue: [
+					self errorLogEntry: 'Detected recursion'.
+					TITRecursionDetectedException signal.
+					^ true ] ].
+	^ false
 ]
 
 { #category : 'execution' }
@@ -175,13 +225,9 @@ TITMetaLinksRealTimeTypeInferer >> initializeTypeHolders [
 { #category : 'adding' }
 TITMetaLinksRealTimeTypeInferer >> installLinks [
 
-	| excludedSelectors |
 	insertionVisitor ifNotNil: [ insertionVisitor uninstallAll ].
 	insertionVisitor := TITMetaLinksInsertionVisitor new.
 	insertionVisitor typeGatherer: self.
-
-	excludedSelectors := TraitedMetaclass selectors asSet
-	                     , TraitedClass selectors.
 
 	[ :packageJob |
 		packageJob max: gatheredPackages size.
@@ -193,11 +239,29 @@ TITMetaLinksRealTimeTypeInferer >> installLinks [
 					, gatheredPackages size asString , ' )'.
 				packageJob currentValue: packageIndex.
 
-				eachPackage definedClasses do: [ :eachClass |
-						eachClass methods , eachClass class methods
-							reject: [ :any | excludedSelectors includes: any selector ]
-							thenDo: [ :eachMethod | insertionVisitor visit: eachMethod ast ] ] ] ]
-		asJob run
+				(eachPackage definedClasses reject: [ :eachClass |
+					 eachClass isTrait ]) do: [ :eachClass |
+						self installLocallyMethodsFromTraitsIn: eachClass.
+						self installLocallyMethodsFromTraitsIn: eachClass class.
+
+						eachClass methods do: [ :eachMethod |
+							insertionVisitor visit: eachMethod ast ].
+						eachClass class methods do: [ :eachMethod |
+							insertionVisitor visit: eachMethod ast ] ] ] ] asJob run
+]
+
+{ #category : 'adding' }
+TITMetaLinksRealTimeTypeInferer >> installLocallyMethodsFromTraitsIn: aClass [
+
+	aClass methods
+		select: [ :each |
+				each isFromTrait and: [
+						((aClass isMeta
+							  ifTrue: [
+							  TraitedMetaclass selectors , TraitedClass selectors ]
+							  ifFalse: [ TraitedClass selectors ]) includes: each selector)
+							not ] ]
+		thenDo: [ :each | aClass compile: each sourceCode ]
 ]
 
 { #category : 'logging' }
@@ -213,7 +277,10 @@ TITMetaLinksRealTimeTypeInferer >> logResults: contents as: aContentTypeName [
 	Smalltalk image isInteractiveGraphic ifTrue: [ contents inspect ].
 	(self logFileWithContent: aContentTypeName extension: 'ston')
 		ensureDelete;
-		writeStreamDo: [ :s | STON put: contents onStreamPretty: s ]
+		writeStreamDo: [ :s | (STON writer on: s)
+	prettyPrint: true;
+	referencePolicy: #ignore;
+	nextPut: contents ]
 ]
 
 { #category : 'accessing' }
@@ -236,6 +303,7 @@ TITMetaLinksRealTimeTypeInferer >> returnTypesByNames [
 { #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary [
 
+	self detectRecursion.
 	aValue class isClass ifFalse: [
 			^ self errorLogEntry: 'Value "' , aValue asString
 				  , '" class was not saved because it is not a class: '
@@ -248,23 +316,15 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfMethod: aMethodNode [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: anObject inReturnReference: aClassItemReference [
 
-	| key |
-	key := TITClassContentReference
-		       toClass: aMethodNode compiledMethod methodClass
-		       name: aMethodNode selector.
-	self saveTypeOf: aValue in: key to: returnTypes
+	self saveTypeOf: anObject in: aClassItemReference to: returnTypes
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariable: aVariableNode [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: anObject inVariableReference: aClassItemReference [
 
-	| key |
-	key := TITClassContentReference
-		       toClass: aVariableNode methodNode compiledMethod methodClass
-		       name: aVariableNode name.
-	self saveTypeOf: aValue in: key to: variableTypes
+	self saveTypeOf: anObject in: aClassItemReference to: variableTypes
 ]
 
 { #category : 'execution' }

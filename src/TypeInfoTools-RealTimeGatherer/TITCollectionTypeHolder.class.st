@@ -18,6 +18,14 @@ TITCollectionTypeHolder class >> acceptsClass: aClass [
 	^ self considersAsCollection: aClass
 ]
 
+{ #category : 'adding' }
+TITCollectionTypeHolder class >> allTypesCausingRecursion [
+
+	<script: 'self allTypesCausingRecursion inspect'>
+	^ self superclass allTypesCausingRecursion
+	  , self typesCausingRecursion
+]
+
 { #category : 'accessing' }
 TITCollectionTypeHolder class >> atomicCollectionTypes [
 
@@ -75,9 +83,10 @@ TITCollectionTypeHolder >> , anotherHolder [
 ]
 
 { #category : 'adding' }
-TITCollectionTypeHolder >> addValue: aValue [
+TITCollectionTypeHolder >> addValueUnchecked: aValue [
 
-	super addValue: aValue.
+	super addValueUnchecked: aValue.
+	(thisContext methodClass isCausingRecursion: aValue class) ifTrue: [ ^ self ].
 	aValue ifEmpty: [ ^ self ].
 	elementTypes := elementTypes withValue: aValue anyOne
 ]

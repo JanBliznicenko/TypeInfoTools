@@ -21,20 +21,30 @@ TITRealTimeInferenceExclusions class >> excludedBaselines [
 TITRealTimeInferenceExclusions class >> excludedBaselinesFromInfering [
 
 	^ self excludedBaselines , (Set withAll: {
-			   BaselineOfTraits.
-			   BaselineOfGhost.
-			   BaselineOfStateSpecs.
-			   BaselineOfMocketry.
-			   BaselineOfSindarin.
 			   BaselineOfEmergencyDebugger.
+			   BaselineOfGeneralTests.
+			   BaselineOfGhost.
 			   BaselineOfKernelTests.
-			   BaselineOfUI.
-			   BaselineOfNewToolsDebugger.
+			   BaselineOfMocketry.
+			   BaselineOfMonticelloZinc.
+			   BaselineOfMonticelloZodiac.
+			   BaselineOfNewToolsNewToolsDebugger.
+			   BaselineOfPharoBootstrapAST.
 			   BaselineOfPharoBootstrapCollections.
+			   BaselineOfPharoBootstrapFFI.
+			   BaselineOfPharoBootstrapJenkinsTools.
 			   BaselineOfPharoBootstrapKernel.
 			   BaselineOfPharoBootstrapTranscript.
-			   BaselineOfPharoBootstrapAST.
-			   BaselineOfPharoBootstrapRandom })
+			   BaselineOfPharoBootstrapRandom.
+			   BaselineOfPharoBootstrapShift.
+			   BaselineOfPharoBootstrapSystem.
+			   BaselineOfPharoBootstrapSUnit.
+			   BaselineOfPharoBootstrapZinc.
+			   BaselineOfSindarin.
+			   BaselineOfSpecCore.
+			   BaselineOfStateSpecs.
+			   BaselineOfTraits.
+			   BaselineOfUI })
 ]
 
 { #category : 'constants' }
@@ -65,7 +75,8 @@ TITRealTimeInferenceExclusions class >> excludedClassesFromRunningTests [
 			   MorphicWindowManagerTest.
 			   PhLVirtualMachineManagerTest.
 			   AlbTextEditorInserterTest.
-			   BlStartupShutdownTest })
+			   BlStartupShutdownTest.
+			   IceGitWithoutUserNameTest })
 ]
 
 { #category : 'private - constants' }

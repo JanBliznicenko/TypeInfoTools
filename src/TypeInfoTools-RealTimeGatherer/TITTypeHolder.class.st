@@ -15,6 +15,14 @@ TITTypeHolder class >> acceptsClass: aClass [
 	^ true
 ]
 
+{ #category : 'adding' }
+TITTypeHolder class >> allTypesCausingRecursion [
+
+	<script: 'self allTypesCausingRecursion inspect'>
+	^ self superclass allTypesCausingRecursion
+	  , self typesCausingRecursion
+]
+
 { #category : 'accessing' }
 TITTypeHolder class >> priority [
 
@@ -34,9 +42,10 @@ TITTypeHolder >> addType: aClass [
 ]
 
 { #category : 'adding' }
-TITTypeHolder >> addValue: aValue [
+TITTypeHolder >> addValueUnchecked: aValue [
 
 	| class |
+	(thisContext methodClass isCausingRecursion: aValue class) ifTrue: [ ^ self ].
 	aValue ifNil: [ ^ self ].
 	class := aValue class.
 	class ifNil: [ ^ self ].
