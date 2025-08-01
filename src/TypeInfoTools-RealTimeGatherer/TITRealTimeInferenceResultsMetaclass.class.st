@@ -6,6 +6,17 @@ Class {
 	#tag : 'Structure'
 }
 
+{ #category : 'as yet unclassified' }
+TITRealTimeInferenceResultsMetaclass class >> forSystemMetaclass: aClass [
+
+	aClass = TraitedMetaclass ifTrue: [
+		^ TITRealTimeInferenceResultsTraitedMetaclass ].
+	aClass = MetaclassForTraits ifTrue: [
+		^ TITRealTimeInferenceResultsMetaclassForTraits ].
+	self assert: aClass = Metaclass.
+	^ self
+]
+
 { #category : 'accessing' }
 TITRealTimeInferenceResultsMetaclass class >> systemClass [
 

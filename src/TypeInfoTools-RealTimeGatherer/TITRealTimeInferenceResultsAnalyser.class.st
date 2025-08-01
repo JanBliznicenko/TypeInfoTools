@@ -10,19 +10,37 @@ Class {
 TITRealTimeInferenceResultsAnalyser class >> createTypeTableFrom: aDictionaryOfTypesWithOrigins as: aFileName [
 
 	| rootNodesByNames |
-	rootNodesByNames := self createTypesWithOriginsForesFrom:
+	rootNodesByNames := self createTypesWithOriginsForestFrom:
 		                    aDictionaryOfTypesWithOrigins.
-	self createTypeTableFromClassForest: rootNodesByNames as: aFileName
+	^ self createTypeTableFromClassForest: rootNodesByNames as: aFileName
 ]
 
 { #category : 'processing' }
 TITRealTimeInferenceResultsAnalyser class >> createTypeTableFromClassForest: rootNodesByNames as: aFileName [
 
-	self halt.
+	| typeTable |
+	typeTable := rootNodesByNames
+		             collect: [ :eachRootNode |
+		             eachRootNode mostPreciseNode ]
+		             thenReject: [ :any |
+				             any isNil or: [
+						             {
+							             Object.
+							             ProtoObject.
+							             nil } includes: any type ] ].
+	aFileName asFileReference , 'csv' writeStreamDo: [ :stream |
+			| writer |
+			writer := NeoCSVWriter on: stream.
+			writer separator: self csvSeparator.
+			writer writeHeader: { #Name. #Type }.
+			typeTable associations sorted do: [ :eachNameAndType |
+					writer nextPut: {
+							eachNameAndType key.
+							eachNameAndType value name } ] ]
 ]
 
 { #category : 'processing' }
-TITRealTimeInferenceResultsAnalyser class >> createTypesWithOriginsForesFrom: aDictionaryOfTypesWithOrigins [
+TITRealTimeInferenceResultsAnalyser class >> createTypesWithOriginsForestFrom: aDictionaryOfTypesWithOrigins [
 
 	| rootNodesByNames |
 	rootNodesByNames := Dictionary new.
@@ -38,7 +56,22 @@ TITRealTimeInferenceResultsAnalyser class >> createTypesWithOriginsForesFrom: aD
 					:eachOriginsCollections |
 					rootNode
 						atTypeHierarchy: eachType withAllSuperclasses
-						addOrigins: eachOriginsCollections ] ]
+						addOrigins: eachOriginsCollections ] ].
+
+	^ rootNodesByNames
+]
+
+{ #category : 'processing' }
+TITRealTimeInferenceResultsAnalyser class >> csvSeparator [
+
+	^ $;
+]
+
+{ #category : 'accessing' }
+TITRealTimeInferenceResultsAnalyser class >> minimumAcceptableTypeRatio [
+	"ratio of type occurences encompassed by a single type in order to be accepted as valid type for the var/method"
+
+	^ 0.98
 ]
 
 { #category : 'processing' }
@@ -99,6 +132,7 @@ TITRealTimeInferenceResultsAnalyser class >> processByNames: typesDictionary to:
 								eachContentReference contentClass ] ] ].
 	self save: resultingDictionary as: aFileName.
 	self createTypeTableFrom: resultingDictionary as: aFileName.
+	^ resultingDictionary
 ]
 
 { #category : 'processing' }
@@ -106,7 +140,7 @@ TITRealTimeInferenceResultsAnalyser class >> processTypes: commonNamePart [
 
 	| imageDir file typesDictionary byNames byBeginnings byEnds |
 	imageDir := FileLocator imageDirectory.
-	file := imageDir / commonNamePart.
+	file := imageDir / commonNamePart , 'ston'.
 	typesDictionary := file readStreamDo: [ :s |
 		                   (TITRealTimeInferenceResultsSTONReader on: s)
 			                   next ].
@@ -133,7 +167,7 @@ TITRealTimeInferenceResultsAnalyser class >> save: aDictionaryOfTypes as: aFileN
 	dictionaryOfTypes do: [ :eachDictionaryOfSourcesByTypes |
 			eachDictionaryOfSourcesByTypes do: [ :eachCollection |
 				eachCollection sort: [ :a :b | a name < b name ] ] ].
-	aFileName asFileReference
+	(aFileName asFileReference , 'ston')
 		ensureDelete;
 		writeStreamDo: [ :s | STON put: dictionaryOfTypes onStreamPretty: s ].
 	^ dictionaryOfTypes

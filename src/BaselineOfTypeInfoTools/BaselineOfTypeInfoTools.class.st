@@ -40,7 +40,7 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				   'NeoCSV' ) ];
 				package: 'TypeInfoTools-RealTimeGatherer' with: [
 					spec requires:
-						#( 'DependentsFinder' 'OSWinSubprocess' 'TypeInfoTools-Core' ) ];
+						#( 'DependentsFinder' 'OSWinSubprocess' 'TypeInfoTools-Core' 'NeoCSV' ) ];
 				package: 'TITMyClass';
 				group: 'ide'
 				with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser' );

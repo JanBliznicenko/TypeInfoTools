@@ -53,7 +53,7 @@ TITRealTimeInferenceResultsUnifier class >> save: aDictionaryOfHolders as: aFile
 
 	| sortedDictionary |
 	sortedDictionary := self sorted: aDictionaryOfHolders.
-	aFileName asFileReference
+	(aFileName asFileReference , 'ston')
 		ensureDelete;
 		writeStreamDo: [ :s | STON put: sortedDictionary onStreamPretty: s ].
 	^ sortedDictionary
