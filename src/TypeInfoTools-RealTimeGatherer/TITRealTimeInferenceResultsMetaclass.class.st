@@ -28,3 +28,9 @@ TITRealTimeInferenceResultsMetaclass class >> systemClassFrom: systemClass [
 
 	^ systemClass class
 ]
+
+{ #category : 'testing' }
+TITRealTimeInferenceResultsMetaclass >> isMeta [
+
+	^ true
+]

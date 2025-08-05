@@ -7,36 +7,49 @@ Class {
 }
 
 { #category : 'processing' }
-TITRealTimeInferenceResultsAnalyser class >> createTypeTableFrom: aDictionaryOfTypesWithOrigins as: aFileName [
+TITRealTimeInferenceResultsAnalyser class >> createTypeTableFrom: aDictionaryOfTypesWithOrigins reversedBlock: aReversedBlock as: aFileName [
 
 	| rootNodesByNames |
 	rootNodesByNames := self createTypesWithOriginsForestFrom:
 		                    aDictionaryOfTypesWithOrigins.
-	^ self createTypeTableFromClassForest: rootNodesByNames as: aFileName
+	^ self
+		  createTypeTableFromClassForest: rootNodesByNames
+		  reversedBlock: aReversedBlock
+		  as: aFileName
 ]
 
 { #category : 'processing' }
-TITRealTimeInferenceResultsAnalyser class >> createTypeTableFromClassForest: rootNodesByNames as: aFileName [
+TITRealTimeInferenceResultsAnalyser class >> createTypeTableFromClassForest: rootNodesByNames reversedBlock: aReversedBlock as: aFileName [
 
-	| typeTable |
+	| typeTable new |
+	new := (rootNodesByNames at: #New).
+	self halt.
 	typeTable := rootNodesByNames
 		             collect: [ :eachRootNode |
 		             eachRootNode mostPreciseNode ]
-		             thenReject: [ :any |
-				             any isNil or: [
-						             {
-							             Object.
-							             ProtoObject.
-							             nil } includes: any type ] ].
-	aFileName asFileReference , 'csv' writeStreamDo: [ :stream |
-			| writer |
-			writer := NeoCSVWriter on: stream.
-			writer separator: self csvSeparator.
-			writer writeHeader: { #Name. #Type }.
-			typeTable associations sorted do: [ :eachNameAndType |
-					writer nextPut: {
-							eachNameAndType key.
-							eachNameAndType value name } ] ]
+		             thenReject: [ :any | any isNil ].
+	self
+		removeUnneccessarilyLongKeysFrom: typeTable
+		reversedBlock: aReversedBlock.
+	(aFileName asFileReference , 'csv')
+		ensureDelete;
+		writeStreamDo: [ :stream |
+				| writer |
+				writer := NeoCSVWriter on: stream.
+				writer separator: self csvSeparator.
+				writer writeHeader: { #Name. #Type }.
+				typeTable associations sorted do: [ :eachNameAndType |
+							| nameKey typeName ratio sources |
+							nameKey := eachNameAndType name.
+							typeName := eachNameAndType value name.
+							ratio := eachNameAndType value ratio asFloat
+								         printShowingDecimalPlaces: 2.
+							sources := eachNameAndType value allOrigins size.
+							writer nextPut: {
+										nameKey.
+										typeName.
+										ratio.
+										sources } ] ]
 ]
 
 { #category : 'processing' }
@@ -49,14 +62,12 @@ TITRealTimeInferenceResultsAnalyser class >> createTypesWithOriginsForestFrom: a
 			:eachKey
 			:eachOriginsCollectionsByTypes |
 			| rootNode |
-			rootNode := TITTypeNodeWithOrigins withType: nil.
+			rootNode := TITAlternativeTreesRootNodeWithOrigins new.
 			rootNodesByNames at: eachKey put: rootNode.
 			eachOriginsCollectionsByTypes keysAndValuesDo: [
-					:eachType
-					:eachOriginsCollections |
-					rootNode
-						atTypeHierarchy: eachType withAllSuperclasses
-						addOrigins: eachOriginsCollections ] ].
+				:eachType
+				:eachOriginsCollections |
+				rootNode forType: eachType addOrigins: eachOriginsCollections ] ].
 
 	^ rootNodesByNames
 ]
@@ -71,7 +82,14 @@ TITRealTimeInferenceResultsAnalyser class >> csvSeparator [
 TITRealTimeInferenceResultsAnalyser class >> minimumAcceptableTypeRatio [
 	"ratio of type occurences encompassed by a single type in order to be accepted as valid type for the var/method"
 
-	^ 0.98
+	^ 0.8
+]
+
+{ #category : 'accessing' }
+TITRealTimeInferenceResultsAnalyser class >> minimumAcceptableTypeUsagesAmount [
+	"amount of type occurences encompassed by a single type in order to be accepted as valid type for the var/method"
+
+	^ 10
 ]
 
 { #category : 'processing' }
@@ -84,8 +102,9 @@ TITRealTimeInferenceResultsAnalyser class >> processAll [
 { #category : 'processing' }
 TITRealTimeInferenceResultsAnalyser class >> processByNameParts: dictionaryByNames reversedBlock: aReversedBlock to: aFileName [
 
-	| resultingDictionary |
+	| resultingDictionary contributorsDictionary |
 	resultingDictionary := Dictionary empty.
+	contributorsDictionary := Dictionary empty.
 	dictionaryByNames keysAndValuesDo: [
 			:eachEntireName
 			:eachSourceDictionaryOfSourcesByTypes |
@@ -99,6 +118,9 @@ TITRealTimeInferenceResultsAnalyser class >> processByNameParts: dictionaryByNam
 					dictionaryOfSourcesByTypes := resultingDictionary
 						                              at: nameKey
 						                              ifAbsentPut: Dictionary empty.
+					(contributorsDictionary
+						 at: nameKey
+						 ifAbsentPut: SortedCollection new) add: eachEntireName.
 					eachSourceDictionaryOfSourcesByTypes keysAndValuesDo: [
 							:eachType
 							:eachSourceClassesCollection |
@@ -106,8 +128,17 @@ TITRealTimeInferenceResultsAnalyser class >> processByNameParts: dictionaryByNam
 								 at: eachType
 								 ifAbsentPut: OrderedCollection empty) addAll:
 								eachSourceClassesCollection ] ] ].
+	resultingDictionary associations do: [ :eachAssoc |
+			| nameKey dictionaryOfSourcesByTypes |
+			nameKey := eachAssoc key.
+			dictionaryOfSourcesByTypes := eachAssoc value.
+			(contributorsDictionary at: nameKey) size = 1 ifTrue: [
+				resultingDictionary removeKey: nameKey ] ].
 	self save: resultingDictionary as: aFileName.
-	self createTypeTableFrom: resultingDictionary as: aFileName
+	self
+		createTypeTableFrom: resultingDictionary
+		reversedBlock: aReversedBlock
+		as: aFileName
 ]
 
 { #category : 'processing' }
@@ -131,7 +162,7 @@ TITRealTimeInferenceResultsAnalyser class >> processByNames: typesDictionary to:
 								 ifAbsentPut: OrderedCollection empty) add:
 								eachContentReference contentClass ] ] ].
 	self save: resultingDictionary as: aFileName.
-	self createTypeTableFrom: resultingDictionary as: aFileName.
+	self createTypeTableFrom: resultingDictionary reversedBlock: nil as: aFileName.
 	^ resultingDictionary
 ]
 
@@ -157,6 +188,31 @@ TITRealTimeInferenceResultsAnalyser class >> processTypes: commonNamePart [
 		          reversedBlock: #reversed
 		          to: 'ByEndings' , commonNamePart.
 	^ byNames
+]
+
+{ #category : 'processing' }
+TITRealTimeInferenceResultsAnalyser class >> removeUnneccessarilyLongKeysFrom: typeTable reversedBlock: aReversedBlock [
+
+	| nameKeyBlock |
+	aReversedBlock ifNil: [ ^ self "no removing needed" ].
+	nameKeyBlock := [ :parts :size |
+		                Symbol streamContents: [ :stream |
+				                (aReversedBlock value: (parts first: size)) do: [
+					                :eachPart | stream << eachPart ] ] ].
+	typeTable associations do: [ :eachAssoc |
+			| eachName eachNode parts |
+			eachName := eachAssoc key.
+			eachNode := eachAssoc value.
+			parts := aReversedBlock value: eachName splitCamelCase.
+			((1 to: parts size - 1) anySatisfy: [ :eachPartsLength |
+					 | shorterNameKey |
+					 shorterNameKey := nameKeyBlock
+						                   value: parts
+						                   value: eachPartsLength.
+					 typeTable
+						 at: shorterNameKey
+						 ifPresent: [ :shorterTypeNode | shorterTypeNode = eachNode ]
+						 ifAbsent: [ false ] ]) ifTrue: [ typeTable removeKey: eachName ] ]
 ]
 
 { #category : 'private - transforming' }
@@ -187,8 +243,7 @@ TITRealTimeInferenceResultsAnalyser class >> unifyName: aString [
 
 	| simplified |
 	simplified := TITNameTyperAdaptor simplifyName: aString.
-	simplified size = 1 ifTrue: [ ^ aString asLowercase asSymbol ].
-	(simplified first isUppercase and: [ simplified second isLowercase ])
-		ifTrue: [ ^ simplified uncapitalized asSymbol ].
+	simplified first isLowercase ifTrue: [
+		^ simplified capitalized asSymbol ].
 	^ simplified asSymbol
 ]

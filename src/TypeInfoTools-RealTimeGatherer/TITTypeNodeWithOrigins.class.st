@@ -2,166 +2,50 @@ Class {
 	#name : 'TITTypeNodeWithOrigins',
 	#superclass : 'Object',
 	#instVars : [
-		'type',
-		'origins',
-		'subclassNodes',
-		'ratio',
-		'allOrigins',
-		'otherBranches'
+		'childNodes'
 	],
 	#category : 'TypeInfoTools-RealTimeGatherer-Processing',
 	#package : 'TypeInfoTools-RealTimeGatherer',
 	#tag : 'Processing'
 }
 
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins class >> minimumAcceptableTypeRatio [
-	"ratio of type occurences encompassed by a single type in order to be accepted as valid type for the var/method"
-
-	^ 0.98
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins class >> minimumAcceptableTypeUsagesAmount [
-	"amount of type occurences encompassed by a single type in order to be accepted as valid type for the var/method"
-
-	^ 10
-]
-
-{ #category : 'as yet unclassified' }
-TITTypeNodeWithOrigins class >> withType: aClass [
-
-	^ self new
-		  type: aClass;
-		  yourself
-]
-
-{ #category : 'comparing' }
-TITTypeNodeWithOrigins >> = otherNode [
-
-	^ self type = otherNode type
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> addOrigins: aCollectionOfClasses [
-
-	self haltIf: [ origins includesAnyOf: aCollectionOfClasses ].
-	allOrigins := nil.
-	otherBranches := nil.
-	ratio := nil.
-	origins addAll: aCollectionOfClasses
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'enumerating' }
 TITTypeNodeWithOrigins >> allOrigins [
 
-	^ allOrigins ifNil: [
-			  allOrigins := origins
-			                ,
-			                (subclassNodes flatCollectAsSet: [ :each |
-				                 each allOrigins ]) ]
+	^ self subclassResponsibility 
 ]
 
 { #category : 'accessing' }
-TITTypeNodeWithOrigins >> atTypeHierarchy: aClassHierarchy addOrigins: aCollectionOfClasses [
+TITTypeNodeWithOrigins >> childNodes [
 
-	| directSubclass subclassNode |
-	aClassHierarchy ifEmpty: [ ^ self addOrigins: aCollectionOfClasses ].
-	directSubclass := aClassHierarchy last.
-	subclassNode := subclassNodes
-		                at: directSubclass
-		                ifAbsentPut: [ self class withType: directSubclass ].
-	^ subclassNode
-		  atTypeHierarchy: aClassHierarchy allButLast
-		  addOrigins: aCollectionOfClasses
-]
-
-{ #category : 'comparing' }
-TITTypeNodeWithOrigins >> hash [
-
-	^ self type hash
+	^ childNodes
 ]
 
 { #category : 'initialization' }
 TITTypeNodeWithOrigins >> initialize [
 
 	super initialize.
-	subclassNodes := Dictionary new.
-	origins := Set new.
+	childNodes := Array empty
 ]
 
 { #category : 'as yet unclassified' }
+TITTypeNodeWithOrigins >> inspectionTreeIn: specBuilder [
+
+	<inspectorPresentationOrder: 910 title: 'Tree'>
+	^ specBuilder newTree
+		  roots: { self };
+		  children: [ :aNode | aNode childNodes ];
+		  expandRoots
+]
+
+{ #category : 'testing' }
+TITTypeNodeWithOrigins >> isAcceptableMostPreciseNode [
+
+	^ false
+]
+
+{ #category : 'querying' }
 TITTypeNodeWithOrigins >> mostPreciseNode [
 
-	^ self
-		  mostPreciseNodeWithOtherBranches: {  }
-		  ifFound: [ :innerFoundNode | innerFoundNode ]
-]
-
-{ #category : 'as yet unclassified' }
-TITTypeNodeWithOrigins >> mostPreciseNodeWithOtherBranches: aListOfBranches ifFound: aBlock [
-
-	| amountFromOtherBranches amountFromThisBranch |
-	otherBranches := aListOfBranches.
-	amountFromThisBranch := self allOrigins size.
-	amountFromThisBranch < self class minimumAcceptableTypeUsagesAmount
-		ifTrue: [ ^ nil ].
-	amountFromOtherBranches := otherBranches sumNumbers: [ :each |
-		                           each allOrigins size ].
-	ratio := amountFromThisBranch
-	         / (amountFromThisBranch + amountFromOtherBranches).
-	ratio < self class minimumAcceptableTypeRatio ifTrue: [ ^ nil ].
-	self subclassNodes do: [ :each |
-			each
-				mostPreciseNodeWithOtherBranches:
-				(aListOfBranches , self subclassNodes values copyWithout: each)
-				ifFound: [ :innerFoundNode | ^ aBlock cull: innerFoundNode ] ].
-	^ aBlock cull: self
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> name [
-
-	^ type name
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> origins [
-
-	^ origins
-]
-
-{ #category : 'as yet unclassified' }
-TITTypeNodeWithOrigins >> ratio [
-	self shouldBeImplemented.
-]
-
-{ #category : 'as yet unclassified' }
-TITTypeNodeWithOrigins >> ratioWithOtherBranches: aListOfBranches [
-
-	| amountFromOtherBranches amountFromThisBranch |
-	ratio ifNotNil: [ ^ ratio ].
-	amountFromOtherBranches := aListOfBranches sumNumbers: [ :each |
-		                           each allOrigins size ].
-	amountFromThisBranch := self allOrigins size.
-	^ ratio := amountFromThisBranch
-	           / (amountFromThisBranch + amountFromOtherBranches)
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> subclassNodes [
-
-	^ subclassNodes
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> type [
-
-	^ type
-]
-
-{ #category : 'accessing' }
-TITTypeNodeWithOrigins >> type: anObject [
-
-	type := anObject
+	^ self subclassResponsibility
 ]

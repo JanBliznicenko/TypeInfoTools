@@ -69,6 +69,12 @@ TITRealTimeInferenceResultsBehavior >> hash [
 	^ self class hash bitXor: name hash
 ]
 
+{ #category : 'testing' }
+TITRealTimeInferenceResultsBehavior >> isMeta [
+
+	^ false
+]
+
 { #category : 'accessing' }
 TITRealTimeInferenceResultsBehavior >> name [
 
