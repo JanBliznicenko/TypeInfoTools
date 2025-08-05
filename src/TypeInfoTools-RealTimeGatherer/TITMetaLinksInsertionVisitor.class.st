@@ -105,15 +105,15 @@ TITMetaLinksInsertionVisitor >> visitReturnNode: aReturnNode [
 	| link |
 	link := MetaLink new.
 	link
-		metaObject: [ :value |
+		metaObject: [ :value :class :receiver |
+				self haltIf: [aReturnNode methodNode selector = #new].
 				typeGatherer
 					saveTypeOf: value
 					inReturnOfMethod: aReturnNode methodNode ];
-		selector: #value:;
-		arguments: #( value );
+		selector: #value:value:value:;
+		arguments: #( value class receiver );
 		control: #before.
 	links add: link.
 	aReturnNode link: link.
-
 	super visitReturnNode: aReturnNode
 ]

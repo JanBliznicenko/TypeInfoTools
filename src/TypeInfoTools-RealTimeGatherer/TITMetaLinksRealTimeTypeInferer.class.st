@@ -251,7 +251,7 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfMethod: aMethodNode [
 
 	| key |
-	self haltIf: [ aMethodNode compiledMethod = SRObject class >> #new ].
+	self haltIf: [ aMethodNode compiledMethod = (SRObject class >> #new) ].
 	key := TITClassContentReference
 		       toClass: aMethodNode compiledMethod methodClass
 		       name: aMethodNode selector.
