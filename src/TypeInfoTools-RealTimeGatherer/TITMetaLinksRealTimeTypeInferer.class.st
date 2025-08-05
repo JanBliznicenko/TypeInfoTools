@@ -213,7 +213,10 @@ TITMetaLinksRealTimeTypeInferer >> logResults: contents as: aContentTypeName [
 	Smalltalk image isInteractiveGraphic ifTrue: [ contents inspect ].
 	(self logFileWithContent: aContentTypeName extension: 'ston')
 		ensureDelete;
-		writeStreamDo: [ :s | STON put: contents onStreamPretty: s ]
+		writeStreamDo: [ :s | (STON writer on: s)
+	prettyPrint: true;
+	referencePolicy: #ignore;
+	nextPut: contents ]
 ]
 
 { #category : 'accessing' }
@@ -248,23 +251,20 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfMethod: aMethodNode [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfSelector: aSelector receiverClass: aReceiverClass [
 
 	| key |
-	self haltIf: [ aMethodNode compiledMethod = (SRObject class >> #new) ].
 	key := TITClassContentReference
-		       toClass: aMethodNode compiledMethod methodClass
-		       name: aMethodNode selector.
+		       toClass: aReceiverClass
+		       name: aSelector.
 	self saveTypeOf: aValue in: key to: returnTypes
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariable: aVariableNode [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariableNamed: aSymbol receiverClass: aReceiverClass [
 
 	| key |
-	key := TITClassContentReference
-		       toClass: aVariableNode methodNode compiledMethod methodClass
-		       name: aVariableNode name.
+	key := TITClassContentReference toClass: aReceiverClass name: aSymbol.
 	self saveTypeOf: aValue in: key to: variableTypes
 ]
 

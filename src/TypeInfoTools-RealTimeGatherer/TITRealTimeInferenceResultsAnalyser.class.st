@@ -225,7 +225,11 @@ TITRealTimeInferenceResultsAnalyser class >> save: aDictionaryOfTypes as: aFileN
 				eachCollection sort: [ :a :b | a name < b name ] ] ].
 	(aFileName asFileReference , 'ston')
 		ensureDelete;
-		writeStreamDo: [ :s | STON put: dictionaryOfTypes onStreamPretty: s ].
+		writeStreamDo: [ :s | 
+			(STON writer on: s)
+		prettyPrint: true;
+		referencePolicy: #ignore;
+		nextPut: dictionaryOfTypes ].
 	^ dictionaryOfTypes
 ]
 

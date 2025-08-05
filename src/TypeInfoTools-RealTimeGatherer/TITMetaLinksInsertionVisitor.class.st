@@ -50,12 +50,13 @@ TITMetaLinksInsertionVisitor >> visitAssignmentNode: anAssignmentNode [
 	| link |
 	link := MetaLink new.
 	link
-		metaObject: [ :newValue |
+		metaObject: [ :newValue :class |
 				typeGatherer
 					saveTypeOf: newValue
-					inVariable: anAssignmentNode variable ];
-		selector: #value:;
-		arguments: #( newValue );
+					inVariableNamed: anAssignmentNode variable name asSymbol
+					receiverClass: class ];
+		selector: #value:value:;
+		arguments: #( newValue class );
 		control: #before.
 	links add: link.
 	anAssignmentNode link: link.
@@ -66,30 +67,33 @@ TITMetaLinksInsertionVisitor >> visitAssignmentNode: anAssignmentNode [
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
 
-	| link returnSelfBlock updatedNode |
+	| selector link returnSelfBlock updatedNode |
+	selector := aMethodNode selector.
 	updatedNode := aMethodNode.
 	aMethodNode lastIsReturn ifFalse: [
-			| selector class |
-			selector := aMethodNode selector.
-			class := aMethodNode methodClass.
-			class compile: aMethodNode sourceCode , self returnSelfCode.
-			updatedNode := (class >> selector) ast ].
+			| methodClass |
+			methodClass := aMethodNode methodClass.
+			methodClass compile: aMethodNode sourceCode , self returnSelfCode.
+			updatedNode := (methodClass >> selector) ast ].
 
 	link := MetaLink new.
 	returnSelfBlock := updatedNode lastIsReturn
 		                   ifTrue: [ [ :receiver |  ] ]
 		                   ifFalse: [
 				                   [ :receiver |
-				                   typeGatherer
-					                   saveTypeOf: receiver
-					                   inReturnOfMethod: updatedNode ] ].
+					                   typeGatherer
+						                   saveTypeOf: receiver
+						                   inReturnOfSelector: selector
+						                   receiverClass: receiver class ] ].
 	link
 		metaObject: [ :receiver :arguments |
 				returnSelfBlock value: receiver.
 				arguments withIndexDo: [ :eachArgument :index |
 							typeGatherer
 								saveTypeOf: eachArgument
-								inVariable: (updatedNode arguments at: index) ] ];
+								inVariableNamed:
+									(updatedNode arguments at: index) name asSymbol
+								receiverClass: receiver class ] ];
 		selector: #value:value:;
 		arguments: #( receiver arguments );
 		control: #before.
@@ -105,13 +109,13 @@ TITMetaLinksInsertionVisitor >> visitReturnNode: aReturnNode [
 	| link |
 	link := MetaLink new.
 	link
-		metaObject: [ :value :class :receiver |
-				self haltIf: [aReturnNode methodNode selector = #new].
+		metaObject: [ :value :class |
 				typeGatherer
 					saveTypeOf: value
-					inReturnOfMethod: aReturnNode methodNode ];
-		selector: #value:value:value:;
-		arguments: #( value class receiver );
+					inReturnOfSelector: aReturnNode methodNode selector
+					receiverClass: class ];
+		selector: #value:value:;
+		arguments: #( value class );
 		control: #before.
 	links add: link.
 	aReturnNode link: link.
