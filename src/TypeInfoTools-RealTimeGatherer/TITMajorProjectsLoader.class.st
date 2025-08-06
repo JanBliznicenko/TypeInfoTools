@@ -98,17 +98,6 @@ TITMajorProjectsLoader class >> Cryptography [
 ]
 
 { #category : 'external projects' }
-TITMajorProjectsLoader class >> Glorp [
-
-	<script>
-	<projectLoader>
-	Metacello new
-		repository: 'github://pharo-rdbms/glorp';
-		baseline: 'Glorp';
-		load
-]
-
-{ #category : 'external projects' }
 TITMajorProjectsLoader class >> IconFactory [
 
 	<script>
@@ -174,6 +163,17 @@ TITMajorProjectsLoader class >> OpenPonkPlugins [
 		repository: 'github://openponk/plugins';
 		onConflictUseLoaded;
 		load: 'all'
+]
+
+{ #category : 'external projects' }
+TITMajorProjectsLoader class >> P3 [
+
+	<script>
+	<projectLoader>
+	Metacello new
+		baseline: 'P3';
+		repository: 'github://svenvc/P3';
+		load
 ]
 
 { #category : 'external projects' }
@@ -257,23 +257,20 @@ TITMajorProjectsLoader class >> SQLite3 [
 
 	<script>
 	<projectLoader>
-	| repoPath dllsDir vmDir |
-	repoPath := 'pharo-rdbms/Pharo-SQLite3'.
-
 	Metacello new
-		repository: 'github://' , repoPath;
+		repository: 'github://pharo-rdbms/Pharo-SQLite3/src';
 		baseline: 'SQLite3';
-		load.
-
-	OSPlatform current isWindows ifFalse: [ ^ self ].
-
-	dllsDir := IceLibgitRepository localRepositoriesLocation / repoPath
-	           / 'bin/windows/64bit'.
-	vmDir := FileLocator vmDirectory.
-	dllsDir files do: [ :eachFile |
-			eachFile copyTo: ((vmDir / eachFile basename)
-					 ensureDelete;
-					 yourself) ]
+		load: #( all ).
+	(FileLocator vmDirectory / 'sqlite3.dll') asFileReference
+		binaryWriteStreamDo: [ :s |
+				(ZnClient new get:
+					 'https://raw.githubusercontent.com/pharo-rdbms/Pharo-SQLite3/refs/heads/master/bin/windows/64bit/sqlite3.dll')
+					writeOn: s ].
+	(FileLocator vmDirectory / 'sqlite3.def') asFileReference
+		binaryWriteStreamDo: [ :s |
+				(ZnClient new get:
+					 'https://raw.githubusercontent.com/pharo-rdbms/Pharo-SQLite3/refs/heads/master/bin/windows/64bit/sqlite3.def')
+					writeOn: s ]
 ]
 
 { #category : 'external projects' }
@@ -412,7 +409,7 @@ TITMajorProjectsLoader class >> loadProjects [
 	Smalltalk garbageCollect
 ]
 
-{ #category : 'loading' }
+{ #category : 'actions' }
 TITMajorProjectsLoader class >> projectLoaderMethods [
 
 	<script: 'self projectLoaderMethods inspect'>

@@ -34,7 +34,8 @@ TITRealTimeInferenceExclusions class >> excludedBaselinesFromInfering [
 			   BaselineOfPharoBootstrapKernel.
 			   BaselineOfPharoBootstrapTranscript.
 			   BaselineOfPharoBootstrapAST.
-			   BaselineOfPharoBootstrapRandom })
+			   BaselineOfPharoBootstrapRandom.
+			   BaselineOfSpecCore  })
 ]
 
 { #category : 'constants' }

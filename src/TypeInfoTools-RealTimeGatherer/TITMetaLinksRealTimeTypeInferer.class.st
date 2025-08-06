@@ -149,6 +149,19 @@ TITMetaLinksRealTimeTypeInferer >> addLinksToMethod: aMethod [
 	insertionVisitor visit: aMethod ast
 ]
 
+{ #category : 'accessing' }
+TITMetaLinksRealTimeTypeInferer >> detectInfiniteRecursion [
+
+	| methods checkedContext |
+	methods := Bag new.
+	checkedContext := thisContext.
+	[ checkedContext isNotNil ] whileTrue: [
+			methods add: checkedContext method.
+			(methods occurrencesOf: checkedContext method) > 50 ifTrue: [
+				self error: 'Too deep recursion detected' ].
+			checkedContext := checkedContext sender ]
+]
+
 { #category : 'execution' }
 TITMetaLinksRealTimeTypeInferer >> execute [
 
@@ -239,6 +252,7 @@ TITMetaLinksRealTimeTypeInferer >> returnTypesByNames [
 { #category : 'visiting' }
 TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary [
 
+	"self detectInfiniteRecursion."
 	aValue class isClass ifFalse: [
 			^ self errorLogEntry: 'Value "' , aValue asString
 				  , '" class was not saved because it is not a class: '
