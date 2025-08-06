@@ -21,9 +21,7 @@ TITRealTimeInferenceResultsAnalyser class >> createTypeTableFrom: aDictionaryOfT
 { #category : 'processing' }
 TITRealTimeInferenceResultsAnalyser class >> createTypeTableFromClassForest: rootNodesByNames reversedBlock: aReversedBlock as: aFileName [
 
-	| typeTable new |
-	new := (rootNodesByNames at: #New).
-	self halt.
+	| typeTable |
 	typeTable := rootNodesByNames
 		             collect: [ :eachRootNode |
 		             eachRootNode mostPreciseNode ]
@@ -160,7 +158,7 @@ TITRealTimeInferenceResultsAnalyser class >> processByNames: typesDictionary to:
 							(dictionaryOfSourcesByTypes
 								 at: eachType
 								 ifAbsentPut: OrderedCollection empty) add:
-								eachContentReference contentClass ] ] ].
+								eachContentReference referencingClass ] ] ].
 	self save: resultingDictionary as: aFileName.
 	self createTypeTableFrom: resultingDictionary reversedBlock: nil as: aFileName.
 	^ resultingDictionary

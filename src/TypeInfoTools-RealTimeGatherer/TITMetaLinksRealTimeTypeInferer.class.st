@@ -188,13 +188,9 @@ TITMetaLinksRealTimeTypeInferer >> initializeTypeHolders [
 { #category : 'adding' }
 TITMetaLinksRealTimeTypeInferer >> installLinks [
 
-	| excludedSelectors |
 	insertionVisitor ifNotNil: [ insertionVisitor uninstallAll ].
 	insertionVisitor := TITMetaLinksInsertionVisitor new.
 	insertionVisitor typeGatherer: self.
-
-	excludedSelectors := TraitedMetaclass selectors asSet
-	                     , TraitedClass selectors.
 
 	[ :packageJob |
 		packageJob max: gatheredPackages size.
@@ -207,10 +203,10 @@ TITMetaLinksRealTimeTypeInferer >> installLinks [
 				packageJob currentValue: packageIndex.
 
 				eachPackage definedClasses do: [ :eachClass |
-						eachClass methods , eachClass class methods
-							reject: [ :any | excludedSelectors includes: any selector ]
-							thenDo: [ :eachMethod | insertionVisitor visit: eachMethod ast ] ] ] ]
-		asJob run
+						eachClass methods do: [ :eachMethod |
+							insertionVisitor visit: eachMethod ast ].
+						eachClass class methods do: [ :eachMethod |
+							insertionVisitor visit: eachMethod ast ] ] ] ] asJob run
 ]
 
 { #category : 'logging' }
@@ -265,21 +261,15 @@ TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue in: anItem to: aDictionary
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inReturnOfSelector: aSelector receiverClass: aReceiverClass [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: anObject inReturnReference: aClassItemReference [
 
-	| key |
-	key := TITClassContentReference
-		       toClass: aReceiverClass
-		       name: aSelector.
-	self saveTypeOf: aValue in: key to: returnTypes
+	self saveTypeOf: anObject in: aClassItemReference to: returnTypes
 ]
 
 { #category : 'visiting' }
-TITMetaLinksRealTimeTypeInferer >> saveTypeOf: aValue inVariableNamed: aSymbol receiverClass: aReceiverClass [
+TITMetaLinksRealTimeTypeInferer >> saveTypeOf: anObject inVariableReference: aClassItemReference [
 
-	| key |
-	key := TITClassContentReference toClass: aReceiverClass name: aSymbol.
-	self saveTypeOf: aValue in: key to: variableTypes
+	self saveTypeOf: anObject in: aClassItemReference to: variableTypes
 ]
 
 { #category : 'execution' }

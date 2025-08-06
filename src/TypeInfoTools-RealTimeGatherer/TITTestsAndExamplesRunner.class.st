@@ -59,7 +59,7 @@ TITTestsAndExamplesRunner class >> exampleBaselineName [
 
 	<script: 'self exampleBaselineName inspect'>
 	| imageNameParts imageTypeAndDate imageBaseline defaultName |
-	defaultName := 'SimpleRene'.
+	defaultName := 'OpenPonk'.
 	imageNameParts := Smalltalk image imageFile basenameWithoutExtension
 		                  splitOn: $_.
 	imageNameParts size = 2 ifFalse: [ ^ defaultName ].

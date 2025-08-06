@@ -26,7 +26,7 @@ TITRealTimeInferenceResultsUnifier class >> processTypes: commonNamePart [
 			         projectDir := imageDir parent
 			                       / (basename , '_' , projectName).
 
-			         projectDir / (projectName , commonNamePart) ].
+			         projectDir / (projectName , commonNamePart, '.ston') ].
 	typesByProjects := files
 		                   select: [ :each | each exists ]
 		                   thenCollect: [ :each |
