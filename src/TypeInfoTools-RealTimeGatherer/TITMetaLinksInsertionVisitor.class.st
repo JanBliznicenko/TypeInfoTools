@@ -50,24 +50,6 @@ TITMetaLinksInsertionVisitor >> executedMethodArguments: arguments names: argume
 ]
 
 { #category : 'visiting' }
-TITMetaLinksInsertionVisitor >> executedMethodWithImplicitReturnNamed: aSymbol arguments: arguments names: argumentNames receiver: receiver senderClass: aSenderClass executedMethodClass: executedMethodClass originalImplementorClass: originalImplementorClass [
-
-	self
-		executedReturnFromSelector: aSymbol
-		value: receiver
-		receiverClass: receiver class
-		senderClass: aSenderClass
-		executedMethodClass: executedMethodClass
-		originalImplementorClass: originalImplementorClass.
-	self
-		executedMethodArguments: arguments
-		names: argumentNames
-		receiverClass: receiver class
-		executedMethodClass: executedMethodClass
-		executedMethodSelector: aSymbol
-]
-
-{ #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> executedReturnFromSelector: aSymbol value: anObject receiverClass: receiverClass senderClass: aSenderClass executedMethodClass: executedMethodClass originalImplementorClass: originalImplementorClass [
 
 	typeGatherer
@@ -91,7 +73,7 @@ TITMetaLinksInsertionVisitor >> initialize [
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> returnSelfCode [
 
-	^ String cr , ' ...^self'
+	^ String cr , '	...^self'
 ]
 
 { #category : 'accessing' }
@@ -149,49 +131,33 @@ TITMetaLinksInsertionVisitor >> visitAssignmentNode: anAssignmentNode [
 { #category : 'visiting' }
 TITMetaLinksInsertionVisitor >> visitMethodNode: aMethodNode [
 
-	| link metaObjectBlock methodClass selector originalImplementorClass argumentNames |
+	| link methodClass selector updatedMethodNode argumentNames |
 	link := MetaLink new.
 	methodClass := aMethodNode methodClass.
 	selector := aMethodNode selector.
-	originalImplementorClass := methodClass withAllSuperclasses reversed
-		                            detect: [ :any |
-		                            any includesSelector: selector ].
-	argumentNames := aMethodNode arguments collect: [ :each |
+	updatedMethodNode := aMethodNode.
+	aMethodNode lastIsReturn ifFalse: [
+			methodClass compile: aMethodNode sourceCode , self returnSelfCode.
+			updatedMethodNode := (methodClass >> selector) ast ].
+	argumentNames := updatedMethodNode arguments collect: [ :each |
 		                 each name asSymbol ].
-	metaObjectBlock := aMethodNode lastIsReturn
-		                   ifTrue: [
-				                   link
-					                   metaObject: [ :receiver :arguments |
-							                   self
-								                   executedMethodArguments: arguments
-								                   names: argumentNames
-								                   receiverClass: receiver class
-								                   executedMethodClass: methodClass
-								                   executedMethodSelector: selector ];
-					                   selector: #value:value:;
-					                   arguments: #( receiver arguments );
-					                   control: #before ]
-		                   ifFalse: [
-				                   link
-					                   metaObject: [ :receiver :arguments :sender |
-							                   self
-								                   executedMethodWithImplicitReturnNamed:
-									                   selector
-								                   arguments: arguments
-								                   names: argumentNames
-								                   receiver: receiver
-								                   senderClass: sender class
-								                   executedMethodClass: methodClass
-								                   originalImplementorClass:
-									                   originalImplementorClass ];
-					                   selector: #value:value:value:;
-					                   arguments: #( receiver arguments sender );
-					                   control: #before ].
+
+	link
+		metaObject: [ :receiver :arguments |
+				self
+					executedMethodArguments: arguments
+					names: argumentNames
+					receiverClass: receiver class
+					executedMethodClass: methodClass
+					executedMethodSelector: selector ];
+		selector: #value:value:;
+		arguments: #( receiver arguments );
+		control: #before.
 
 	links add: link.
-	aMethodNode link: link.
+	updatedMethodNode link: link.
 
-	super visitMethodNode: aMethodNode
+	super visitMethodNode: updatedMethodNode
 ]
 
 { #category : 'visiting' }
