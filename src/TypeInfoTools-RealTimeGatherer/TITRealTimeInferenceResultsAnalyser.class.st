@@ -56,16 +56,17 @@ TITRealTimeInferenceResultsAnalyser class >> createTypesWithOriginsForestFrom: a
 	| rootNodesByNames |
 	rootNodesByNames := Dictionary new.
 
+	self halt.
 	aDictionaryOfTypesWithOrigins keysAndValuesDo: [
 			:eachKey
-			:eachOriginsCollectionsByTypes |
+			:eachRefAndReceiverClassesByTypes |
 			| rootNode |
 			rootNode := TITAlternativeTreesRootNodeWithOrigins new.
 			rootNodesByNames at: eachKey put: rootNode.
-			eachOriginsCollectionsByTypes keysAndValuesDo: [
+			eachRefAndReceiverClassesByTypes keysAndValuesDo: [
 				:eachType
-				:eachOriginsCollections |
-				rootNode forType: eachType addOrigins: eachOriginsCollections ] ].
+				:eachRefAndReceiverClasses |
+				rootNode forType: eachType addOrigins: eachRefAndReceiverClasses ] ].
 
 	^ rootNodesByNames
 ]
@@ -147,20 +148,25 @@ TITRealTimeInferenceResultsAnalyser class >> processByNames: typesDictionary to:
 	typesDictionary keysAndValuesDo: [
 			:eachContentReference
 			:eachTypeHolder |
-			| types nameKey dictionaryOfSourcesByTypes |
+			| types nameKey dictionaryOfRefAndReceiverClassesByTypes |
 			types := eachTypeHolder types.
 			types ifNotEmpty: [
 					nameKey := self unifyName: eachContentReference name.
-					dictionaryOfSourcesByTypes := resultingDictionary
-						                              at: nameKey
-						                              ifAbsentPut: Dictionary empty.
+					dictionaryOfRefAndReceiverClassesByTypes := resultingDictionary
+						                                            at: nameKey
+						                                            ifAbsentPut:
+						                                            Dictionary empty.
 					types do: [ :eachType |
-							(dictionaryOfSourcesByTypes
+							(dictionaryOfRefAndReceiverClassesByTypes
 								 at: eachType
-								 ifAbsentPut: OrderedCollection empty) add:
-								eachContentReference referencingClass ] ] ].
+								 ifAbsentPut: TITReferencingAndReceiverClasses new)
+								addReceiverClass: eachContentReference receiverClass
+								referencingClass: eachContentReference referencingClass ] ] ].
 	self save: resultingDictionary as: aFileName.
-	self createTypeTableFrom: resultingDictionary reversedBlock: nil as: aFileName.
+	self
+		createTypeTableFrom: resultingDictionary
+		reversedBlock: nil
+		as: aFileName.
 	^ resultingDictionary
 ]
 

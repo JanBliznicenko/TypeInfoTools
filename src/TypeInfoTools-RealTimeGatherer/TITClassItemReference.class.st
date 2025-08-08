@@ -24,12 +24,14 @@ TITClassItemReference >> < aComparable [
 ]
 
 { #category : 'comparing' }
-TITClassItemReference >> = aComparable [
-	"Compare the receiver with the argument and answer with true if the
-	receiver is equal to the argument. Otherwise answer false."
+TITClassItemReference >> = anObject [
+	"Answer whether the receiver and anObject represent the same object."
 
-	^ receiverClass = aComparable receiverClass and: [
-		  name = aComparable name ]
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	^ receiverClass = anObject receiverClass and: [
+			  name = anObject name and: [
+				  executedMethodClass = anObject executedMethodClass ] ]
 ]
 
 { #category : 'accessing' }
@@ -53,9 +55,10 @@ TITClassItemReference >> executedMethodSelector [
 
 { #category : 'comparing' }
 TITClassItemReference >> hash [
-	"Hash must be redefined whenever = is redefined."
+	"Answer an integer value that is related to the identity of the receiver."
 
-	^ receiverClass hash bitXor: name hash
+	^ receiverClass hash bitXor:
+		  (name hash bitXor: executedMethodClass hash)
 ]
 
 { #category : 'accessing' }

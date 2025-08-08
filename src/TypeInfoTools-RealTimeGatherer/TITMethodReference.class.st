@@ -21,10 +21,27 @@ TITMethodReference class >> toOriginImplementorClass: anOriginImplementorClass e
 		  yourself
 ]
 
+{ #category : 'comparing' }
+TITMethodReference >> = anObject [
+	"Answer whether the receiver and anObject represent the same object."
+
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	super = anObject ifFalse: [ ^ false ].
+	^ senderClass = anObject senderClass
+]
+
 { #category : 'accessing' }
 TITMethodReference >> executedMethodSelector [
 
 	^  name
+]
+
+{ #category : 'comparing' }
+TITMethodReference >> hash [
+	"Answer an integer value that is related to the identity of the receiver."
+
+	^ super hash bitXor: senderClass hash
 ]
 
 { #category : 'accessing' }
