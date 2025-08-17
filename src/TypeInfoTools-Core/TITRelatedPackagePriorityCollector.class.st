@@ -11,6 +11,26 @@ Class {
 }
 
 { #category : 'processing' }
+TITRelatedPackagePriorityCollector >> classesByPackageName: aName [
+
+	^ (aName splitOn: $-) flatCollect: [ :eachNamePart |
+		  self classesByPackageNamePart: eachNamePart ]
+]
+
+{ #category : 'processing' }
+TITRelatedPackagePriorityCollector >> classesByPackageNamePart: aNamePart [
+
+	^ classesByPackageNameRoot
+		  at: aNamePart asSymbol
+		  ifPresent: [ :foundClasses | foundClasses ]
+		  ifAbsentPut: [
+				  Array streamContents: [ :s |
+						  self packageOrganizer packagesDo: [ :eachPackage |
+								  (eachPackage name beginsWith: aNamePart) ifTrue: [
+									  s nextPutAll: eachPackage definedClasses ] ] ] ]
+]
+
+{ #category : 'processing' }
 TITRelatedPackagePriorityCollector >> classesByPackageNameRoot: aNameRoot [
 
 	^ classesByPackageNameRoot
@@ -75,9 +95,7 @@ TITRelatedPackagePriorityCollector >> initialize [
 TITRelatedPackagePriorityCollector >> relatedClassesTo: aPackage [
 
 	^ relatedClasses at: aPackage ifAbsentPut: [
-			  | nameRoot |
-			  nameRoot := aPackage name copyUpTo: $-.
-			  (self classesByPackageNameRoot: nameRoot) asSet
+			  (self classesByPackageName: aPackage name) asSet
 			  , (self classesDependedBy: aPackage)
 			  , self classesRelevantToAllPackages ]
 ]
