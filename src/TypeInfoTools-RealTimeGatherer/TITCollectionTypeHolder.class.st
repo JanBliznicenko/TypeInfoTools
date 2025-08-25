@@ -92,7 +92,7 @@ TITCollectionTypeHolder >> addValueUnchecked: aValue [
 ]
 
 { #category : 'adding' }
-TITCollectionTypeHolder >> copyWithCollectionHolder: anotherTypeHolder [
+TITCollectionTypeHolder >> copyWithCollectionTypeHolder: anotherTypeHolder [
 
 	^ (self copyWithTypeHolder: anotherTypeHolder)
 		  elementTypes: elementTypes , anotherTypeHolder elementTypes;

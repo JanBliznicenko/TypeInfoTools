@@ -47,7 +47,7 @@ TITDictionaryTypeHolder >> addValueUnchecked: aValue [
 { #category : 'adding' }
 TITDictionaryTypeHolder >> copyWithDictionaryTypeHolder: anotherTypeHolder [
 
-	^ (self copyWithCollectionHolder: anotherTypeHolder)
+	^ (self copyWithCollectionTypeHolder: anotherTypeHolder)
 		  keyTypes: keyTypes , anotherTypeHolder keyTypes;
 		  yourself
 ]

@@ -32,12 +32,6 @@ TITSpecificTypeNodeWithOrigins >> = anObject [
 	^ type = anObject type
 ]
 
-{ #category : 'querying' }
-TITSpecificTypeNodeWithOrigins >> allChildReferencingClasses [
-
-	^ childNodes flatCollectAsSet: [ :each | each allReferencingClasses ]
-]
-
 { #category : 'accessing' }
 TITSpecificTypeNodeWithOrigins >> atTypeHierarchy: aClassHierarchy addOrigins: aRefAndReceiverClasses [
 

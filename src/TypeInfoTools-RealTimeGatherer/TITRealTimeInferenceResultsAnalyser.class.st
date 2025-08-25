@@ -7,15 +7,15 @@ Class {
 }
 
 { #category : 'processing' }
-TITRealTimeInferenceResultsAnalyser class >> createTypeTableFrom: aDictionaryOfTypesWithRefAndReceiverClasses reversedBlock: aReversedBlock as: aFileName [
+TITRealTimeInferenceResultsAnalyser class >> createTypeTableFrom: refAndReceiverByTypesByKeys reversedBlock: aReversedBlock as: aFileName [
 
-	| rootNodesByNames |
-	rootNodesByNames := self createTypesWithOriginsForestFrom:
-		                    aDictionaryOfTypesWithRefAndReceiverClasses.
-	^ self
-		  createTypeTableFromClassForest: rootNodesByNames
-		  reversedBlock: aReversedBlock
-		  as: aFileName
+	| rootNodesByKeys |
+	rootNodesByKeys := self createTypesWithOriginsForestFrom:
+		                   refAndReceiverByTypesByKeys.
+	self
+		createTypeTableFromClassForest: rootNodesByKeys
+		reversedBlock: aReversedBlock
+		as: aFileName
 ]
 
 { #category : 'processing' }
@@ -35,7 +35,7 @@ TITRealTimeInferenceResultsAnalyser class >> createTypeTableFromClassForest: roo
 				| writer |
 				writer := NeoCSVWriter on: stream.
 				writer separator: self csvSeparator.
-				writer writeHeader: { #Name. #Type }.
+				writer writeHeader: { #Name. #Type. #Ratio. #Amount}.
 				typeTable associations sorted do: [ :eachNameAndType |
 							| nameKey typeName ratio sources |
 							nameKey := eachNameAndType name.
@@ -100,12 +100,12 @@ TITRealTimeInferenceResultsAnalyser class >> processAll [
 ]
 
 { #category : 'processing' }
-TITRealTimeInferenceResultsAnalyser class >> processByNameParts: dictionaryByNames reversedBlock: aReversedBlock to: aFileName [
+TITRealTimeInferenceResultsAnalyser class >> processByNameParts: refAndReceiverByTypesByNames reversedBlock: aReversedBlock to: aFileName [
 
-	| resultingDictionary contributorsDictionary |
-	resultingDictionary := Dictionary empty.
+	| refAndReceiverByTypesByNameParts contributorsDictionary |
+	refAndReceiverByTypesByNameParts := Dictionary empty.
 	contributorsDictionary := Dictionary empty.
-	dictionaryByNames keysAndValuesDo: [
+	refAndReceiverByTypesByNames keysAndValuesDo: [
 			:eachEntireName
 			:eachDictionaryOfRefAndReceverClassesByTypes |
 			| parts |
@@ -116,7 +116,7 @@ TITRealTimeInferenceResultsAnalyser class >> processByNameParts: dictionaryByNam
 					nameKey := Symbol streamContents: [ :stream |
 							           (aReversedBlock value: (parts first: lastPartIndex))
 								           do: [ :eachPart | stream << eachPart ] ].
-					dictionaryOfReferencingClassesByTypes := resultingDictionary
+					dictionaryOfReferencingClassesByTypes := refAndReceiverByTypesByNameParts
 						                                         at: nameKey
 						                                         ifAbsentPut:
 						                                         Dictionary empty.
@@ -131,16 +131,16 @@ TITRealTimeInferenceResultsAnalyser class >> processByNameParts: dictionaryByNam
 								 ifAbsentPut: TITReferencingAndReceiverClassesSet new)
 								addAll: eachRefAndReceiverClasses ] ] ].
 
-	resultingDictionary associations do: [ :eachAssoc |
+	refAndReceiverByTypesByNameParts associations do: [ :eachAssoc |
 			| nameKey dictionaryOfSourcesByTypes |
 			nameKey := eachAssoc key.
 			dictionaryOfSourcesByTypes := eachAssoc value.
 			(contributorsDictionary at: nameKey) size = 1 ifTrue: [
-				resultingDictionary removeKey: nameKey ] ].
+				refAndReceiverByTypesByNameParts removeKey: nameKey ] ].
 
-	self save: resultingDictionary as: aFileName.
+	self save: refAndReceiverByTypesByNameParts as: aFileName.
 	self
-		createTypeTableFrom: resultingDictionary
+		createTypeTableFrom: refAndReceiverByTypesByNameParts
 		reversedBlock: aReversedBlock
 		as: aFileName
 ]
@@ -148,8 +148,8 @@ TITRealTimeInferenceResultsAnalyser class >> processByNameParts: dictionaryByNam
 { #category : 'processing' }
 TITRealTimeInferenceResultsAnalyser class >> processByNames: typesDictionary to: aFileName [
 
-	| resultingDictionary |
-	resultingDictionary := Dictionary empty.
+	| refAndReceiverByTypesByNames |
+	refAndReceiverByTypesByNames := Dictionary empty.
 	typesDictionary keysAndValuesDo: [
 			:eachContentReference
 			:eachTypeHolder |
@@ -157,7 +157,7 @@ TITRealTimeInferenceResultsAnalyser class >> processByNames: typesDictionary to:
 			types := eachTypeHolder types.
 			types ifNotEmpty: [
 					nameKey := self unifyName: eachContentReference name.
-					dictionaryOfRefAndReceiverClassesByTypes := resultingDictionary
+					dictionaryOfRefAndReceiverClassesByTypes := refAndReceiverByTypesByNames
 						                                            at: nameKey
 						                                            ifAbsentPut:
 						                                            Dictionary empty.
@@ -167,12 +167,12 @@ TITRealTimeInferenceResultsAnalyser class >> processByNames: typesDictionary to:
 								 ifAbsentPut: TITReferencingAndReceiverClassesSet new)
 								addReceiverClass: eachContentReference receiverClass
 								referencingClass: eachContentReference referencingClass ] ] ].
-	self save: resultingDictionary as: aFileName.
+	self save: refAndReceiverByTypesByNames as: aFileName.
 	self
-		createTypeTableFrom: resultingDictionary
+		createTypeTableFrom: refAndReceiverByTypesByNames
 		reversedBlock: nil
 		as: aFileName.
-	^ resultingDictionary
+	^ refAndReceiverByTypesByNames
 ]
 
 { #category : 'processing' }

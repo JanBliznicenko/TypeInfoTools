@@ -39,7 +39,7 @@ TITSubtreeNodeWithOrigins >> addaRefAndReceiverClasses: aRefAndReceiverClasses [
 { #category : 'querying' }
 TITSubtreeNodeWithOrigins >> allChildReferencingClasses [
 
-	^ self childNodes flatCollect: [ :each | each allReferencingClasses ]
+	^ childNodes flatCollectAsSet: [ :each | each allReferencingClasses ]
 ]
 
 { #category : 'enumerating' }

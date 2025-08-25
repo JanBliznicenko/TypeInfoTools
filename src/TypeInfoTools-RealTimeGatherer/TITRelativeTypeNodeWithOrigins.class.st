@@ -10,17 +10,6 @@ Class {
 	#tag : 'Processing'
 }
 
-{ #category : 'enumerating' }
-TITRelativeTypeNodeWithOrigins class >> detectForType: aType refAndReceiverClass: aRefAndReceiverClass ifNone: aBlock [
-
-	^ self subclasses
-		  detect: [ :eachSubclass |
-				  eachSubclass
-					  isForType: aType
-					  refAndReceiverClass: aRefAndReceiverClass ]
-		  ifNone: aBlock
-]
-
 { #category : 'instance creation' }
 TITRelativeTypeNodeWithOrigins class >> forInstanceType [
 
@@ -56,12 +45,6 @@ TITRelativeTypeNodeWithOrigins class >> forSelfType [
 TITRelativeTypeNodeWithOrigins class >> forUnrelatedType [
 
 	^ self new
-]
-
-{ #category : 'testing' }
-TITRelativeTypeNodeWithOrigins class >> isForType: aType refAndReceiverClass: anOriginClass [
-
-	^ self subclassResponsibility
 ]
 
 { #category : 'instance creation' }

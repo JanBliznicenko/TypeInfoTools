@@ -37,15 +37,14 @@ TITNameTyperAdaptor class >> simplifyName: aString [
 
 	aString size < 3 ifTrue: [ ^ aString ].
 	aString size > 3 ifTrue: [
-			((aString beginsWith: 'any') or: [ aString beginsWith: 'any' ])
-				ifTrue: [
+			(aString beginsWith: 'any') ifTrue: [
 				aString fourth isUppercase ifTrue: [ ^ aString allButFirst: 3 ] ].
 			aString size > 4 ifTrue: [
 					(aString beginsWith: 'each') ifTrue: [
 						aString fifth isUppercase ifTrue: [ ^ aString allButFirst: 4 ] ] ].
 			aString size > 5 ifTrue: [
 					(aString beginsWith: 'other') ifTrue: [
-						aString fifth isUppercase ifTrue: [ ^ aString allButFirst: 5 ] ] ] ].
+						aString sixth isUppercase ifTrue: [ ^ aString allButFirst: 5 ] ] ] ].
 	aString first = $a ifFalse: [ ^ aString ].
 	aString second isUppercase ifTrue: [ ^ aString allButFirst: 1 ].
 	aString second = $n ifFalse: [ ^ aString ].
