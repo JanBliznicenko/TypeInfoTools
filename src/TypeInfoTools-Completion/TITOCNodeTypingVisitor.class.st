@@ -19,7 +19,7 @@ TITOCNodeTypingVisitor >> typeTITNode: aTITNode [
 	| type |
 	aTITNode ocProgramNode ifNil: [ ^ self ].
 	
-	TITSequentialAdaptorsTypeCollector fast addTypesTo: aTITNode.
+	TITAdaptorsFusionTypeCollector fast addTypesTo: aTITNode.
 
 	type := aTITNode typeInfo types
 		        commonSuperclassOfTopWeightClassesOrAny.

@@ -53,7 +53,7 @@ TITShowTypesMethodReturnCommand >> executeInJob: job [
 		               each methodClass = self definingClass ]
 		               thenCollect: [ :each |
 		               TITMethod forOCMethodNode: each ].
-	collector := TITSequentialAdaptorsTypeCollector fast
+	collector := TITAdaptorsFusionTypeCollector fast
 		             reportingBlock: [ :typer |
 			             job currentValue: job currentValue + 1 ];
 		             yourself.

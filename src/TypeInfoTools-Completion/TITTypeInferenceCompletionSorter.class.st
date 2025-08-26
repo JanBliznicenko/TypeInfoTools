@@ -16,12 +16,11 @@ TITTypeInferenceCompletionSorter >> sortCompletionList: aList [
 
 	[
 		sourceNode := aList anyOne node.
-		self flag: #wtf.
 		sourceNode parent replaceNode: sourceNode withNode: sourceNode receiver.
 		titNode := TITTypedNodeCreationVisitor visit: sourceNode receiver.
 		titNode compilationBlock: [ :ocMethod | self halt.
 			TITPartialCompiler compileMethod: ocMethod ].
-		collector := TITSequentialAdaptorsTypeCollector fast.
+		collector := TITAdaptorsFusionTypeCollector fast.
 		collector addTypesTo: titNode ]
 		on: Error
 		do: [ :error |

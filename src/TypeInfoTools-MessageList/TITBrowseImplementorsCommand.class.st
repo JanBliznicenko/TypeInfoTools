@@ -56,7 +56,7 @@ TITBrowseImplementorsCommand >> executeInJob: job [
 	| titNode collector |
 	titNode := TITTypedNodeCreationVisitor visit: sourceNode receiver.
 
-	collector := TITSequentialAdaptorsTypeCollector fast
+	collector := TITAdaptorsFusionTypeCollector fast
 		             reportingBlock: [ :typer |
 			             job currentValue: job currentValue + 1 ];
 		             yourself.

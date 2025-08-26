@@ -57,7 +57,7 @@ TITShowTypesMessageSendCommand >> executeInJob: job [
 	| titMessageSend collector |
 	titMessageSend := TITMessageSendNode forOCMessageNode: sourceNode.
 
-	collector := TITSequentialAdaptorsTypeCollector fast
+	collector := TITAdaptorsFusionTypeCollector fast
 		             reportingBlock: [ :typer |
 			             job currentValue: job currentValue + 1 ];
 		             yourself.
