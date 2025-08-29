@@ -19,17 +19,6 @@ TITTypedNodeTreePresenter class >> openOn: aVariableNode [
 	^ (self on: aVariableNode) open
 ]
 
-{ #category : 'accessing - model' }
-TITTypedNodeTreePresenter >> classTreeOf: typesCollection [
-
-	^ (TITClassTree fromDictionary: typesCollection classesWithCollectors)
-		  mergeRedundantChildren;
-		  removeProtoObject;
-		  removeVeryLowWeightNodes;
-		  sortByWeight;
-		  yourself
-]
-
 { #category : 'layout' }
 TITTypedNodeTreePresenter >> defaultCollectionLayout [
 
@@ -80,14 +69,15 @@ TITTypedNodeTreePresenter >> initializePresenters [
 	classTreePresenter := self
 		                      instantiate: TITClassTreePresenter
 		                      on:
-		                      (self classTreeOf: typedNode typeInfo types).
+		                      typedNode typeInfo types
+			                      asClassTreeForPresenting.
 	collectionElementClassTreePresenter := self
 		                                       instantiate:
 		                                       TITClassTreePresenter
 		                                       on:
-		                                       (self classTreeOf:
-			                                        typedNode typeInfo
-				                                        collectionElementTypes)
+		                                       typedNode typeInfo
+			                                       collectionElementTypes
+			                                       asClassTreeForPresenting
 ]
 
 { #category : 'initialization' }

@@ -89,14 +89,9 @@ TITTypesCollection >> asClassTree [
 ]
 
 { #category : 'converting' }
-TITTypesCollection >> asSimplifiedClassTree [
+TITTypesCollection >> asClassTreeForPresenting [
 
-	^ self asClassTree
-		  mergeRedundantChildren;
-		  removeProtoObject;
-		  removeVeryLowWeightNodes;
-		  sortByWeight;
-		  yourself
+	^ self asClassTree prepareForPresenting
 ]
 
 { #category : 'accessing' }

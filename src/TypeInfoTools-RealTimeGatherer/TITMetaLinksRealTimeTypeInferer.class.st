@@ -186,7 +186,7 @@ TITMetaLinksRealTimeTypeInferer >> addLinksToMethod: aMethod [
 TITMetaLinksRealTimeTypeInferer >> detectRecursion [
 
 	| checkedContext method |
-	^ false "temporarily disabled".
+	
 	checkedContext := thisContext sender.
 	method := checkedContext method.
 	[

@@ -87,6 +87,16 @@ TITClassTree >> minWeightNode [
 	^ self rootNode minWeightNode
 ]
 
+{ #category : 'modifying' }
+TITClassTree >> prepareForPresenting [
+
+	self
+		mergeRedundantChildren;
+		removeProtoObject;
+		removeVeryLowWeightNodes;
+		sortByWeight
+]
+
 { #category : 'removing' }
 TITClassTree >> removeProtoObject [
 

@@ -18,13 +18,10 @@ TITOCNodeTypingVisitor >> typeTITNode: aTITNode [
 
 	| type |
 	aTITNode ocProgramNode ifNil: [ ^ self ].
-	
+
 	TITAdaptorsFusionTypeCollector fast addTypesTo: aTITNode.
-
-	type := aTITNode typeInfo types
-		        commonSuperclassOfTopWeightClassesOrAny.
-
-	type ifNil: [ ^ self ].
+	type := (aTITNode typeInfo types asClassTreeForPresenting
+		         maxWeightNode ifNil: [ ^ self ]) representedClass.
 
 	self typeNode: aTITNode ocProgramNode with: type
 ]
