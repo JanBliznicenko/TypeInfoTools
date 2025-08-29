@@ -16,12 +16,14 @@ TITOCNodeTypingVisitor >> typeOCProgramNode: aNode [
 { #category : 'visiting' }
 TITOCNodeTypingVisitor >> typeTITNode: aTITNode [
 
-	| type |
+	| type treeNode |
 	aTITNode ocProgramNode ifNil: [ ^ self ].
 
 	TITAdaptorsFusionTypeCollector fast addTypesTo: aTITNode.
-	type := (aTITNode typeInfo types asClassTreeForPresenting
-		         maxWeightNode ifNil: [ ^ self ]) representedClass.
+	treeNode := aTITNode typeInfo types asClassTreeForPresenting
+		            maxWeightNode ifNil: [ ^ self ].
+	treeNode weight <= 0.1 ifTrue: [ ^ self ].
+	type := treeNode representedClass.
 
 	self typeNode: aTITNode ocProgramNode with: type
 ]

@@ -1,6 +1,9 @@
 Class {
 	#name : 'TITStructureNodeVisitor',
 	#superclass : 'Object',
+	#instVars : [
+		'sourceName'
+	],
 	#category : 'TypeInfoTools-Core-Inference',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'Inference'
@@ -12,10 +15,28 @@ TITStructureNodeVisitor class >> addTypesTo: aTITNode [
 	^ self new addTypesTo: aTITNode
 ]
 
+{ #category : 'accessing' }
+TITStructureNodeVisitor class >> sourceName [
+
+	^ self subclassResponsibility
+]
+
 { #category : 'processing' }
 TITStructureNodeVisitor >> addTypesTo: aStructureNode [
 
 	self subclassResponsibility
+]
+
+{ #category : 'accessing' }
+TITStructureNodeVisitor >> sourceName [
+
+	^ sourceName ifNil: [ self class sourceName ]
+]
+
+{ #category : 'accessing' }
+TITStructureNodeVisitor >> sourceName: aString [
+
+	sourceName := aString
 ]
 
 { #category : 'visiting' }
@@ -97,4 +118,10 @@ TITStructureNodeVisitor >> visitTypedNode: aTypedNode [
 TITStructureNodeVisitor >> visitVariable: aVariable [
 
 	^ self visitTypedNode: aVariable
+]
+
+{ #category : 'accessing' }
+TITStructureNodeVisitor >> weight [
+
+	^ self subclassResponsibility
 ]

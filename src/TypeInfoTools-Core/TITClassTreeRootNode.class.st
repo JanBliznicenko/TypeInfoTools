@@ -32,13 +32,20 @@ TITClassTreeRootNode >> findMinWeightNode [
 TITClassTreeRootNode >> initialize [
 
 	super initialize.
-	self representedClass: ProtoObject
+	self representedClass: nil
 ]
 
 { #category : 'testing' }
 TITClassTreeRootNode >> isRootNode [
 
 	^ true
+]
+
+{ #category : 'merging' }
+TITClassTreeRootNode >> mergeChildrenMajority [
+	"do nothing"
+
+	
 ]
 
 { #category : 'accessing' }

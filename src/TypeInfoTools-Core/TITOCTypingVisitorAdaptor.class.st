@@ -10,6 +10,12 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'accessing' }
+TITOCTypingVisitorAdaptor class >> sourceName [
+
+	^ 'OCTypingVisitor'
+]
+
 { #category : 'private' }
 TITOCTypingVisitorAdaptor >> classesWithSlotsFor: aClass [
 
@@ -38,12 +44,6 @@ TITOCTypingVisitorAdaptor >> initialize [
 
 	super initialize.
 	visitors := Dictionary new
-]
-
-{ #category : 'accessing' }
-TITOCTypingVisitorAdaptor >> sourceName [
-
-	^ 'OCTypingVisitor'
 ]
 
 { #category : 'private' }

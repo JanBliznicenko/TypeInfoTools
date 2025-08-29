@@ -23,7 +23,7 @@ TITCollectionElementTypesFoundMarker class >> reset [
 ]
 
 { #category : 'accessing' }
-TITCollectionElementTypesFoundMarker >> sourceName [
+TITCollectionElementTypesFoundMarker class >> sourceName [
 
 	^ 'Element types found'
 ]

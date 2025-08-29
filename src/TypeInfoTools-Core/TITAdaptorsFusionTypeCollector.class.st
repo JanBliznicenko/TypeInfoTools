@@ -6,6 +6,12 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'accessing' }
+TITAdaptorsFusionTypeCollector class >> sourceName [
+
+	^ 'Fusion'
+]
+
 { #category : 'processing' }
 TITAdaptorsFusionTypeCollector >> addTypesTo: aStructureNode [
 

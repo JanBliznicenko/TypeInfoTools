@@ -55,6 +55,14 @@ TITTypeInfo >> ifEmpty: aBlock [
 		  ifFalse: [ self ]
 ]
 
+{ #category : 'testing' }
+TITTypeInfo >> ifNotEmpty: aBlock [
+
+	^ self isEmpty
+		  ifTrue: [ self ]
+		  ifFalse: [ aBlock value ]
+]
+
 { #category : 'initialization' }
 TITTypeInfo >> initialize [
 

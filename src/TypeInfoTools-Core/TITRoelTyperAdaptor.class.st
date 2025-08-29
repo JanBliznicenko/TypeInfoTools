@@ -10,6 +10,12 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'accessing' }
+TITRoelTyperAdaptor class >> sourceName [
+
+	^ 'RoelTyper'
+]
+
 { #category : 'initialization' }
 TITRoelTyperAdaptor >> initialize [
 
@@ -33,12 +39,6 @@ TITRoelTyperAdaptor >> resultsForMethod: aMethod [
 	^ resultsByMethods
 		  at: aMethod compiledMethod
 		  ifAbsentPut: [ TypeCollector typeTmpsIn: aMethod compiledMethod ]
-]
-
-{ #category : 'accessing' }
-TITRoelTyperAdaptor >> sourceName [
-
-	^ 'RoelTyper'
 ]
 
 { #category : 'visiting' }

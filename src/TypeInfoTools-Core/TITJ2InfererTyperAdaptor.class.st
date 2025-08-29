@@ -9,12 +9,19 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'accessing' }
+TITJ2InfererTyperAdaptor class >> sourceName [
+
+	^ 'J2Inferer'
+]
+
 { #category : 'visiting' }
 TITJ2InfererTyperAdaptor >> addTypesForJ2Item: aJ2Item to: aTITItem [
 
 	| types |
 	types := aJ2Item possibleClasses classes collect: [ :eachJ2Class |
 		         eachJ2Class analysedClass ].
+	types remove: UndefinedObject ifAbsent: [ ].
 	aTITItem typeInfo addTypes: types by: self
 ]
 
@@ -43,12 +50,6 @@ TITJ2InfererTyperAdaptor >> initialize [
 
 	super initialize.
 	inferers := Dictionary new
-]
-
-{ #category : 'accessing' }
-TITJ2InfererTyperAdaptor >> sourceName [
-
-	^ 'J2Inferer'
 ]
 
 { #category : 'accessing' }

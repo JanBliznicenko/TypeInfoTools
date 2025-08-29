@@ -10,6 +10,12 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'accessing' }
+TITRelatedPackagePriorityCollector class >> sourceName [
+
+	^ 'Related packages'
+]
+
 { #category : 'processing' }
 TITRelatedPackagePriorityCollector >> classesByPackageName: aName [
 
@@ -98,12 +104,6 @@ TITRelatedPackagePriorityCollector >> relatedClassesTo: aPackage [
 			  (self classesByPackageName: aPackage name) asSet
 			  , (self classesDependedBy: aPackage)
 			  , self classesRelevantToAllPackages ]
-]
-
-{ #category : 'accessing' }
-TITRelatedPackagePriorityCollector >> sourceName [
-
-	^ 'Related packages'
 ]
 
 { #category : 'visiting' }

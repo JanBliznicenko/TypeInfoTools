@@ -53,6 +53,12 @@ TITNameTyperAdaptor class >> simplifyName: aString [
 ]
 
 { #category : 'accessing' }
+TITNameTyperAdaptor class >> sourceName [
+
+	^ 'VarName'
+]
+
+{ #category : 'accessing' }
 TITNameTyperAdaptor class >> typicalNames [
 
 	^ typicalNames ifNil: [
@@ -198,12 +204,6 @@ TITNameTyperAdaptor >> removeImprobableResults [
 TITNameTyperAdaptor >> simplifyName: aString [
 
 	^ self class simplifyName: aString
-]
-
-{ #category : 'accessing' }
-TITNameTyperAdaptor >> sourceName [
-
-	^ 'Var name'
 ]
 
 { #category : 'processing' }

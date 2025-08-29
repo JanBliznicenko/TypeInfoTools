@@ -40,7 +40,8 @@ TITClassTree >> addAssociations: aCollectionOfAssociations [
 { #category : 'adding' }
 TITClassTree >> addClass: aClass [
 
-	^ self rootNode addHierarchy: aClass withAllSuperclasses reversed
+	^ self rootNode addHierarchy:
+		  (aClass withAllSuperclasses copyWith: nil) reversed
 ]
 
 { #category : 'adding' }

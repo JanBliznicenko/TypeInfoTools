@@ -16,21 +16,15 @@ TITStructureNodeTypeCollector >> addTypesTo: aStructureNode [
 ]
 
 { #category : 'accessing' }
-TITStructureNodeTypeCollector >> relatedCollector [
+TITStructureNodeTypeCollector >> messageSendCollector [
 
 	^ relatedCollector ifNil: [ self ]
 ]
 
 { #category : 'accessing' }
-TITStructureNodeTypeCollector >> relatedCollector: aTypeCollector [
+TITStructureNodeTypeCollector >> messageSendCollector: aTypeCollector [
 
 	relatedCollector := aTypeCollector
-]
-
-{ #category : 'accessing' }
-TITStructureNodeTypeCollector >> sourceName [
-
-	^ self subclassResponsibility
 ]
 
 { #category : 'visiting' }
@@ -51,7 +45,7 @@ TITStructureNodeTypeCollector >> visitMessageSend: aMessageSend [
 
 	| receiver receiverTypes compiledMethod titMethod |
 	receiver := aMessageSend receiver.
-	receiver ifNotProcessedByAnyCollectorAccept: self relatedCollector.
+	receiver ifNotProcessedByAnyCollectorAccept: self messageSendCollector.
 	receiverTypes := receiver typeInfo types sortedClasses ifEmpty: [
 		                 ^ self ].
 	compiledMethod := ((receiverTypes keyAtIndex: 1) lookupSelector:
@@ -59,10 +53,4 @@ TITStructureNodeTypeCollector >> visitMessageSend: aMessageSend [
 	titMethod := TITMethod forOCMethodNode: compiledMethod ast.
 	titMethod accept: self.
 	aMessageSend typeInfo addAllFrom: titMethod typeInfo
-]
-
-{ #category : 'accessing' }
-TITStructureNodeTypeCollector >> weight [
-
-	^ self subclassResponsibility
 ]

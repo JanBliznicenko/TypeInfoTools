@@ -33,6 +33,12 @@ TITRBRefactoryTyperAdaptor class >> replacements [
 	^ { (ProtoObject -> Object) } asDictionary
 ]
 
+{ #category : 'accessing' }
+TITRBRefactoryTyperAdaptor class >> sourceName [
+
+	^ 'RBRefactoryTyper'
+]
+
 { #category : 'processing' }
 TITRBRefactoryTyperAdaptor >> filterTypes: aCollectionOfClasses [
 
@@ -49,12 +55,6 @@ TITRBRefactoryTyperAdaptor >> initialize [
 
 	super initialize.
 	typers := Dictionary new
-]
-
-{ #category : 'accessing' }
-TITRBRefactoryTyperAdaptor >> sourceName [
-
-	^ 'RBRefactoryTyper'
 ]
 
 { #category : 'accessing' }

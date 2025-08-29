@@ -14,7 +14,7 @@ Class {
 TITAdaptorsCombiningTypeCollector class >> allCollectors [
 
 	^ {
-		  TITOCTypingVisitorAdaptor.
+		  TITTypeMeTyperAdaptor.
 		  TITRoelTyperAdaptor.
 		  TITRBRefactoryTyperAdaptor.
 		  TITJ2InfererTyperAdaptor.
@@ -34,9 +34,26 @@ TITAdaptorsCombiningTypeCollector class >> fast [
 TITAdaptorsCombiningTypeCollector class >> fastCollectors [
 
 	^ {
-		  TITOCTypingVisitorAdaptor.
+		  TITTypeMeTyperAdaptor.
 		  TITRoelTyperAdaptor.
 		  TITRBRefactoryTyperAdaptor.
+		  TITNameTyperAdaptor.
+		  TITRelatedPackagePriorityCollector }
+]
+
+{ #category : 'instance creation' }
+TITAdaptorsCombiningTypeCollector class >> heuristic [
+
+	^ self new
+		  collectorClasses: self heuristicCollectors;
+		  yourself
+]
+
+{ #category : 'constants' }
+TITAdaptorsCombiningTypeCollector class >> heuristicCollectors [
+
+	^ {
+		  TITTypeMeTyperAdaptor.
 		  TITNameTyperAdaptor.
 		  TITRelatedPackagePriorityCollector }
 ]
@@ -46,7 +63,7 @@ TITAdaptorsCombiningTypeCollector >> collectorClasses: aCollection [
 
 	^ self collectors: (aCollection collect: [ :each |
 				   each new
-					   relatedCollector: self;
+					   messageSendCollector: self;
 					   yourself ])
 ]
 
@@ -85,4 +102,10 @@ TITAdaptorsCombiningTypeCollector >> reportingBlock: aBlock [
 TITAdaptorsCombiningTypeCollector >> visitTypedNode: aTypedNode [
 
 	^ self addTypesTo: aTypedNode
+]
+
+{ #category : 'accessing' }
+TITAdaptorsCombiningTypeCollector >> weight [
+
+	^ self collectors sumNumbers: [ :each | each weight ]
 ]

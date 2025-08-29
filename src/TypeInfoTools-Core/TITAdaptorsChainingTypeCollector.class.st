@@ -6,10 +6,42 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'constants' }
+TITAdaptorsChainingTypeCollector class >> allCollectors [
+
+	^ {
+		  TITTypeMeTyperAdaptor.
+		  TITRoelTyperAdaptor.
+		  TITRBRefactoryTyperAdaptor.
+		  TITJ2InfererTyperAdaptor }
+]
+
+{ #category : 'constants' }
+TITAdaptorsChainingTypeCollector class >> fastCollectors [
+
+	^ {
+		  TITTypeMeTyperAdaptor.
+		  TITRoelTyperAdaptor.
+		  TITRBRefactoryTyperAdaptor }
+]
+
+{ #category : 'constants' }
+TITAdaptorsChainingTypeCollector class >> heuristicCollectors [
+
+	^ { TITTypeMeTyperAdaptor }
+]
+
+{ #category : 'accessing' }
+TITAdaptorsChainingTypeCollector class >> sourceName [
+
+	^ 'Chaining'
+]
+
 { #category : 'processing' }
 TITAdaptorsChainingTypeCollector >> addTypesTo: aStructureNode [
 
 	self collectors do: [ :each |
+			| maxWeightNode |
 			[ each addTypesTo: aStructureNode ]
 				on: Error
 				do: [ :err |
@@ -22,5 +54,8 @@ TITAdaptorsChainingTypeCollector >> addTypesTo: aStructureNode [
 								 labelColor: GrowlMorph theme badgeTextColor) actionBlock: [
 								err debug ] ] fork ].
 			reportingBlock cull: each.
-			aStructureNode typeInfo ifNotEmpty: [ ^ self ] ]
+			maxWeightNode := aStructureNode typeInfo types
+				                 asClassTreeForPresenting maxWeightNode.
+			maxWeightNode representedClass ifNotNil: [
+				maxWeightNode weight > 0.1 ifTrue: [ ^ self ] ] ]
 ]
