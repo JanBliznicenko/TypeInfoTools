@@ -2,22 +2,20 @@ Class {
 	#name : 'TITStatisticsCollector',
 	#superclass : 'Object',
 	#instVars : [
-		'packages',
-		'inferrers',
 		'typesStream',
 		'timesStream'
 	],
-	#category : 'TypeInfoTools-ReturnTypesAnalyzer',
-	#package : 'TypeInfoTools-ReturnTypesAnalyzer'
+	#category : 'TypeInfoTools-StatsCollector',
+	#package : 'TypeInfoTools-StatsCollector'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'processing' }
 TITStatisticsCollector >> inferAll [
 
 	self packages do: [ :eachPackage | self inferPackage: eachPackage ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'processing' }
 TITStatisticsCollector >> inferItem: anInferrableItem [
 
 	self printItem: anInferrableItem on: typesStream.
@@ -34,31 +32,27 @@ TITStatisticsCollector >> inferItem: anInferrableItem [
 		flush
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'processing' }
 TITStatisticsCollector >> inferItem: anInferrableItem withInferrerIndex: inferrerIndex [
 	"index instead of inferrer to prevent caching"
 
-	| node timeToRun topType topNode |
-	timeToRun := [
-		             self repetitions timesRepeat: [
-				             node := (self titNodeForItem: anInferrableItem).
-				             node accept: (self inferrers at: inferrerIndex) ] ]
-		             timeToRunWithoutGC / self repetitions.
+	| node timeToRun topNode |
+	timeToRun := ([
+		              node := self titNodeForItem: anInferrableItem.
+		              node accept: (self inferrers at: inferrerIndex) ]
+		              benchFor: 500 milliSeconds) timePerExecution.
 	topNode := node typeInfo types asClassTreeForPresenting maxWeightNode.
-	topType := topNode weight <= 0.1
-		           ifTrue: [ nil ]
-		           ifFalse: [ topNode representedClass ].
-	typesStream
-		nextPutAll: ';';
-		nextPutAll: (topType ifNil: [ '' ]) asString.
+	typesStream nextPutAll: ';'.
+	topNode weight > 0.1 ifTrue: [
+		typesStream nextPutAll: topNode representedClass asString ].
 	timesStream nextPutAll: ';'.
-	timeToRun printOn: timesStream showingDecimalPlaces: 1
+	timesStream nextPutAll: timeToRun asMicroseconds asString
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'processing' }
 TITStatisticsCollector >> inferPackage: aPackage [
 
-	(aPackage name , '_' , self itemsName , '_times_ms.csv')
+	(aPackage name , '_' , self itemsName , '_times_μs.csv')
 		asFileReference
 		ensureDelete;
 		writeStreamDo: [ :timesS |
@@ -79,7 +73,7 @@ TITStatisticsCollector >> inferPackage: aPackage [
 									self inferItem: eachItem ] ] ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'configuration' }
 TITStatisticsCollector >> inferrers [
 
 	^ {
@@ -87,56 +81,56 @@ TITStatisticsCollector >> inferrers [
 		  TITTypeMeTyperAdaptor new.
 		  TITNameStatisticsTyperAdaptor new.
 		  TITAdaptorsChainingTypeCollector default.
+		  (TITAdaptorsFusionTypeCollector all
+			   sourceName: 'Fusion(all)';
+			   yourself).
 		  (TITAdaptorsFusionTypeCollector default
 			   sourceName: 'Fusion';
 			   yourself).
 		  (TITAdaptorsFusionTypeCollector noStat
 			   sourceName: 'Fusion(noStat)';
 			   yourself).
+		  (TITAdaptorsFusionTypeCollector noTypeMe
+			   sourceName: 'Fusion(noTypeMe)';
+			   yourself).
 		  (TITAdaptorsFusionTypeCollector heuristic
 			   sourceName: 'Fusion(heur)';
 			   yourself) }
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITStatisticsCollector >> itemsInPackage: aPackage [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITStatisticsCollector >> itemsName [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : 'accessing' }
+{ #category : 'configuration' }
 TITStatisticsCollector >> packages [
 
-	^ { 'Athens-Cairo'. 'Metacello-Core'. 'OSWindow-Core'. 'XML-Parser'.
-	  'Zinc-HTTP'. 'Spec2-Layout'. 'Roassal'. 'Roassal-Layouts' }
-		  collect: [ :each | self packageOrganizer packageNamed: each ]
+	^ { 'Athens-Cairo'. 'Metacello-Core'. 'OSWindow-Core'. 'Zinc-HTTP'.
+	  'Spec2-Layout'. 'Roassal'. 'Roassal-Layouts' } collect: [ :each |
+		  self packageOrganizer packageNamed: each ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'printing' }
 TITStatisticsCollector >> printItem: anInferrableItem on: aStream [
 
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'printing' }
 TITStatisticsCollector >> printItemKindNameOn: eachStream [
 
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
-TITStatisticsCollector >> repetitions [
-
-	^ 10
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITStatisticsCollector >> titNodeForItem: anInferrableItem [
 
 	^ self subclassResponsibility

@@ -35,7 +35,7 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
 				package: 'TypeInfoTools-Completion'
 				with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
-				package: 'TypeInfoTools-ReturnTypesAnalyzer'
+				package: 'TypeInfoTools-StatsCollector'
 				with: [ spec requires: #( 'TypeInfoTools-Core'
 				   'NeoCSV' ) ];
 				package: 'TypeInfoTools-RealTimeGatherer' with: [
@@ -47,7 +47,7 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				group: 'ide-experimental'
 				with: #( 'ide' 'TypeInfoTools-Completion' );
 				group: 'realtime' with: #( 'TypeInfoTools-RealTimeGatherer' );
-				group: 'returntypes' with: #( 'TypeInfoTools-ReturnTypesAnalyzer' );
+				group: 'returntypes' with: #( 'TypeInfoTools-StatsCollector' );
 				group: 'dev'
 				with:
 				#( 'ide-experimental' 'returntypes' 'realtime' 'TITMyClass' );

@@ -88,6 +88,25 @@ TITAdaptorsCombiningTypeCollector class >> noStatCollectors [
 		  TITRelatedPackagePriorityCollector }
 ]
 
+{ #category : 'instance creation' }
+TITAdaptorsCombiningTypeCollector class >> noTypeMe [
+
+	^ self new
+		  collectorClasses: self noTypeMeCollectors;
+		  yourself
+]
+
+{ #category : 'constants' }
+TITAdaptorsCombiningTypeCollector class >> noTypeMeCollectors [
+
+	^ {
+		  TITRoelTyperAdaptor.
+		  TITRBRefactoryTyperAdaptor.
+		  TITNameStatisticsTyperAdaptor.
+		  TITNameHeuristicsTyperAdaptor.
+		  TITRelatedPackagePriorityCollector }
+]
+
 { #category : 'accessing' }
 TITAdaptorsCombiningTypeCollector >> collectorClasses: aCollection [
 

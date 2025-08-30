@@ -1,8 +1,8 @@
 Class {
 	#name : 'TITMethodsStatisticsCollector',
 	#superclass : 'TITStatisticsCollector',
-	#category : 'TypeInfoTools-ReturnTypesAnalyzer',
-	#package : 'TypeInfoTools-ReturnTypesAnalyzer'
+	#category : 'TypeInfoTools-StatsCollector',
+	#package : 'TypeInfoTools-StatsCollector'
 }
 
 { #category : 'as yet unclassified' }
@@ -12,7 +12,7 @@ TITMethodsStatisticsCollector class >> inferAll [
 	self new inferAll
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITMethodsStatisticsCollector >> itemsInPackage: aPackage [
 
 	^ aPackage methods sorted: [ :a :b |
@@ -21,25 +21,25 @@ TITMethodsStatisticsCollector >> itemsInPackage: aPackage [
 				  ifFalse: [ a methodClass name < b methodClass name ] ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITMethodsStatisticsCollector >> itemsName [
 
 	^ 'methods'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'printing' }
 TITMethodsStatisticsCollector >> printItem: anInferrableItem on: aStream [
 
 	anInferrableItem printOn: aStream
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'printing' }
 TITMethodsStatisticsCollector >> printItemKindNameOn: eachStream [
 
 	eachStream nextPutAll: 'Class>>#method'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITMethodsStatisticsCollector >> titNodeForItem: aMethod [
 
 	^ TITMethod forOCMethodNode: aMethod ast

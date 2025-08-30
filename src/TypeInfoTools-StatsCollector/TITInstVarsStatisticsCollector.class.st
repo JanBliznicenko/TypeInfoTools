@@ -1,8 +1,8 @@
 Class {
 	#name : 'TITInstVarsStatisticsCollector',
 	#superclass : 'TITStatisticsCollector',
-	#category : 'TypeInfoTools-ReturnTypesAnalyzer',
-	#package : 'TypeInfoTools-ReturnTypesAnalyzer'
+	#category : 'TypeInfoTools-StatsCollector',
+	#package : 'TypeInfoTools-StatsCollector'
 }
 
 { #category : 'as yet unclassified' }
@@ -12,30 +12,7 @@ TITInstVarsStatisticsCollector class >> inferAll [
 	self new inferAll
 ]
 
-{ #category : 'accessing' }
-TITInstVarsStatisticsCollector >> inferrers [
-
-	^ {
-		  TITJ2InfererTyperAdaptor new.
-		  TITRoelTyperAdaptor new.
-		  TITTypeMeTyperAdaptor new.
-		  TITNameStatisticsTyperAdaptor new.
-		  TITAdaptorsChainingTypeCollector default.
-		  (TITAdaptorsFusionTypeCollector default
-			   sourceName: 'Fusion(all)';
-			   yourself).
-		  (TITAdaptorsFusionTypeCollector default
-			   sourceName: 'Fusion';
-			   yourself).
-		  (TITAdaptorsFusionTypeCollector noStat
-			   sourceName: 'Fusion(noStat)';
-			   yourself).
-		  (TITAdaptorsFusionTypeCollector heuristic
-			   sourceName: 'Fusion(heur)';
-			   yourself) }
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITInstVarsStatisticsCollector >> itemsInPackage: aPackage [
 
 	^ (aPackage classes asArray sorted: [ :a :b | a name < b name ])
@@ -45,13 +22,13 @@ TITInstVarsStatisticsCollector >> itemsInPackage: aPackage [
 				  (each class instanceVariables sorted: [ :a :b | a name < b name ]) ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITInstVarsStatisticsCollector >> itemsName [
 
 	^ 'instVars'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'printing' }
 TITInstVarsStatisticsCollector >> printItem: anInferrableItem on: aStream [
 
 	aStream
@@ -60,19 +37,13 @@ TITInstVarsStatisticsCollector >> printItem: anInferrableItem on: aStream [
 		nextPutAll: anInferrableItem name
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'printing' }
 TITInstVarsStatisticsCollector >> printItemKindNameOn: eachStream [
 
 	eachStream nextPutAll: 'Name'
 ]
 
-{ #category : 'as yet unclassified' }
-TITInstVarsStatisticsCollector >> repetitions [
-
-	^ 10
-]
-
-{ #category : 'as yet unclassified' }
+{ #category : 'hooks' }
 TITInstVarsStatisticsCollector >> titNodeForItem: anInstanceVariable [
 
 	^ TITInstanceVariable forSystemInstanceVariable: anInstanceVariable
