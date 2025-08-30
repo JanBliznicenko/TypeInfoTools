@@ -80,6 +80,7 @@ TITStatisticsCollector >> inferrers [
 		  TITNameStatisticsTyperAdaptor new.
 		  TITTypeMeTyperAdaptor new.
 		  TITRoelTyperAdaptor new.
+		  TITRBRefactoryTyperAdaptor new.
 		  TITJ2InfererTyperAdaptor new.
 		  TITAdaptorsChainingTypeCollector default.
 		  (TITAdaptorsFusionTypeCollector all
