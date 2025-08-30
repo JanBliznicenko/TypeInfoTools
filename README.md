@@ -22,3 +22,25 @@ Metacello new
     repository: 'github://JanBliznicenko/TypeInfoTools';
     load.
 ```
+
+TITNameStatisticsTyper/TITNameStatisticsTyperAdaptor need directory *name-type-statistics* to be copied to the directory of the image. 
+
+## Data directories
+
+It contains CSV files (semicolon delimited) with typical variable types / return types per name, beginning of name or ending of name, by words, cleaned from "a", "an", "each" and "other" and unified casing. It has 4 columns.
+
+In case of methods, those columns are:
+
+* Name: Selector of the method
+* Type: Most common type
+* Ratio: Amount of recorded senders of such method that got returned this most common type, divided by total amount of senders recorded
+* Amount: Total amount of senders recorded
+
+In case of variables, those columns are:
+
+* Name: Name of the variable
+* Type: Most common type
+* Ratio: Amount of recorded receivers whose methods assigned this most common type, divided by total amount of recorder receivers whose methods assigned anything
+* Amount: Amount of recorder receivers whose methods assigned anything
+
+*real-time-outputs* contain raw or just partially processed data from the inference, in STON format
