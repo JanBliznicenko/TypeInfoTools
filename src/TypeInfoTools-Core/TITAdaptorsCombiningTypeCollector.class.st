@@ -10,6 +10,14 @@ Class {
 	#tag : 'Inference'
 }
 
+{ #category : 'instance creation' }
+TITAdaptorsCombiningTypeCollector class >> all [
+
+	^ self new
+		  collectorClasses: self allCollectors;
+		  yourself
+]
+
 { #category : 'constants' }
 TITAdaptorsCombiningTypeCollector class >> allCollectors [
 
@@ -18,26 +26,28 @@ TITAdaptorsCombiningTypeCollector class >> allCollectors [
 		  TITRoelTyperAdaptor.
 		  TITRBRefactoryTyperAdaptor.
 		  TITJ2InfererTyperAdaptor.
-		  TITNameTyperAdaptor.
+		  TITNameStatisticsTyperAdaptor.
+		  TITNameHeuristicsTyperAdaptor.
 		  TITRelatedPackagePriorityCollector }
 ]
 
 { #category : 'instance creation' }
-TITAdaptorsCombiningTypeCollector class >> fast [
+TITAdaptorsCombiningTypeCollector class >> default [
 
 	^ self new
-		  collectorClasses: self fastCollectors;
+		  collectorClasses: self defaultCollectors;
 		  yourself
 ]
 
 { #category : 'constants' }
-TITAdaptorsCombiningTypeCollector class >> fastCollectors [
+TITAdaptorsCombiningTypeCollector class >> defaultCollectors [
 
 	^ {
 		  TITTypeMeTyperAdaptor.
 		  TITRoelTyperAdaptor.
 		  TITRBRefactoryTyperAdaptor.
-		  TITNameTyperAdaptor.
+		  TITNameStatisticsTyperAdaptor.
+		  TITNameHeuristicsTyperAdaptor.
 		  TITRelatedPackagePriorityCollector }
 ]
 
@@ -54,7 +64,27 @@ TITAdaptorsCombiningTypeCollector class >> heuristicCollectors [
 
 	^ {
 		  TITTypeMeTyperAdaptor.
-		  TITNameTyperAdaptor.
+		  TITNameStatisticsTyperAdaptor.
+		  TITNameHeuristicsTyperAdaptor.
+		  TITRelatedPackagePriorityCollector }
+]
+
+{ #category : 'instance creation' }
+TITAdaptorsCombiningTypeCollector class >> noStat [
+
+	^ self new
+		  collectorClasses: self noStatCollectors;
+		  yourself
+]
+
+{ #category : 'constants' }
+TITAdaptorsCombiningTypeCollector class >> noStatCollectors [
+
+	^ {
+		  TITTypeMeTyperAdaptor.
+		  TITRoelTyperAdaptor.
+		  TITRBRefactoryTyperAdaptor.
+		  TITNameHeuristicsTyperAdaptor.
 		  TITRelatedPackagePriorityCollector }
 ]
 

@@ -1,0 +1,32 @@
+Class {
+	#name : 'TITNameStatisticsRelativeTypeEntry',
+	#superclass : 'TITNameStatisticsTypeEntry',
+	#instVars : [
+		'selector'
+	],
+	#category : 'TypeInfoTools-Core-NameStatistics',
+	#package : 'TypeInfoTools-Core',
+	#tag : 'NameStatistics'
+}
+
+{ #category : 'instance creation' }
+TITNameStatisticsRelativeTypeEntry class >> fromRawString: aString ratio: aRatio amount: anAmount [
+
+	^ self new
+		  selector: aString allButFirst asSymbol;
+		  ratio: aRatio;
+		  amount: anAmount;
+		  yourself
+]
+
+{ #category : 'accessing' }
+TITNameStatisticsRelativeTypeEntry >> selector: anObject [
+
+	selector := anObject
+]
+
+{ #category : 'as yet unclassified' }
+TITNameStatisticsRelativeTypeEntry >> typeForReceiverClass: anObject [
+
+	^ (Message selector: selector) sendTo: anObject
+]

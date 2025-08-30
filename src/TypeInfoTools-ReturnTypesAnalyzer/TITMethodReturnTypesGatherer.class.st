@@ -163,7 +163,7 @@ TITMethodReturnTypesGatherer class >> gatherPackage: aPackageName [
 TITMethodReturnTypesGatherer >> gatherPackage: aPackageName [
 
 	| collector package classes methods arrays csvContent |
-	collector := TITAdaptorsFusionTypeCollector new.
+	collector := TITAdaptorsFusionTypeCollector all.
 
 	package := self packageOrganizer packageNamed: aPackageName.
 

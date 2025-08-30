@@ -71,7 +71,7 @@ TITShowTypesInstVarCommand >> executeInJob: job [
 		                 each owningClass = self definingClass ]
 		                 thenCollect: [ :each |
 		                 TITInstanceVariable forSystemInstanceVariable: each ].
-	collector := TITAdaptorsFusionTypeCollector fast
+	collector := TITAdaptorsFusionTypeCollector default
 		             reportingBlock: [ :typer |
 			             job currentValue: job currentValue + 1 ];
 		             yourself.

@@ -266,9 +266,5 @@ TITRealTimeInferenceResultsAnalyser class >> sortedBySizes: aDictionaryOfHolder 
 { #category : 'private - transforming' }
 TITRealTimeInferenceResultsAnalyser class >> unifyName: aString [
 
-	| simplified |
-	simplified := TITNameTyperAdaptor simplifyName: aString.
-	simplified first isUppercase ifTrue: [
-		^ simplified uncapitalized asSymbol ].
-	^ simplified asSymbol
+	^ (TITNameHeuristicsTyperAdaptor simplifyName: aString) uncapitalized asSymbol
 ]

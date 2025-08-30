@@ -1,5 +1,5 @@
 Class {
-	#name : 'TITNameTyperAdaptor',
+	#name : 'TITNameHeuristicsTyperAdaptor',
 	#superclass : 'TITStructureNodeTypeCollector',
 	#instVars : [
 		'results',
@@ -16,7 +16,7 @@ Class {
 }
 
 { #category : 'accessing' }
-TITNameTyperAdaptor class >> collectionClasses [
+TITNameHeuristicsTyperAdaptor class >> collectionClasses [
 
 	^ collectionClasses ifNil: [
 			  collectionClasses := Collection withAllSubclasses asSet
@@ -25,7 +25,7 @@ TITNameTyperAdaptor class >> collectionClasses [
 ]
 
 { #category : 'class initialization' }
-TITNameTyperAdaptor class >> reset [
+TITNameHeuristicsTyperAdaptor class >> reset [
 
 	<script>
 	typicalNames := nil.
@@ -33,7 +33,7 @@ TITNameTyperAdaptor class >> reset [
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor class >> simplifyName: aString [
+TITNameHeuristicsTyperAdaptor class >> simplifyName: aString [
 
 	aString size < 3 ifTrue: [ ^ aString ].
 	aString size > 3 ifTrue: [
@@ -53,13 +53,13 @@ TITNameTyperAdaptor class >> simplifyName: aString [
 ]
 
 { #category : 'accessing' }
-TITNameTyperAdaptor class >> sourceName [
+TITNameHeuristicsTyperAdaptor class >> sourceName [
 
-	^ 'VarName'
+	^ 'NameHeuristics'
 ]
 
 { #category : 'accessing' }
-TITNameTyperAdaptor class >> typicalNames [
+TITNameHeuristicsTyperAdaptor class >> typicalNames [
 
 	^ typicalNames ifNil: [
 			  typicalNames := {
@@ -86,8 +86,18 @@ TITNameTyperAdaptor class >> typicalNames [
 				                  ('Min' -> { Number }) } asDictionary ]
 ]
 
+{ #category : 'private - transforming' }
+TITNameHeuristicsTyperAdaptor class >> unifyName: aString [
+
+	| simplified |
+	simplified := self simplifyName: aString.
+	simplified first isUppercase ifTrue: [
+		^ simplified uncapitalized asSymbol ].
+	^ simplified asSymbol
+]
+
 { #category : 'processing' }
-TITNameTyperAdaptor >> checkName: aString [
+TITNameHeuristicsTyperAdaptor >> checkName: aString [
 
 	(self checkSingularName: aString) ifNotEmpty: [ :foundClasses |
 		^ results addAll: foundClasses ].
@@ -98,19 +108,19 @@ TITNameTyperAdaptor >> checkName: aString [
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor >> checkPluralName: aString [
+TITNameHeuristicsTyperAdaptor >> checkPluralName: aString [
 
 	^ self typesForName: aString singularize
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor >> checkSingularName: aString [
+TITNameHeuristicsTyperAdaptor >> checkSingularName: aString [
 
 	^ self typesForName: aString
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor >> classesIncludingName: aString [
+TITNameHeuristicsTyperAdaptor >> classesIncludingName: aString [
 
 	aString size < 4 ifTrue: [ ^ {  } ].
 	^ ((Smalltalk globals keys
@@ -120,7 +130,7 @@ TITNameTyperAdaptor >> classesIncludingName: aString [
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor >> isName: aNodeName consideredTypeName: aClassName [
+TITNameHeuristicsTyperAdaptor >> isName: aNodeName consideredTypeName: aClassName [
 
 	| firstLowercaseIndex classWithoutPrefix |
 	(aClassName beginsWith: aNodeName) ifTrue: [ ^ true ].
@@ -135,26 +145,26 @@ TITNameTyperAdaptor >> isName: aNodeName consideredTypeName: aClassName [
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor >> isOtherOfSameClass: aString [
+TITNameHeuristicsTyperAdaptor >> isOtherOfSameClass: aString [
 
 	^ typedNode assumesNameOtherMeansSameClass and: [
 		  (aString beginsWith: 'Other') or: [ aString beginsWith: 'Another' ] ]
 ]
 
 { #category : 'constants' }
-TITNameTyperAdaptor >> majorityTreshold [
+TITNameHeuristicsTyperAdaptor >> majorityTreshold [
 
 	^ 4 / 5
 ]
 
 { #category : 'accessing' }
-TITNameTyperAdaptor >> priority [
+TITNameHeuristicsTyperAdaptor >> priority [
 
 	^ 5
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor >> processCluster: words [
+TITNameHeuristicsTyperAdaptor >> processCluster: words [
 
 	| entireName |
 	entireName := String streamContents: [ :s |
@@ -165,7 +175,7 @@ TITNameTyperAdaptor >> processCluster: words [
 ]
 
 { #category : 'visiting' }
-TITNameTyperAdaptor >> processTypedNode: aTypedNode [
+TITNameHeuristicsTyperAdaptor >> processTypedNode: aTypedNode [
 
 	| simplifiedName wordClusters |
 	results := Set new.
@@ -193,7 +203,7 @@ TITNameTyperAdaptor >> processTypedNode: aTypedNode [
 ]
 
 { #category : 'visiting' }
-TITNameTyperAdaptor >> removeImprobableResults [
+TITNameHeuristicsTyperAdaptor >> removeImprobableResults [
 
 	(typedNode name includesSubstring: 'test' caseSensitive: false)
 		ifFalse: [
@@ -201,13 +211,13 @@ TITNameTyperAdaptor >> removeImprobableResults [
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor >> simplifyName: aString [
+TITNameHeuristicsTyperAdaptor >> simplifyName: aString [
 
 	^ self class simplifyName: aString
 ]
 
 { #category : 'processing' }
-TITNameTyperAdaptor >> typesForName: aString [
+TITNameHeuristicsTyperAdaptor >> typesForName: aString [
 
 	self class typicalNames at: aString ifPresent: [ :typicalClasses |
 			^ typicalClasses flatCollect: [ :each |
@@ -219,7 +229,7 @@ TITNameTyperAdaptor >> typesForName: aString [
 ]
 
 { #category : 'visiting' }
-TITNameTyperAdaptor >> visitMessageSend: aMessageSend [
+TITNameHeuristicsTyperAdaptor >> visitMessageSend: aMessageSend [
 
 	| implementors |
 	aMessageSend ocProgramNode isUnary ifFalse: [ ^ self ].
@@ -232,7 +242,7 @@ TITNameTyperAdaptor >> visitMessageSend: aMessageSend [
 ]
 
 { #category : 'visiting' }
-TITNameTyperAdaptor >> visitMethod: aMethod [
+TITNameHeuristicsTyperAdaptor >> visitMethod: aMethod [
 
 	aMethod selector isUnary ifFalse: [ ^ self ].
 	(aMethod compiledMethod protocolName beginsWith: 'access') ifFalse: [
@@ -241,13 +251,13 @@ TITNameTyperAdaptor >> visitMethod: aMethod [
 ]
 
 { #category : 'visiting' }
-TITNameTyperAdaptor >> visitVariable: aVariable [
+TITNameHeuristicsTyperAdaptor >> visitVariable: aVariable [
 
 	^ self processTypedNode: aVariable
 ]
 
 { #category : 'accessing' }
-TITNameTyperAdaptor >> weight [
+TITNameHeuristicsTyperAdaptor >> weight [
 
-	^ 1
+	^ 0.5
 ]

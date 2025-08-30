@@ -38,7 +38,7 @@ TITShowTypesTempVariableCommand >> executeInJob: job [
 	| titVariable collector |
 	titVariable := TITTemporaryVariable forOCVariableNode: sourceNode.
 
-	collector := TITAdaptorsFusionTypeCollector fast
+	collector := TITAdaptorsFusionTypeCollector default
 		             reportingBlock: [ :typer |
 			             job currentValue: job currentValue + 1 ];
 		             yourself.

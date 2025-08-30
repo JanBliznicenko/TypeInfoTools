@@ -44,19 +44,7 @@ TITMethodTemporaryVariable >> method: anObject [
 ]
 
 { #category : 'accessing' }
-TITMethodTemporaryVariable >> ownerClass [
-
-	^ self method ownerClass
-]
-
-{ #category : 'accessing' }
 TITMethodTemporaryVariable >> parent [
 
 	^ self method
-]
-
-{ #category : 'accessing' }
-TITMethodTemporaryVariable >> realClass [
-
-	^ self method realClass
 ]

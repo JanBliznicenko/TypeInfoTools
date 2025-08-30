@@ -6,31 +6,6 @@ Class {
 	#tag : 'Inference'
 }
 
-{ #category : 'constants' }
-TITAdaptorsChainingTypeCollector class >> allCollectors [
-
-	^ {
-		  TITTypeMeTyperAdaptor.
-		  TITRoelTyperAdaptor.
-		  TITRBRefactoryTyperAdaptor.
-		  TITJ2InfererTyperAdaptor }
-]
-
-{ #category : 'constants' }
-TITAdaptorsChainingTypeCollector class >> fastCollectors [
-
-	^ {
-		  TITTypeMeTyperAdaptor.
-		  TITRoelTyperAdaptor.
-		  TITRBRefactoryTyperAdaptor }
-]
-
-{ #category : 'constants' }
-TITAdaptorsChainingTypeCollector class >> heuristicCollectors [
-
-	^ { TITTypeMeTyperAdaptor }
-]
-
 { #category : 'accessing' }
 TITAdaptorsChainingTypeCollector class >> sourceName [
 

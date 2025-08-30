@@ -34,7 +34,7 @@ ManifestTypeInfoToolsCore class >> ruleStringConcatenationRuleV1FalsePositive [
 ManifestTypeInfoToolsCore class >> ruleUsesAddRuleV1FalsePositive [
 
 	<ignoreForCoverage>
-	^ #(#(#(#RGMethodDefinition #(#TITNameTyperAdaptor #checkName: #false)) #'2024-10-03T05:06:35.534+02:00') #(#(#RGMethodDefinition #(#TITMetaLinksRealTimeTypeInferer #addLinksToMethod: #false)) #'2025-05-15T09:43:46.846+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#TITNameHeuristicsTyperAdaptor #checkName: #false)) #'2024-10-03T05:06:35.534+02:00') #(#(#RGMethodDefinition #(#TITMetaLinksRealTimeTypeInferer #addLinksToMethod: #false)) #'2025-05-15T09:43:46.846+02:00') )
 ]
 
 { #category : 'code-critics' }

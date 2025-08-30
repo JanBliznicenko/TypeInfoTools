@@ -50,19 +50,7 @@ TITMethodInputParameter >> method: anObject [
 ]
 
 { #category : 'accessing' }
-TITMethodInputParameter >> ownerClass [
-
-	^ self method ownerClass
-]
-
-{ #category : 'accessing' }
 TITMethodInputParameter >> parent [
 
 	^ self method
-]
-
-{ #category : 'accessing' }
-TITMethodInputParameter >> realClass [
-
-	^ self method realClass
 ]

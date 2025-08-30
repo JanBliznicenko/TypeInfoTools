@@ -20,7 +20,7 @@ TITTypeInferenceCompletionSorter >> sortCompletionList: aList [
 		titNode := TITTypedNodeCreationVisitor visit: sourceNode receiver.
 		titNode compilationBlock: [ :ocMethod | self halt.
 			TITPartialCompiler compileMethod: ocMethod ].
-		collector := TITAdaptorsFusionTypeCollector fast.
+		collector := TITAdaptorsFusionTypeCollector default.
 		collector addTypesTo: titNode ]
 		on: Error
 		do: [ :error |
