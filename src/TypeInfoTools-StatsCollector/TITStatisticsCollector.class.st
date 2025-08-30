@@ -77,9 +77,10 @@ TITStatisticsCollector >> inferPackage: aPackage [
 TITStatisticsCollector >> inferrers [
 
 	^ {
-		  TITRoelTyperAdaptor new.
-		  TITTypeMeTyperAdaptor new.
 		  TITNameStatisticsTyperAdaptor new.
+		  TITTypeMeTyperAdaptor new.
+		  TITRoelTyperAdaptor new.
+		  TITJ2InfererTyperAdaptor new.
 		  TITAdaptorsChainingTypeCollector default.
 		  (TITAdaptorsFusionTypeCollector all
 			   sourceName: 'Fusion(all)';
