@@ -9,6 +9,16 @@ Class {
 	#package : 'TypeInfoTools-StatsCollector'
 }
 
+{ #category : 'as yet unclassified' }
+TITStatisticsCollector class >> loadXMLWriter [
+
+	<script>
+	Metacello new
+		baseline: 'XMLWriter';
+		repository: 'github://pharo-contributions/XML-XMLWriter:v3.1.2';
+		load
+]
+
 { #category : 'processing' }
 TITStatisticsCollector >> inferAll [
 
