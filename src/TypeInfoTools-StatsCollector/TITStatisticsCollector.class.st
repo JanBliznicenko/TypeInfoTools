@@ -40,7 +40,7 @@ TITStatisticsCollector >> inferItem: anInferrableItem withInferrerIndex: inferre
 	timeToRun := ([
 		              node := self titNodeForItem: anInferrableItem.
 		              node accept: (self inferrers at: inferrerIndex) ]
-		              benchFor: 500 milliSeconds) timePerExecution.
+		              benchFor: 200 milliSeconds) timePerExecution.
 	topNode := node typeInfo types asClassTreeForPresenting maxWeightNode.
 	typesStream nextPutAll: ';'.
 	topNode weight > 0.1 ifTrue: [

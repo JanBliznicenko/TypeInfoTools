@@ -45,12 +45,14 @@ TITTypeHolder >> addType: aClass [
 TITTypeHolder >> addValueUnchecked: aValue [
 
 	| class |
-	(thisContext methodClass isCausingRecursion: aValue class) ifTrue: [ ^ self ].
+	(thisContext methodClass isCausingRecursion: aValue class) ifTrue: [
+		^ self ].
 	aValue ifNil: [ ^ self ].
 	class := aValue class.
 	class ifNil: [ ^ self ].
 	class = Object ifTrue: [ ^ self ].
 	class = ProtoObject ifTrue: [ ^ self ].
+	class = UndefinedObject ifTrue: [ ^ self ].
 	self addType: (TITTypesCollection afterClassReplacement: class)
 ]
 

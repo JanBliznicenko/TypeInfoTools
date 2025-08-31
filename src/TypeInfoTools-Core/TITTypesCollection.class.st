@@ -66,8 +66,9 @@ TITTypesCollection >> addAllFrom: otherTypesCollection [
 { #category : 'adding' }
 TITTypesCollection >> addClass: aClass by: aTypeCollector [
 
-	aClass = ProtoObject ifTrue: [ ^ self ].
 	aClass = Object ifTrue: [ ^ self ].
+	aClass = ProtoObject ifTrue: [ ^ self ].
+	aClass = UndefinedObject ifTrue: [ ^ self ].
 	aClass isTrait ifTrue: [ ^ self ].
 	(classesWithCollectors
 		 at: (self class afterClassReplacement: aClass)
@@ -137,7 +138,8 @@ TITTypesCollection >> commonSuperclassOfTopWeightClassesOrAny [
 
 	| commonSuperclass |
 	commonSuperclass := self commonSuperclassOfTopWeightClasses.
-	(commonSuperclass = Object or: [ commonSuperclass = ProtoObject ])
+	(commonSuperclass = Object or: [
+		 commonSuperclass = ProtoObject or: [ commonSuperclass isNil ] ])
 		ifTrue: [ ^ self sortedClasses keyAtIndex: 1 ].
 	^ commonSuperclass
 ]

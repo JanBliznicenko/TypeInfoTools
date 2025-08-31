@@ -21,6 +21,7 @@ TITNameStatisticsTyperAdaptor >> searchNameStatisticsForNode: aTITNode in: aType
 		             (TITNameHeuristicsTyperAdaptor unifyName: aTITNode name)
 		             ifAbsent: [ ^ false ].
 	type := typeEntry typeForReceiverClass: aTITNode ownerClass realClass.
+	type ifNil: [ ^ false ].
 	aTITNode typeInfo addTypes: { type } by: self.
 	^ true
 ]

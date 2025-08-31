@@ -80,6 +80,7 @@ TITSpecificTypeNodeWithOrigins >> isAcceptableMostPreciseNode [
 	^ ({
 		   Object.
 		   ProtoObject.
+		   UndefinedObject.
 		   nil } includes: type) not
 ]
 

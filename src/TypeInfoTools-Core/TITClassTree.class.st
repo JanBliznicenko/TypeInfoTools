@@ -93,18 +93,15 @@ TITClassTree >> prepareForPresenting [
 
 	self
 		mergeRedundantChildren;
-		removeProtoObject;
+		removeCommonRootNodes;
 		removeVeryLowWeightNodes;
 		sortByWeight
 ]
 
 { #category : 'removing' }
-TITClassTree >> removeProtoObject [
+TITClassTree >> removeCommonRootNodes [
 
-	self rootNode subclassNodes ifEmpty: [ ^ self ].
-	(self rootNode representsClass: ProtoObject) ifFalse: [ ^ self ].
-	self rootNode subclassNodes size > 1 ifTrue: [ ^ self ].
-	rootNode := rootNode subclassNodes anyOne asRoot
+	[ self tryRemoveCommonRootNode ] whileTrue: [ ]
 ]
 
 { #category : 'removing' }
@@ -125,4 +122,16 @@ TITClassTree >> rootNode [
 TITClassTree >> sortByWeight [
 
 	self rootNode sortByWeight
+]
+
+{ #category : 'removing' }
+TITClassTree >> tryRemoveCommonRootNode [
+
+	self rootNode subclassNodes size = 1 ifFalse: [ ^ false ].
+	({
+		 nil.
+		 ProtoObject } anySatisfy: [ :each |
+		 self rootNode representsClass: each ]) ifFalse: [ ^ false ].
+	rootNode := rootNode subclassNodes anyOne asRoot.
+	^ true
 ]

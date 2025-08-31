@@ -51,8 +51,7 @@ TITCollectionTypeHolder class >> atomicCollectionTypes [
 				                           String.
 				                           Text.
 				                           WideCharacterSet.
-				                           WordArray.
-				                           BlChildren } flatCollectAsSet: [ :each |
+				                           WordArray } flatCollectAsSet: [ :each |
 				                           each withAllSubclasses ] ]
 ]
 
