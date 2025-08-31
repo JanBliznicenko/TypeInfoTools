@@ -65,6 +65,7 @@ TITStatisticsCollector >> inferPackage: aPackage [
 							{
 								typesStream.
 								timesStream } do: [ :eachStream |
+										eachStream << 'Class;'.
 										self printItemKindNameOn: eachStream.
 										self inferrers do: [ :eachInferrer |
 												eachStream << ';' << eachInferrer sourceName ].
@@ -84,19 +85,25 @@ TITStatisticsCollector >> inferrers [
 		  TITJ2InfererTyperAdaptor new.
 		  TITAdaptorsChainingTypeCollector default.
 		  (TITAdaptorsFusionTypeCollector all
-			   sourceName: 'Fusion(all)';
+			   sourceName: 'Fusion-all';
 			   yourself).
 		  (TITAdaptorsFusionTypeCollector default
 			   sourceName: 'Fusion';
 			   yourself).
+		  (TITAdaptorsFusionTypeCollector fast
+			   sourceName: 'Fusion-fast';
+			   yourself).
 		  (TITAdaptorsFusionTypeCollector noStat
-			   sourceName: 'Fusion(noStat)';
+			   sourceName: 'Fusion-noStat';
 			   yourself).
 		  (TITAdaptorsFusionTypeCollector noTypeMe
-			   sourceName: 'Fusion(noTypeMe)';
+			   sourceName: 'Fusion-noTMe';
+			   yourself).
+		  (TITAdaptorsFusionTypeCollector heuristicLite
+			   sourceName: 'Fusion-heurL';
 			   yourself).
 		  (TITAdaptorsFusionTypeCollector heuristic
-			   sourceName: 'Fusion(heur)';
+			   sourceName: 'Fusion-heur';
 			   yourself) }
 ]
 
@@ -115,15 +122,19 @@ TITStatisticsCollector >> itemsName [
 { #category : 'configuration' }
 TITStatisticsCollector >> packages [
 
-	^ { 'Athens-Cairo'. 'Metacello-Core'. 'OSWindow-Core'. 'Zinc-HTTP'.
-	  'Spec2-Layout'. 'Roassal'. 'Roassal-Layouts' } collect: [ :each |
+	^ { 'Athens-Cairo'. 'Metacello-Core'. 'Iceberg'. 'Zinc-HTTP'.
+	  'NewTools-FileBrowser'. 'Spec2-Layout'. 'Roassal'. 'Kernel-CodeModel'.
+	  'Traits'. 'XML-Writer-Core' } sorted collect: [ :each |
 		  self packageOrganizer packageNamed: each ]
 ]
 
 { #category : 'printing' }
 TITStatisticsCollector >> printItem: anInferrableItem on: aStream [
 
-	self subclassResponsibility
+	aStream
+		nextPutAll: anInferrableItem owningClass name;
+		nextPut: $;;
+		nextPutAll: anInferrableItem name
 ]
 
 { #category : 'printing' }

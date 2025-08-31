@@ -28,15 +28,9 @@ TITMethodsStatisticsCollector >> itemsName [
 ]
 
 { #category : 'printing' }
-TITMethodsStatisticsCollector >> printItem: anInferrableItem on: aStream [
-
-	anInferrableItem printOn: aStream
-]
-
-{ #category : 'printing' }
 TITMethodsStatisticsCollector >> printItemKindNameOn: eachStream [
 
-	eachStream nextPutAll: 'Class>>#method'
+	eachStream nextPutAll: 'Selector'
 ]
 
 { #category : 'hooks' }

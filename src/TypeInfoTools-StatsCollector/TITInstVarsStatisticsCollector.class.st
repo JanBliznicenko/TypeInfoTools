@@ -15,7 +15,7 @@ TITInstVarsStatisticsCollector class >> inferAll [
 { #category : 'hooks' }
 TITInstVarsStatisticsCollector >> itemsInPackage: aPackage [
 
-	^ (aPackage classes asArray sorted: [ :a :b | a name < b name ])
+	^ (aPackage definedClasses asArray sorted: [ :a :b | a name < b name ])
 		  flatCollect: [ :each |
 				  (each instanceVariables sorted: [ :a :b | a name < b name ])
 				  ,
@@ -26,15 +26,6 @@ TITInstVarsStatisticsCollector >> itemsInPackage: aPackage [
 TITInstVarsStatisticsCollector >> itemsName [
 
 	^ 'instVars'
-]
-
-{ #category : 'printing' }
-TITInstVarsStatisticsCollector >> printItem: anInferrableItem on: aStream [
-
-	aStream
-		nextPutAll: anInferrableItem owningClass name;
-		nextPutAll: '>';
-		nextPutAll: anInferrableItem name
 ]
 
 { #category : 'printing' }

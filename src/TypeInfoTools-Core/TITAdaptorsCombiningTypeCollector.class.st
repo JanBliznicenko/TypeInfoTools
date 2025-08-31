@@ -52,6 +52,25 @@ TITAdaptorsCombiningTypeCollector class >> defaultCollectors [
 ]
 
 { #category : 'instance creation' }
+TITAdaptorsCombiningTypeCollector class >> fast [
+
+	^ self new
+		  collectorClasses: self fastCollectors;
+		  yourself
+]
+
+{ #category : 'constants' }
+TITAdaptorsCombiningTypeCollector class >> fastCollectors [
+
+	^ {
+		  TITTypeMeTyperAdaptor.
+		  TITRoelTyperAdaptor.
+		  TITNameStatisticsTyperAdaptor.
+		  TITNameHeuristicsTyperAdaptor.
+		  TITRelatedPackagePriorityCollector }
+]
+
+{ #category : 'instance creation' }
 TITAdaptorsCombiningTypeCollector class >> heuristic [
 
 	^ self new
@@ -66,6 +85,23 @@ TITAdaptorsCombiningTypeCollector class >> heuristicCollectors [
 		  TITTypeMeTyperAdaptor.
 		  TITNameStatisticsTyperAdaptor.
 		  TITNameHeuristicsTyperAdaptor.
+		  TITRelatedPackagePriorityCollector }
+]
+
+{ #category : 'instance creation' }
+TITAdaptorsCombiningTypeCollector class >> heuristicLite [
+
+	^ self new
+		  collectorClasses: self heuristicLiteCollectors;
+		  yourself
+]
+
+{ #category : 'constants' }
+TITAdaptorsCombiningTypeCollector class >> heuristicLiteCollectors [
+
+	^ {
+		  TITTypeMeTyperAdaptor.
+		  TITNameStatisticsTyperAdaptor.
 		  TITRelatedPackagePriorityCollector }
 ]
 
