@@ -29,6 +29,12 @@ TITInstVarsStatisticsCollector >> itemsName [
 ]
 
 { #category : 'printing' }
+TITInstVarsStatisticsCollector >> printClassNameOf: anInferrableItem on: aStream [
+
+	aStream nextPutAll: anInferrableItem owningClass name
+]
+
+{ #category : 'printing' }
 TITInstVarsStatisticsCollector >> printItemKindNameOn: eachStream [
 
 	eachStream nextPutAll: 'Name'

@@ -139,10 +139,16 @@ TITStatisticsCollector >> packages [
 ]
 
 { #category : 'printing' }
+TITStatisticsCollector >> printClassNameOf: anInferrableItem on: aStream [
+
+	self subclassResponsibility
+]
+
+{ #category : 'printing' }
 TITStatisticsCollector >> printItem: anInferrableItem on: aStream [
 
+	self printClassNameOf: anInferrableItem on: aStream.
 	aStream
-		nextPutAll: anInferrableItem owningClass name;
 		nextPut: $;;
 		nextPutAll: anInferrableItem name
 ]

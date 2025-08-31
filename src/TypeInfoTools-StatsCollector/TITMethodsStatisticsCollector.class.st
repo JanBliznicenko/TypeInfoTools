@@ -28,6 +28,12 @@ TITMethodsStatisticsCollector >> itemsName [
 ]
 
 { #category : 'printing' }
+TITMethodsStatisticsCollector >> printClassNameOf: anInferrableItem on: aStream [
+
+	aStream nextPutAll: anInferrableItem methodClass name
+]
+
+{ #category : 'printing' }
 TITMethodsStatisticsCollector >> printItemKindNameOn: eachStream [
 
 	eachStream nextPutAll: 'Selector'
