@@ -84,16 +84,19 @@ TITNameStatisticsTyper >> loadFromFiles: aFileNameEnding [
 		('ByBeginnings' -> [ :key :value | byBeginnings at: key put: value ]).
 		('ByEndings' -> [ :key :value | byEndings at: key put: value ]) }
 		do: [ :eachPair |
-				(eachPair key , '_' , aFileNameEnding , '.csv') asFileReference
-					readStreamDo: [ :s |
-							s nextLine.
-							s upToEnd lines allButFirstDo: [ :eachLine |
-									| items |
-									items := eachLine splitOn: $;.
-									eachPair value
-										value: items first asSymbol
-										value: (TITNameStatisticsTypeEntry
-												 fromRawString: items second
-												 ratioString: items third
-												 amountString: items fourth) ] ] ]
+				| fileNameBeginning recordAddBlock |
+				fileNameBeginning := eachPair key.
+				recordAddBlock := eachPair value.
+				(fileNameBeginning , '_' , aFileNameEnding , '.csv')
+					asFileReference readStreamDo: [ :s |
+						((NeoCSVReader on: s)
+							 separator: $;;
+							 readHeader;
+							 yourself) do: [ :eachRecord |
+								recordAddBlock
+									value: eachRecord first asSymbol
+									value: (TITNameStatisticsTypeEntry
+											 fromRawString: eachRecord second
+											 ratioString: eachRecord third
+											 amountString: eachRecord fourth) ] ] ]
 ]

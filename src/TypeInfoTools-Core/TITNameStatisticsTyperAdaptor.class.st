@@ -27,6 +27,14 @@ TITNameStatisticsTyperAdaptor >> searchNameStatisticsForNode: aTITNode in: aType
 ]
 
 { #category : 'visiting' }
+TITNameStatisticsTyperAdaptor >> visitMessageSend: aMessageSend [
+
+	self
+		searchNameStatisticsForNode: aMessageSend
+		in: TITNameStatisticsTyper forReturnTypes
+]
+
+{ #category : 'visiting' }
 TITNameStatisticsTyperAdaptor >> visitMethod: aMethod [
 
 	self
