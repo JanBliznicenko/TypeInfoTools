@@ -28,9 +28,12 @@ TITMethodsStatisticsCollector >> itemsName [
 ]
 
 { #category : 'printing' }
-TITMethodsStatisticsCollector >> printClassNameOf: anInferrableItem on: aStream [
+TITMethodsStatisticsCollector >> printClassAndNameOf: aCompiledMethod on: aStream [
 
-	aStream nextPutAll: anInferrableItem methodClass name
+	aStream
+		nextPutAll: aCompiledMethod methodClass name;
+		nextPut: $;;
+		nextPutAll: aCompiledMethod selector
 ]
 
 { #category : 'printing' }

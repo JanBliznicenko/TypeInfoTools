@@ -28,8 +28,8 @@ TITStatisticsCollector >> inferAll [
 { #category : 'processing' }
 TITStatisticsCollector >> inferItem: anInferrableItem [
 
-	self printItem: anInferrableItem on: typesStream.
-	self printItem: anInferrableItem on: timesStream.
+	self printClassAndNameOf: anInferrableItem on: typesStream.
+	self printClassAndNameOf: anInferrableItem on: timesStream.
 
 	1 to: self inferrers size do: [ :index |
 	self inferItem: anInferrableItem withInferrerIndex: index ].
@@ -139,18 +139,9 @@ TITStatisticsCollector >> packages [
 ]
 
 { #category : 'printing' }
-TITStatisticsCollector >> printClassNameOf: anInferrableItem on: aStream [
+TITStatisticsCollector >> printClassAndNameOf: anInferrableItem on: aStream [
 
 	self subclassResponsibility
-]
-
-{ #category : 'printing' }
-TITStatisticsCollector >> printItem: anInferrableItem on: aStream [
-
-	self printClassNameOf: anInferrableItem on: aStream.
-	aStream
-		nextPut: $;;
-		nextPutAll: anInferrableItem name
 ]
 
 { #category : 'printing' }

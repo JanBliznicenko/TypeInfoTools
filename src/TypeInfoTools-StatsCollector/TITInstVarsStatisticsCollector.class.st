@@ -29,9 +29,12 @@ TITInstVarsStatisticsCollector >> itemsName [
 ]
 
 { #category : 'printing' }
-TITInstVarsStatisticsCollector >> printClassNameOf: anInferrableItem on: aStream [
+TITInstVarsStatisticsCollector >> printClassAndNameOf: aSlot on: aStream [
 
-	aStream nextPutAll: anInferrableItem owningClass name
+	aStream
+		nextPutAll: aSlot owningClass name;
+		nextPut: $;;
+		nextPutAll: aSlot name
 ]
 
 { #category : 'printing' }
