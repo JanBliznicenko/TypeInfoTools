@@ -26,7 +26,8 @@ TITNameStatisticsRelativeTypeEntry >> selector: anObject [
 ]
 
 { #category : 'as yet unclassified' }
-TITNameStatisticsRelativeTypeEntry >> typeForReceiverClass: anObject [
+TITNameStatisticsRelativeTypeEntry >> typeForReceiverClass: aClass [
 
-	^ (Message selector: selector) sendTo: anObject
+	(aClass respondsTo: selector) ifFalse: [ ^ nil ].
+	^ (Message selector: selector) sendTo: aClass
 ]

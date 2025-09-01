@@ -50,14 +50,15 @@ TITNameStatisticsTyper class >> reset [
 TITNameStatisticsTyper >> at: aName ifAbsent: aBlock [
 
 	| resultByBeginning resultByEnding |
-	byNames at: aName ifPresent: [ :result | ^ result ].
-	resultByBeginning := byBeginnings
-		                     at: aName
-		                     ifAbsent: [
-		                     ^ byEndings at: aName ifAbsent: aBlock ].
+	byNames
+		at: aName
+		ifPresent: [ :result | result ifNotNil: [ ^ result ] ].
+	resultByBeginning := byBeginnings at: aName ifAbsent: [ nil ].
+	resultByBeginning ifNil: [ ^ byEndings at: aName ifAbsent: aBlock ].
 	resultByEnding := byEndings
 		                  at: aName
 		                  ifAbsent: [ ^ resultByBeginning ].
+	resultByEnding ifNil: [ ^ aBlock value ].
 	resultByEnding ratio ** 10 * resultByEnding amount
 	> (resultByBeginning ratio ** 10 * resultByBeginning amount) ifTrue: [
 		^ resultByEnding ].
