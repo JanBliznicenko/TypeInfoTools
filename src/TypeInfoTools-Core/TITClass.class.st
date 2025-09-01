@@ -46,6 +46,12 @@ TITClass >> name [
 ]
 
 { #category : 'accessing' }
+TITClass >> ownerClass [
+
+	^ self
+]
+
+{ #category : 'accessing' }
 TITClass >> package [
 
 	^ package ifNil: [

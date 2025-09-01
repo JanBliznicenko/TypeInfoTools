@@ -29,7 +29,7 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				with: [ spec repository: 'github://svenvc/NeoCSV' ];
 				package: 'TypeInfoTools-Core'
 				with: [ spec requires: #( 'RoelTyper' 'J2Inferer' ) ];
-				package: 'TypeInfoTools-Browser'
+				package: 'TypeInfoTools-TreePresenter'
 				with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
 				package: 'TypeInfoTools-MessageList'
 				with: [ spec requires: #( 'TypeInfoTools-Core' ) ];
@@ -38,19 +38,19 @@ BaselineOfTypeInfoTools >> baseline: spec [
 				package: 'TypeInfoTools-StatsCollector'
 				with: [ spec requires: #( 'TypeInfoTools-Core'
 				   'NeoCSV' ) ];
-				package: 'TypeInfoTools-RealTimeGatherer' with: [
+				package: 'TypeInfoTools-RunTimeGatherer' with: [
 					spec requires:
-						#( 'DependentsFinder' 'OSWinSubprocess' 'TypeInfoTools-Core' 'NeoCSV' ) ];
-				package: 'TITMyClass';
+						#( 'DependentsFinder' 'OSWinSubprocess' 'TypeInfoTools-Core'
+						   'NeoCSV' ) ];
 				group: 'ide'
-				with: #( 'TypeInfoTools-MessageList' 'TypeInfoTools-Browser' );
+				with:
+				#( 'TypeInfoTools-MessageList' 'TypeInfoTools-TreePresenter' );
 				group: 'ide-experimental'
 				with: #( 'ide' 'TypeInfoTools-Completion' );
-				group: 'realtime' with: #( 'TypeInfoTools-RealTimeGatherer' );
+				group: 'runtime' with: #( 'TypeInfoTools-RunTimeGatherer' );
 				group: 'returntypes' with: #( 'TypeInfoTools-StatsCollector' );
 				group: 'dev'
-				with:
-				#( 'ide-experimental' 'returntypes' 'realtime' 'TITMyClass' );
+				with: #( 'ide-experimental' 'returntypes' 'runtime' );
 				group: 'all' with: #( 'dev' );
 				group: 'default' with: #( 'ide' ) ]
 ]
