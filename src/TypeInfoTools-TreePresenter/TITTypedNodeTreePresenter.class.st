@@ -8,8 +8,8 @@ Class {
 		'classTreePresenter',
 		'collectionElementClassTreePresenter'
 	],
-	#category : 'TypeInfoTools-Browser-Presenters',
-	#package : 'TypeInfoTools-Browser',
+	#category : 'TypeInfoTools-TreePresenter-Presenters',
+	#package : 'TypeInfoTools-TreePresenter',
 	#tag : 'Presenters'
 }
 
@@ -67,13 +67,13 @@ TITTypedNodeTreePresenter >> initializePresenters [
 	collectionElementTypesLabel label: 'Collection element types'.
 
 	classTreePresenter := self
-		                      instantiate: TITClassTreePresenter
+		                      instantiate: TITTypeTreePresenter
 		                      on:
 		                      typedNode typeInfo types
 			                      asClassTreeForPresenting.
 	collectionElementClassTreePresenter := self
 		                                       instantiate:
-		                                       TITClassTreePresenter
+		                                       TITTypeTreePresenter
 		                                       on:
 		                                       typedNode typeInfo
 			                                       collectionElementTypes

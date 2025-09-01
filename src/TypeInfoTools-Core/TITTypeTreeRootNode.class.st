@@ -1,13 +1,13 @@
 Class {
-	#name : 'TITClassTreeRootNode',
-	#superclass : 'TITAbstractClassTreeNode',
+	#name : 'TITTypeTreeRootNode',
+	#superclass : 'TITAbstractTypeTreeNode',
 	#category : 'TypeInfoTools-Core-ClassTree',
 	#package : 'TypeInfoTools-Core',
 	#tag : 'ClassTree'
 }
 
 { #category : 'accessing' }
-TITClassTreeRootNode >> findMaxWeightNode [
+TITTypeTreeRootNode >> findMaxWeightNode [
 
 	^ (self subclassNodes ifEmpty: [ ^ self ]) allButFirst
 		  inject: self subclassNodes first maxWeightNode
@@ -18,7 +18,7 @@ TITClassTreeRootNode >> findMaxWeightNode [
 ]
 
 { #category : 'accessing' }
-TITClassTreeRootNode >> findMinWeightNode [
+TITTypeTreeRootNode >> findMinWeightNode [
 
 	^ (self subclassNodes ifEmpty: [ ^ self ]) allButFirst
 		  inject: self subclassNodes first minWeightNode
@@ -29,33 +29,33 @@ TITClassTreeRootNode >> findMinWeightNode [
 ]
 
 { #category : 'initialization' }
-TITClassTreeRootNode >> initialize [
+TITTypeTreeRootNode >> initialize [
 
 	super initialize.
 	self representedClass: nil
 ]
 
 { #category : 'testing' }
-TITClassTreeRootNode >> isRootNode [
+TITTypeTreeRootNode >> isRootNode [
 
 	^ true
 ]
 
 { #category : 'merging' }
-TITClassTreeRootNode >> mergeChildrenMajority [
+TITTypeTreeRootNode >> mergeChildrenMajority [
 	"do nothing"
 
 	
 ]
 
 { #category : 'accessing' }
-TITClassTreeRootNode >> parentNode [
+TITTypeTreeRootNode >> parentNode [
 
 	^ TITNoTreeNode instance
 ]
 
 { #category : 'accessing' }
-TITClassTreeRootNode >> rootNode [
+TITTypeTreeRootNode >> rootNode [
 
 	^ self
 ]

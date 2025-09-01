@@ -3,8 +3,8 @@ Class {
 	#superclass : 'SycVariableCommand',
 	#traits : 'TITTShowTypesCommand',
 	#classTraits : 'TITTShowTypesCommand classTrait',
-	#category : 'TypeInfoTools-Browser-Commands',
-	#package : 'TypeInfoTools-Browser',
+	#category : 'TypeInfoTools-TreePresenter-Commands',
+	#package : 'TypeInfoTools-TreePresenter',
 	#tag : 'Commands'
 }
 

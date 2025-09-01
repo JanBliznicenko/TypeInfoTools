@@ -1,5 +1,5 @@
 Class {
-	#name : 'TITAbstractClassTreeNode',
+	#name : 'TITAbstractTypeTreeNode',
 	#superclass : 'Object',
 	#instVars : [
 		'representedClass',
@@ -14,7 +14,7 @@ Class {
 }
 
 { #category : 'instance creation' }
-TITAbstractClassTreeNode class >> forClass: aClass [
+TITAbstractTypeTreeNode class >> forClass: aClass [
 
 	^ self new
 		  representedClass: aClass;
@@ -22,7 +22,7 @@ TITAbstractClassTreeNode class >> forClass: aClass [
 ]
 
 { #category : 'adding' }
-TITAbstractClassTreeNode >> addHierarchy: aHierarchy [
+TITAbstractTypeTreeNode >> addHierarchy: aHierarchy [
 
 	| subHierarchy nextInHierarchy |
 	aHierarchy ifEmpty: [ ^ self ].
@@ -37,23 +37,23 @@ TITAbstractClassTreeNode >> addHierarchy: aHierarchy [
 ]
 
 { #category : 'constants' }
-TITAbstractClassTreeNode >> childrenMajorityTreshold [
+TITAbstractTypeTreeNode >> childrenMajorityTreshold [
 
 	^ 2 / 3
 ]
 
 { #category : 'adding' }
-TITAbstractClassTreeNode >> createSubclassWithHierarchy: aHierarchy [
+TITAbstractTypeTreeNode >> createSubclassWithHierarchy: aHierarchy [
 
 	| childClass childNode |
 	childClass := aHierarchy first.
-	childNode := TITClassTreeNode forClass: aHierarchy first parent: self.
+	childNode := TITTypeTreeNode forClass: aHierarchy first parent: self.
 	subclassNodes add: childNode.
 	^ childNode addHierarchy: aHierarchy
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> findMaxWeightNode [
+TITAbstractTypeTreeNode >> findMaxWeightNode [
 
 	^ self subclassNodes inject: self into: [ :topNode :eachChild |
 			  eachChild maxWeightInTree > topNode weight
@@ -62,7 +62,7 @@ TITAbstractClassTreeNode >> findMaxWeightNode [
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> findMinWeightNode [
+TITAbstractTypeTreeNode >> findMinWeightNode [
 
 	^ self subclassNodes inject: self into: [ :topNode :eachChild |
 			  eachChild minWeightInTree < topNode weight
@@ -71,57 +71,57 @@ TITAbstractClassTreeNode >> findMinWeightNode [
 ]
 
 { #category : 'testing' }
-TITAbstractClassTreeNode >> includesCollector: aCollector [
+TITAbstractTypeTreeNode >> includesCollector: aCollector [
 
 	^ self sources includesCollector: aCollector
 ]
 
 { #category : 'initialization' }
-TITAbstractClassTreeNode >> initialize [
+TITAbstractTypeTreeNode >> initialize [
 
 	super initialize.
 	subclassNodes := OrderedCollection new
 ]
 
 { #category : 'constants' }
-TITAbstractClassTreeNode >> insignificantWeightTreshold [
+TITAbstractTypeTreeNode >> insignificantWeightTreshold [
 
 	^ 1 / 10
 ]
 
 { #category : 'merging' }
-TITAbstractClassTreeNode >> isLowWeight [
+TITAbstractTypeTreeNode >> isLowWeight [
 
 	^ self weight
 	  < (self rootNode maxWeightInTree * self lowWeightTreshold)
 ]
 
 { #category : 'testing' }
-TITAbstractClassTreeNode >> isRootNode [
+TITAbstractTypeTreeNode >> isRootNode [
 
 	^ false
 ]
 
 { #category : 'constants' }
-TITAbstractClassTreeNode >> lowWeightTreshold [
+TITAbstractTypeTreeNode >> lowWeightTreshold [
 
 	^ 1 / 2
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> maxWeightInTree [
+TITAbstractTypeTreeNode >> maxWeightInTree [
 
 	^ self maxWeightNode weight
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> maxWeightNode [
+TITAbstractTypeTreeNode >> maxWeightNode [
 
 	^ maxWeightNode ifNil: [ maxWeightNode := self findMaxWeightNode ]
 ]
 
 { #category : 'merging' }
-TITAbstractClassTreeNode >> mergeChildrenMajority [
+TITAbstractTypeTreeNode >> mergeChildrenMajority [
 
 	| uniqueCollectorsInChildren subclassCount |
 	uniqueCollectorsInChildren := (self subclassNodes flatCollectAsSet: [
@@ -138,7 +138,7 @@ TITAbstractClassTreeNode >> mergeChildrenMajority [
 ]
 
 { #category : 'merging' }
-TITAbstractClassTreeNode >> mergeRedundantChildren [
+TITAbstractTypeTreeNode >> mergeRedundantChildren [
 
 	| copy |
 	copy := self subclassNodes asArray.
@@ -148,25 +148,25 @@ TITAbstractClassTreeNode >> mergeRedundantChildren [
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> minWeightInTree [
+TITAbstractTypeTreeNode >> minWeightInTree [
 
 	^ self minWeightNode weight
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> minWeightNode [
+TITAbstractTypeTreeNode >> minWeightNode [
 
 	^ minWeightNode ifNil: [ minWeightNode := self findMinWeightNode ]
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> parentNode [
+TITAbstractTypeTreeNode >> parentNode [
 
 	^ self subclassResponsibility 
 ]
 
 { #category : 'printing' }
-TITAbstractClassTreeNode >> printOn: aStream [
+TITAbstractTypeTreeNode >> printOn: aStream [
 
 	super printOn: aStream.
 
@@ -176,13 +176,13 @@ TITAbstractClassTreeNode >> printOn: aStream [
 ]
 
 { #category : 'removing' }
-TITAbstractClassTreeNode >> removeChild: aNode [
+TITAbstractTypeTreeNode >> removeChild: aNode [
 
 	subclassNodes remove: aNode
 ]
 
 { #category : 'removing' }
-TITAbstractClassTreeNode >> removeNodesWithBestWeightAtMost: aWeight [
+TITAbstractTypeTreeNode >> removeNodesWithBestWeightAtMost: aWeight [
 
 	subclassNodes do: [ :each |
 		each removeNodesWithBestWeightAtMost: aWeight ].
@@ -193,31 +193,31 @@ TITAbstractClassTreeNode >> removeNodesWithBestWeightAtMost: aWeight [
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> representedClass [
+TITAbstractTypeTreeNode >> representedClass [
 
 	^ representedClass
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> representedClass: anObject [
+TITAbstractTypeTreeNode >> representedClass: anObject [
 
 	representedClass := anObject
 ]
 
 { #category : 'testing' }
-TITAbstractClassTreeNode >> representsClass: aClass [
+TITAbstractTypeTreeNode >> representsClass: aClass [
 
 	^ self representedClass = aClass
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> rootNode [
+TITAbstractTypeTreeNode >> rootNode [
 
 	^ self subclassResponsibility 
 ]
 
 { #category : 'sorting' }
-TITAbstractClassTreeNode >> sortByWeight [
+TITAbstractTypeTreeNode >> sortByWeight [
 
 	self subclassNodes do: [ :each | each sortByWeight ].
 	subclassNodes sort: [ :a :b |
@@ -227,37 +227,37 @@ TITAbstractClassTreeNode >> sortByWeight [
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> sources [
+TITAbstractTypeTreeNode >> sources [
 
 	^ sources ifNil: [ sources := TITTypesCollectionSources new ]
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> sources: aTypesCollectionSources [
+TITAbstractTypeTreeNode >> sources: aTypesCollectionSources [
 
 	sources := aTypesCollectionSources
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> subclassNodes [
+TITAbstractTypeTreeNode >> subclassNodes [
 
 	^ subclassNodes
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> subclassNodes: anObject [
+TITAbstractTypeTreeNode >> subclassNodes: anObject [
 
 	subclassNodes := anObject
 ]
 
 { #category : 'accessing' }
-TITAbstractClassTreeNode >> weight [
+TITAbstractTypeTreeNode >> weight [
 
 	^ self sources weight
 ]
 
 { #category : 'merging' }
-TITAbstractClassTreeNode >> withParentsIncludesCollectors: otherCollectors [
+TITAbstractTypeTreeNode >> withParentsIncludesCollectors: otherCollectors [
 
 	^ (self sources collectors includesAll: otherCollectors) or: [
 		  self parentNode withParentsIncludesCollectors: otherCollectors ]

@@ -2,8 +2,8 @@ Class {
 	#name : 'TITShowTypesMessageSendCommand',
 	#superclass : 'SycSourceCodeCommand',
 	#classTraits : 'TITTShowTypesCommand classTrait',
-	#category : 'TypeInfoTools-Browser-Commands',
-	#package : 'TypeInfoTools-Browser',
+	#category : 'TypeInfoTools-TreePresenter-Commands',
+	#package : 'TypeInfoTools-TreePresenter',
 	#tag : 'Commands'
 }
 

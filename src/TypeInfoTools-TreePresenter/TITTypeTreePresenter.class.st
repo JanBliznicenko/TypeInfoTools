@@ -1,17 +1,17 @@
 Class {
-	#name : 'TITClassTreePresenter',
+	#name : 'TITTypeTreePresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'table',
 		'classTree'
 	],
-	#category : 'TypeInfoTools-Browser-Presenters',
-	#package : 'TypeInfoTools-Browser',
+	#category : 'TypeInfoTools-TreePresenter-Presenters',
+	#package : 'TypeInfoTools-TreePresenter',
 	#tag : 'Presenters'
 }
 
 { #category : 'initialization' }
-TITClassTreePresenter >> connectPresenters [
+TITTypeTreePresenter >> connectPresenters [
 
 	super connectPresenters.
 
@@ -22,7 +22,7 @@ TITClassTreePresenter >> connectPresenters [
 ]
 
 { #category : 'layout' }
-TITClassTreePresenter >> defaultLayout [
+TITTypeTreePresenter >> defaultLayout [
 
 	^ SpBoxLayout newHorizontal
 		  add: table;
@@ -30,7 +30,7 @@ TITClassTreePresenter >> defaultLayout [
 ]
 
 { #category : 'accessing - model' }
-TITClassTreePresenter >> displayColorOf: aNode [
+TITTypeTreePresenter >> displayColorOf: aNode [
 
 	| intensity |
 	classTree maxWeightInTree = classTree minWeightInTree ifTrue: [
@@ -44,7 +44,7 @@ TITClassTreePresenter >> displayColorOf: aNode [
 ]
 
 { #category : 'initialization' }
-TITClassTreePresenter >> initializePresenters [
+TITTypeTreePresenter >> initializePresenters [
 
 	super initializePresenters.
 	table := self newTreeTable
@@ -68,7 +68,7 @@ TITClassTreePresenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-TITClassTreePresenter >> setModelBeforeInitialization: aClassTree [
+TITTypeTreePresenter >> setModelBeforeInitialization: aClassTree [
 
 	classTree := aClassTree
 ]

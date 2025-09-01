@@ -86,7 +86,7 @@ TITTypesCollection >> addClasses: aCollection by: aTypeCollector [
 { #category : 'converting' }
 TITTypesCollection >> asClassTree [
 
-	^ TITClassTree fromDictionary: self classesWithCollectors
+	^ TITTypeTree fromDictionary: self classesWithCollectors
 ]
 
 { #category : 'converting' }

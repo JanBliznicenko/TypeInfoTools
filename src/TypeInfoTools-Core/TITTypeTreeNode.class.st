@@ -1,6 +1,6 @@
 Class {
-	#name : 'TITClassTreeNode',
-	#superclass : 'TITAbstractClassTreeNode',
+	#name : 'TITTypeTreeNode',
+	#superclass : 'TITAbstractTypeTreeNode',
 	#instVars : [
 		'parentNode',
 		'rootNode'
@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : 'instance creation' }
-TITClassTreeNode class >> forClass: aClass parent: aNode [
+TITTypeTreeNode class >> forClass: aClass parent: aNode [
 
 	^ (self forClass: aClass)
 		  parentNode: aNode;
@@ -19,10 +19,10 @@ TITClassTreeNode class >> forClass: aClass parent: aNode [
 ]
 
 { #category : 'converting' }
-TITClassTreeNode >> asRoot [
+TITTypeTreeNode >> asRoot [
 
 	| selfAsRoot |
-	selfAsRoot := TITClassTreeRootNode forClass: self representedClass.
+	selfAsRoot := TITTypeTreeRootNode forClass: self representedClass.
 	selfAsRoot
 		subclassNodes: (self subclassNodes
 				 do: [ :each | each parentNode: selfAsRoot ];
@@ -32,7 +32,7 @@ TITClassTreeNode >> asRoot [
 ]
 
 { #category : 'merging' }
-TITClassTreeNode >> mergeIntoParentWithMyCollectors [
+TITTypeTreeNode >> mergeIntoParentWithMyCollectors [
 
 	^ self.
 	self subclassNodes ifNotEmpty: [ ^ self ].
@@ -44,19 +44,19 @@ TITClassTreeNode >> mergeIntoParentWithMyCollectors [
 ]
 
 { #category : 'accessing' }
-TITClassTreeNode >> parentNode [
+TITTypeTreeNode >> parentNode [
 
 	^ parentNode
 ]
 
 { #category : 'accessing' }
-TITClassTreeNode >> parentNode: anObject [
+TITTypeTreeNode >> parentNode: anObject [
 
 	parentNode := anObject
 ]
 
 { #category : 'accessing' }
-TITClassTreeNode >> rootNode [
+TITTypeTreeNode >> rootNode [
 
 	^ rootNode ifNil: [
 			  rootNode := self isRootNode

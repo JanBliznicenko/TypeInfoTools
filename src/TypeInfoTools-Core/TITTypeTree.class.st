@@ -1,5 +1,5 @@
 Class {
-	#name : 'TITClassTree',
+	#name : 'TITTypeTree',
 	#superclass : 'Object',
 	#instVars : [
 		'rootNode'
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'instance creation' }
-TITClassTree class >> fromAssociations: aCollectionOfAssociations [
+TITTypeTree class >> fromAssociations: aCollectionOfAssociations [
 
 	^ self new
 		  addAssociations: aCollectionOfAssociations;
@@ -18,7 +18,7 @@ TITClassTree class >> fromAssociations: aCollectionOfAssociations [
 ]
 
 { #category : 'instance creation' }
-TITClassTree class >> fromDictionary: aDictionary [
+TITTypeTree class >> fromDictionary: aDictionary [
 
 	^ self new
 		  addAssociations: aDictionary associations;
@@ -26,26 +26,26 @@ TITClassTree class >> fromDictionary: aDictionary [
 ]
 
 { #category : 'adding' }
-TITClassTree >> addAssociation: anAssociation [
+TITTypeTree >> addAssociation: anAssociation [
 
 	self addClass: anAssociation key withSources: anAssociation value
 ]
 
 { #category : 'adding' }
-TITClassTree >> addAssociations: aCollectionOfAssociations [
+TITTypeTree >> addAssociations: aCollectionOfAssociations [
 
 	aCollectionOfAssociations do: [ :each | self addAssociation: each ]
 ]
 
 { #category : 'adding' }
-TITClassTree >> addClass: aClass [
+TITTypeTree >> addClass: aClass [
 
 	^ self rootNode addHierarchy:
 		  (aClass withAllSuperclasses copyWith: nil) reversed
 ]
 
 { #category : 'adding' }
-TITClassTree >> addClass: aClass withSources: aTypesCollectionSources [
+TITTypeTree >> addClass: aClass withSources: aTypesCollectionSources [
 
 	^ (self addClass: aClass)
 		  sources: aTypesCollectionSources;
@@ -53,43 +53,43 @@ TITClassTree >> addClass: aClass withSources: aTypesCollectionSources [
 ]
 
 { #category : 'accessing' }
-TITClassTree >> isEmpty [
+TITTypeTree >> isEmpty [
 
 	^ self maxWeightInTree isZero
 ]
 
 { #category : 'accessing' }
-TITClassTree >> maxWeightInTree [
+TITTypeTree >> maxWeightInTree [
 
 	^ self maxWeightNode weight
 ]
 
 { #category : 'accessing' }
-TITClassTree >> maxWeightNode [
+TITTypeTree >> maxWeightNode [
 
 	^ self rootNode maxWeightNode
 ]
 
 { #category : 'merging' }
-TITClassTree >> mergeRedundantChildren [
+TITTypeTree >> mergeRedundantChildren [
 
 	self rootNode mergeRedundantChildren
 ]
 
 { #category : 'accessing' }
-TITClassTree >> minWeightInTree [
+TITTypeTree >> minWeightInTree [
 
 	^ self minWeightNode weight
 ]
 
 { #category : 'accessing' }
-TITClassTree >> minWeightNode [
+TITTypeTree >> minWeightNode [
 
 	^ self rootNode minWeightNode
 ]
 
 { #category : 'modifying' }
-TITClassTree >> prepareForPresenting [
+TITTypeTree >> prepareForPresenting [
 
 	self
 		mergeRedundantChildren;
@@ -99,13 +99,13 @@ TITClassTree >> prepareForPresenting [
 ]
 
 { #category : 'removing' }
-TITClassTree >> removeCommonRootNodes [
+TITTypeTree >> removeCommonRootNodes [
 
 	[ self tryRemoveCommonRootNode ] whileTrue: [ ]
 ]
 
 { #category : 'removing' }
-TITClassTree >> removeVeryLowWeightNodes [
+TITTypeTree >> removeVeryLowWeightNodes [
 
 	self rootNode removeNodesWithBestWeightAtMost:
 		self rootNode maxWeightInTree
@@ -113,19 +113,19 @@ TITClassTree >> removeVeryLowWeightNodes [
 ]
 
 { #category : 'accessing' }
-TITClassTree >> rootNode [
+TITTypeTree >> rootNode [
 
-	^ rootNode ifNil: [ rootNode := TITClassTreeRootNode new ]
+	^ rootNode ifNil: [ rootNode := TITTypeTreeRootNode new ]
 ]
 
 { #category : 'sorting' }
-TITClassTree >> sortByWeight [
+TITTypeTree >> sortByWeight [
 
 	self rootNode sortByWeight
 ]
 
 { #category : 'removing' }
-TITClassTree >> tryRemoveCommonRootNode [
+TITTypeTree >> tryRemoveCommonRootNode [
 
 	self rootNode subclassNodes size = 1 ifFalse: [ ^ false ].
 	({

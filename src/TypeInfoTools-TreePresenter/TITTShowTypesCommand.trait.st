@@ -1,7 +1,7 @@
 Trait {
 	#name : 'TITTShowTypesCommand',
-	#category : 'TypeInfoTools-Browser-Commands',
-	#package : 'TypeInfoTools-Browser',
+	#category : 'TypeInfoTools-TreePresenter-Commands',
+	#package : 'TypeInfoTools-TreePresenter',
 	#tag : 'Commands'
 }
 
