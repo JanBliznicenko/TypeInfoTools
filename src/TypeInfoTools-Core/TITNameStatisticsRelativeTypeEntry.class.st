@@ -34,6 +34,7 @@ TITNameStatisticsRelativeTypeEntry >> selector: anObject [
 { #category : 'as yet unclassified' }
 TITNameStatisticsRelativeTypeEntry >> typeForReceiverClass: aClass [
 
-	(aClass respondsTo: selector) ifFalse: [ ^ nil ].
+	(aClass respondsTo: selector) ifFalse: [
+		TITEntryNotApplicable signal ].
 	^ (Message selector: selector) sendTo: aClass
 ]

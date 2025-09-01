@@ -28,5 +28,6 @@ TITNameStatisticsSpecificTypeEntry >> className: anObject [
 { #category : 'as yet unclassified' }
 TITNameStatisticsSpecificTypeEntry >> typeForReceiverClass: anObject [
 
-	^ self class environment classOrTraitNamed: className
+	^ (self class environment classOrTraitNamed: className) ifNil: [
+		  TITEntryNotApplicable signal ]
 ]

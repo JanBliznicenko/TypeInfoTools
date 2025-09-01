@@ -22,10 +22,15 @@ TITNameStatisticsTyperAdaptor >> searchNameStatisticsForNode: aTITNode in: aType
 			                aTITNode name)
 		               withRelative: aBoolean
 		               ifAbsent: [ ^ false ].
-	types := typeEntries
-		         collect: [ :each |
-		         each typeForReceiverClass: aTITNode ownerClass realClass ]
-		         as: Set.
+	types := Set new.
+
+	typeEntries do: [ :each |
+			[
+			types add:
+				(each typeForReceiverClass: aTITNode ownerClass realClass) ]
+				on: TITEntryNotApplicable
+				do: [ "do nothing" ] ].
+	types ifEmpty: [ ^ false ].
 	aTITNode typeInfo addTypes: types by: self.
 	^ true
 ]
