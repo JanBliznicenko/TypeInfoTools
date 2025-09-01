@@ -31,6 +31,7 @@ TITTypeInfo >> addCollectionElementTypes: aClassCollection by: aTypeCollector [
 { #category : 'adding' }
 TITTypeInfo >> addTypes: aClassCollection by: aTypeCollector [
 
+	aClassCollection ifEmpty: [ ^ self ].
 	collectorsIncluded add: aTypeCollector.
 	types addClasses: aClassCollection by: aTypeCollector
 ]

@@ -15,7 +15,7 @@ Class {
 	#tag : 'NameStatistics'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'instance' }
 TITNameStatisticsTyper class >> forReturnTypes [
 
 	<script>
@@ -23,14 +23,14 @@ TITNameStatisticsTyper class >> forReturnTypes [
 		  forReturnTypes := self newFromFiles: 'RetTypes' ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'instance' }
 TITNameStatisticsTyper class >> forVariableTypes [
 	<script>
 
 	^ forVariableTypes ifNil: [ forVariableTypes := self newFromFiles: 'VarTypes' ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'instance creation' }
 TITNameStatisticsTyper class >> newFromFiles: aFileNameEnding [
 
 	^ self new
@@ -47,22 +47,33 @@ TITNameStatisticsTyper class >> reset [
 ]
 
 { #category : 'accessing' }
-TITNameStatisticsTyper >> at: aName ifAbsent: aBlock [
+TITNameStatisticsTyper >> at: aNameWithUnknownCapitalization withRelative: aBoolean ifAbsent: aBlock [
 
-	| resultByBeginning resultByEnding |
-	byNames
-		at: aName
-		ifPresent: [ :result | result ifNotNil: [ ^ result ] ].
-	resultByBeginning := byBeginnings at: aName ifAbsent: [ nil ].
-	resultByBeginning ifNil: [ ^ byEndings at: aName ifAbsent: aBlock ].
-	resultByEnding := byEndings
-		                  at: aName
-		                  ifAbsent: [ ^ resultByBeginning ].
-	resultByEnding ifNil: [ ^ aBlock value ].
-	resultByEnding ratio ** 10 * resultByEnding amount
-	> (resultByBeginning ratio ** 10 * resultByBeginning amount) ifTrue: [
-		^ resultByEnding ].
-	^ resultByBeginning
+	| name split nodes |
+	name := aNameWithUnknownCapitalization uncapitalized asSymbol.
+
+	byNames at: name ifPresent: [ :result |
+			result ifNotNil: [
+				(result isForNoneRelative: aBoolean not) ifTrue: [ ^ { result } ] ] ].
+
+	split := name splitSymbolsAndCamelCase.
+
+	nodes := OrderedCollection new.
+
+	1 to: split size do: [ :wordAmount |
+			| beginningKey endingKey |
+			beginningKey := (String streamContents: [ :s |
+				                 (split first: wordAmount) do: [ :each |
+					                 s nextPutAll: each ] ]) asSymbol.
+			byBeginnings at: beginningKey ifPresent: [ :type |
+				(type isForNoneRelative: aBoolean not) ifTrue: [ nodes add: type ] ].
+			endingKey := (String streamContents: [ :s |
+				              (split last: wordAmount) do: [ :each |
+					              s nextPutAll: each ] ]) uncapitalized asSymbol.
+			byEndings at: endingKey ifPresent: [ :type |
+				(type isForNoneRelative: aBoolean not) ifTrue: [ nodes add: type ] ] ].
+
+	^ nodes ifEmpty: aBlock
 ]
 
 { #category : 'initialization' }
@@ -74,7 +85,7 @@ TITNameStatisticsTyper >> initialize [
 	byEndings := IdentityDictionary new
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 TITNameStatisticsTyper >> loadFromFiles: aFileNameEnding [
 
 	byNames := IdentityDictionary new.

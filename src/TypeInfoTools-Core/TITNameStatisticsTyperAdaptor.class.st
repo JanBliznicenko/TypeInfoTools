@@ -13,16 +13,20 @@ TITNameStatisticsTyperAdaptor class >> sourceName [
 ]
 
 { #category : 'visiting' }
-TITNameStatisticsTyperAdaptor >> searchNameStatisticsForNode: aTITNode in: aTyper [
+TITNameStatisticsTyperAdaptor >> searchNameStatisticsForNode: aTITNode in: aTyper withRelative: aBoolean [
 
-	| typeEntry type |
-	typeEntry := aTyper
-		             at:
-		             (TITNameHeuristicsTyperAdaptor unifyName: aTITNode name)
-		             ifAbsent: [ ^ false ].
-	type := typeEntry typeForReceiverClass: aTITNode ownerClass realClass.
-	type ifNil: [ ^ false ].
-	aTITNode typeInfo addTypes: { type } by: self.
+	| typeEntries types |
+	typeEntries := aTyper
+		               at:
+		               (TITNameHeuristicsTyperAdaptor simplifyName:
+			                aTITNode name)
+		               withRelative: aBoolean
+		               ifAbsent: [ ^ false ].
+	types := typeEntries
+		         collect: [ :each |
+		         each typeForReceiverClass: aTITNode ownerClass realClass ]
+		         as: Set.
+	aTITNode typeInfo addTypes: types by: self.
 	^ true
 ]
 
@@ -31,7 +35,7 @@ TITNameStatisticsTyperAdaptor >> visitMessageSend: aMessageSend [
 
 	self
 		searchNameStatisticsForNode: aMessageSend
-		in: TITNameStatisticsTyper forReturnTypes
+		in: TITNameStatisticsTyper forReturnTypes withRelative: false
 ]
 
 { #category : 'visiting' }
@@ -40,6 +44,7 @@ TITNameStatisticsTyperAdaptor >> visitMethod: aMethod [
 	self
 		searchNameStatisticsForNode: aMethod
 		in: TITNameStatisticsTyper forReturnTypes
+		withRelative: true
 ]
 
 { #category : 'visiting' }
@@ -48,6 +53,7 @@ TITNameStatisticsTyperAdaptor >> visitVariable: aVariable [
 	self
 		searchNameStatisticsForNode: aVariable
 		in: TITNameStatisticsTyper forVariableTypes
+		withRelative: true
 ]
 
 { #category : 'accessing' }

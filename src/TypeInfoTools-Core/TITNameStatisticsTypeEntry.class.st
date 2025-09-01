@@ -50,6 +50,12 @@ TITNameStatisticsTypeEntry >> amount: anObject [
 	amount := anObject
 ]
 
+{ #category : 'testing' }
+TITNameStatisticsTypeEntry >> isForNoneRelative: aBoolean [
+
+	^ true
+]
+
 { #category : 'accessing' }
 TITNameStatisticsTypeEntry >> ratio [
 

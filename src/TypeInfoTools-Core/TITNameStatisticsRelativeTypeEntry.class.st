@@ -19,6 +19,12 @@ TITNameStatisticsRelativeTypeEntry class >> fromRawString: aString ratio: aRatio
 		  yourself
 ]
 
+{ #category : 'testing' }
+TITNameStatisticsRelativeTypeEntry >> isForNoneRelative: aBoolean [
+
+	^ aBoolean not
+]
+
 { #category : 'accessing' }
 TITNameStatisticsRelativeTypeEntry >> selector: anObject [
 
