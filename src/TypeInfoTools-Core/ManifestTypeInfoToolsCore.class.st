@@ -27,14 +27,14 @@ ManifestTypeInfoToolsCore class >> ruleFloatReferencesRuleV1FalsePositive [
 ManifestTypeInfoToolsCore class >> ruleStringConcatenationRuleV1FalsePositive [
 
 	<ignoreForCoverage>
-	^ #(#(#(#RGMethodDefinition #(#TITMetaLinksRealTimeTypeInferer #variableTypesByNames #false)) #'2025-05-22T04:40:02.307+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#TITMetaLinksRunTimeTypeInferer #variableTypesByNames #false)) #'2025-05-22T04:40:02.307+02:00') )
 ]
 
 { #category : 'code-critics' }
 ManifestTypeInfoToolsCore class >> ruleUsesAddRuleV1FalsePositive [
 
 	<ignoreForCoverage>
-	^ #(#(#(#RGMethodDefinition #(#TITNameHeuristicsTyperAdaptor #checkName: #false)) #'2024-10-03T05:06:35.534+02:00') #(#(#RGMethodDefinition #(#TITMetaLinksRealTimeTypeInferer #addLinksToMethod: #false)) #'2025-05-15T09:43:46.846+02:00') )
+	^ #(#(#(#RGMethodDefinition #(#TITNameHeuristicsTyperAdaptor #checkName: #false)) #'2024-10-03T05:06:35.534+02:00') #(#(#RGMethodDefinition #(#TITMetaLinksRunTimeTypeInferer #addLinksToMethod: #false)) #'2025-05-15T09:43:46.846+02:00') )
 ]
 
 { #category : 'code-critics' }
